@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Controller;
+
+use App\Repository\TeamRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+#[Route('/')]
+#[IsGranted('ROLE_USER')]
+class HomeController extends AbstractController
+{
+    #[Route('/', name: 'app_index', methods: ['GET'])]
+    public function index(TeamRepository $teamRepository): Response
+    {
+        return $this->render('Admin/team/index.html.twig', [
+            'teams' => $teamRepository->findAll(),
+        ]);
+    }
+
+}
