@@ -18,6 +18,7 @@ services:
 
   6thmen-admin:
     build: ./6thmen-admin
+    env_file: ./6thmen-admin/.env.prod
     container_name: 6thmen-admin-php
     user: rayuruna:rayuruna
     restart: always
@@ -46,6 +47,7 @@ services:
 
   6thmen-api:
     build: ./6thmen-api
+    env_file: ./6thmen-api/.env.prod
     container_name: 6thmen-api-php
     user: rayuruna:rayuruna
     restart: always
