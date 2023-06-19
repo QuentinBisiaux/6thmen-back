@@ -26,7 +26,7 @@ services:
       - ./docker/php.ini:/usr/local/etc/php/php.ini
       - ./docker/www.conf:/usr/local/etc/php-fpm.d/www.conf
     depends_on:
-      - db
+      - 6thmen-db
     networks:
       - 6thmen-admin
       - 6thmen-db
@@ -54,7 +54,7 @@ services:
       - ./docker/php.ini:/usr/local/etc/php/php.ini
       - ./docker/www.conf:/usr/local/etc/php-fpm.d/www.conf
     depends_on:
-      - db
+      - 6thmen-db
     networks:
       - 6thmen-api
       - 6thmen-db
