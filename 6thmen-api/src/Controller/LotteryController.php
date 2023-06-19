@@ -10,14 +10,13 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/lottery')]
 class LotteryController extends AbstractController
 {
     public function __construct(
         private EventDispatcherInterface $eventDispatcher,
     )
     {}
-    #[Route('/', name: 'app_lottery', methods: 'POST')]
+    #[Route('/lottery', name: 'app_lottery', methods: 'POST')]
     public function index(TeamRepository $teamRepository): JsonResponse
     {
         $lottery = new Lottery($teamRepository);
