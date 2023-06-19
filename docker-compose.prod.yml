@@ -69,7 +69,7 @@ services:
     volumes:
       - /var/www/data/6thmen/:/var/lib/postgresql/data:rw
     networks:
-      - 6thmen-admin
+      - 6thmen-db
       - proxy_db
 
 networks:
