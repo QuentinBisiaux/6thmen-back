@@ -59,7 +59,7 @@ services:
       - 6thmen-api
       - 6thmen-db
 
-  db:
+  6thmen-db:
     image: postgres:${POSTGRES_VERSION}-alpine
     container_name: ${APP_NAME}-db
     environment:

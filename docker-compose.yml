@@ -25,7 +25,7 @@ services:
       - ./docker/php.ini:/usr/local/etc/php/php.ini
       - ./docker/www.conf:/usr/local/etc/php-fpm.d/www.conf
     depends_on:
-      - db
+      - 6thmen-db
     networks:
       - 6thmen-admin
       - 6thmen-db
@@ -54,12 +54,12 @@ services:
       - ./docker/php.ini:/usr/local/etc/php/php.ini
       - ./docker/www.conf:/usr/local/etc/php-fpm.d/www.conf
     depends_on:
-      - db
+      - 6thmen-db
     networks:
       - 6thmen-api
       - 6thmen-db
 
-  db:
+  6thmen-db:
     image: postgres:${POSTGRES_VERSION}-alpine
     container_name: 6thmen-db
     environment:
@@ -80,7 +80,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      - 6thmen-db
     networks:
       - 6thmen-db
 
