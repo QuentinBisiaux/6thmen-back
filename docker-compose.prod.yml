@@ -3,13 +3,13 @@ version: '3.8'
 #to run in prod : docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build --force-recreate
 
 services:
-  6thmen-nginx:
+  nginx-admin:
     image: nginx:alpine
-    container_name: ${APP_NAME}-nginx
+    container_name: 6thmen-admin-nginx
     restart: always
     volumes:
-      - .:/var/www:ro,cached
-      - ./docker/default.conf:/etc/nginx/conf.d/default.conf
+      - ./6thmen-admin:/var/www:ro,cached
+      - ./docker/admin/default.conf:/etc/nginx/conf.d/default.conf
     networks:
       - proxy_web
       - 6thmen-admin
@@ -17,18 +17,47 @@ services:
       - 6thmen-admin
 
   6thmen-admin:
-    build: ./docker
-    container_name: ${APP_NAME}-php
+    build: ./6thmen-admin
+    container_name: 6thmen-admin-php
     user: rayuruna:rayuruna
     restart: always
     volumes:
-      - .:/var/www
+      - ./6thmen-admin:/var/www
       - ./docker/php.ini:/usr/local/etc/php/php.ini
       - ./docker/www.conf:/usr/local/etc/php-fpm.d/www.conf
-    networks:
-      - 6thmen-admin
     depends_on:
       - db
+    networks:
+      - 6thmen-admin
+      - 6thmen-db
+
+  nginx-api:
+    image: nginx:alpine
+    container_name: 6thmen-api-nginx
+    restart: always
+    volumes:
+      - ./6thmen-api:/var/www:ro,cached
+      - ./docker/api/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - 6thmen-api
+    networks:
+      - proxy_web
+      - 6thmen-api
+
+  6thmen-api:
+    build: ./6thmen-api
+    container_name: 6thmen-api-php
+    user: rayuruna:rayuruna
+    restart: always
+    volumes:
+      - ./6thmen-api:/var/www
+      - ./docker/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    depends_on:
+      - db
+    networks:
+      - 6thmen-api
+      - 6thmen-db
 
   db:
     image: postgres:${POSTGRES_VERSION}-alpine
@@ -42,8 +71,6 @@ services:
     networks:
       - 6thmen-admin
       - proxy_db
-      - 6thmen-db
-
 
 networks:
   proxy_web:
@@ -54,6 +81,8 @@ networks:
     external: true
   6thmen-admin:
     name: 6thmen-admin
+  6thmen-api:
+    name: 6thmen-api
   6thmen-db:
     name: 6thmen-db
     driver: bridge
