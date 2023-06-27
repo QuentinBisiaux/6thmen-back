@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/team')]
+#[Route('/team1')]
 class TeamController extends AbstractController
 {
 
@@ -20,6 +20,13 @@ class TeamController extends AbstractController
     public function teamsByRankWithOdds(): JsonResponse
     {
         $teams = $this->teamRepository->findTeamsByRankWithOdds();
+        return $this->json($teams);
+    }
+
+    #[Route('/name', name: 'api_team_name', methods: ['GET'])]
+    public function teamsByName(): JsonResponse
+    {
+        $teams = $this->teamRepository->findTeamsByNameOrdered();
         return $this->json($teams);
     }
 

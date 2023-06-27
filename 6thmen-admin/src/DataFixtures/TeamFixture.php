@@ -83,14 +83,14 @@ class TeamFixture extends Fixture
         ];
     public function load(ObjectManager $manager): void
     {
-        foreach ($this->teams as $teamAsArray) {
-            $team = new Team();
-            $team->setName($teamAsArray['name']);
-            $team->setVictory($teamAsArray['victory']);
-            $team->setRank($teamAsArray['rank']);
-            $team->setCreatedAt(new \DateTimeImmutable());
-            $manager->persist($team);
-        }
+/*        foreach ($this->teams as $teamAsArray) {
+            $team1 = new Team();
+            $team1->setName($teamAsArray['name']);
+            $team1->setVictory($teamAsArray['victory']);
+            $team1->setRank($teamAsArray['rank']);
+            $team1->setCreatedAt(new \DateTimeImmutable());
+            $manager->persist($team1);
+        }*/
 
         $manager->flush();
     }

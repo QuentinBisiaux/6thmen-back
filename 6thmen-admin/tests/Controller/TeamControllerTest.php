@@ -12,7 +12,7 @@ class TeamControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
     private TeamRepository $repository;
-    private string $path = '/admin/team/';
+    private string $path = '/admin/team1/';
 
     protected function setUp(): void
     {
@@ -45,17 +45,17 @@ class TeamControllerTest extends WebTestCase
 
         $this->client->request('GET', sprintf('%snew', $this->path));
 
-        self::assertResponseStatusCodeSame(200, '/admin/team/ new doesnt responded with 200');
+        self::assertResponseStatusCodeSame(200, '/admin/team1/ new doesnt responded with 200');
 
         $this->client->submitForm('Save', [
-            'team[name]' => 'Testing',
-            'team[victory]' => 82,
-            'team[rank]' => 1
+            'team1[name]' => 'Testing',
+            'team1[victory]' => 82,
+            'team1[rank]' => 1
         ]);
 
-        self::assertSame($originalNumObjectsInRepository + 1, count($this->repository->findAll()), 'No new team inserted');
+        self::assertSame($originalNumObjectsInRepository + 1, count($this->repository->findAll()), 'No new team1 inserted');
 
-        self::assertResponseRedirects('/admin/team/', 303, 'after submit new team doesnt redirect');
+        self::assertResponseRedirects('/admin/team1/', 303, 'after submit new team1 doesnt redirect');
 
     }
 
@@ -71,7 +71,7 @@ class TeamControllerTest extends WebTestCase
 
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
 
-        self::assertResponseStatusCodeSame(200, '/admin/team/ doesnt responded with 200');
+        self::assertResponseStatusCodeSame(200, '/admin/team1/ doesnt responded with 200');
         self::assertPageTitleContains('Team', 'Missing tittle');
 
         $this->markTestIncomplete();
@@ -92,12 +92,12 @@ class TeamControllerTest extends WebTestCase
         $this->client->request('GET', sprintf('%s%s/edit', $this->path, $fixture->getId()));
 
         $this->client->submitForm('Update', [
-            'team[name]' => 'Something New',
-            'team[victory]' => 53,
-            'team[rank]' => 8,
+            'team1[name]' => 'Something New',
+            'team1[victory]' => 53,
+            'team1[rank]' => 8,
         ]);
 
-        self::assertResponseRedirects('/admin/team/', 303, 'after submit new team doesnt redirect');
+        self::assertResponseRedirects('/admin/team1/', 303, 'after submit new team1 doesnt redirect');
 
         $fixture = $this->repository->findAll();
 
@@ -127,6 +127,6 @@ class TeamControllerTest extends WebTestCase
         $this->client->submitForm('Delete');
 
         self::assertSame($originalNumObjectsInRepository, count($this->repository->findAll()));
-        self::assertResponseRedirects('/admin/team/');
+        self::assertResponseRedirects('/admin/team1/');
     }
 }

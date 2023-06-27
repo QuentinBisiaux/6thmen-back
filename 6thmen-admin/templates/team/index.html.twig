@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Team index{% endblock %}
+
+{% block body %}
+    <div class="flex">
+        <h1 class="font-extrabold text-2xl">Teams</h1>
+        <a class="ml-auto p-2 bg-indigo-600 text-white rounded-lg border-2" href="{{ path('app_team_new') }}">Add new</a>
+    </div>
+
+    <table class="min-w-full text-left">
+        <thead class="border-b-2 border-zinc-600">
+            <tr class="py-3">
+                <th class="font-weight-bold py-3">Id</th>
+                <th class="font-weight-bold">Name</th>
+                <th class="font-weight-bold">Tricode</th>
+                <th class="font-weight-bold">Slug</th>
+                <th class="font-weight-bold">Sister</th>
+                <th class="font-weight-bold">CreatedIn</th>
+                <th class="font-weight-bold">EndedIn</th>
+                <th class="font-weight-bold">League</th>
+                <th class="font-weight-bold">CreatedAt</th>
+                <th class="font-weight-bold">UpdatedAt</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for team in teams %}
+            <tr class="border-b-2 border-zinc-200">
+                <td class="py-3">{{ team.id }}</td>
+                <td class="py-3">{{ team.name }}</td>
+                <td class="py-3">{{ team.tricode }}</td>
+                <td class="py-3">{{ team.slug }}</td>
+                <td class="py-3">{{ team.sisterTeam ? team.sisterTeam.name : '' }}</td>
+                <td class="py-3">{{ team.createdIn ? team.createdIn|date('Y') : '' }}</td>
+                <td class="py-3">{{ team.endedIn ? team.endedIn|date('Y') : '' }}</td>
+                <td class="py-3">
+                    {{ team.league.name }}
+                </td>
+                <td class="py-3">{{ team.createdAt ? team.createdAt|date('Y-m-d H:i') : '' }}</td>
+                <td class="py-3">{{ team.updatedAt ? team.updatedAt|date('Y-m-d H:i') : '' }}</td>
+                <td class="py-3">
+                    <a class="font-bold text-indigo-600" href="{{ path('app_team_edit', {'id': team.id}) }}">Edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

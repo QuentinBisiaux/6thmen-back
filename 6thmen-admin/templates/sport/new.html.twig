@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Sport{% endblock %}
+
+{% block body %}
+    <h1 class="font-extrabold text-2xl my-4">Create new Sport</h1>
+    <a class="text-zinc-400 underline" href="{{ path('app_sport_index') }}">Back to list</a>
+
+    {{ include('sport/_form.html.twig') }}
+
+{% endblock %}

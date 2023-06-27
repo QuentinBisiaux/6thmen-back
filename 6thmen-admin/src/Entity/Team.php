@@ -3,50 +3,77 @@
 namespace App\Entity;
 
 use App\Repository\TeamRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Context;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 #[ORM\Entity(repositoryClass: TeamRepository::class)]
-#[UniqueEntity('name')]
-#[UniqueEntity('rank')]
 class Team
 {
-    const MAX_VICTORY = 82;
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Assert\NotBlank]
-    #[ORM\Column(length: 150, unique: true)]
+    #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[Assert\GreaterThanOrEqual(0)]
-    #[Assert\LessThanOrEqual(self::MAX_VICTORY)]
-    #[Assert\NotBlank]
+    #[ORM\Column(length: 255)]
+    private ?string $tricode = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sisterTeams')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Team $sisterTeam = null;
+
+    #[ORM\OneToMany(mappedBy: 'sisterTeam', targetEntity: Team::class)]
+    private Collection $sisterTeams;
+
+    #[ORM\ManyToOne(inversedBy: 'teams')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?League $league = null;
+    
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'Y'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
+    )]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $createdIn = null;
+
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'Y'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
+    )]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $endedIn = null;
+    
+    #[ORM\OneToMany(mappedBy: 'team', targetEntity: PlayerTeams::class)]
+    private Collection $playerTeams;
+
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
+    )]
     #[ORM\Column]
-    private ?int $victory = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
-    #[Assert\GreaterThanOrEqual(1)]
-    #[Assert\LessThanOrEqual(30)]
-    #[Assert\NotBlank]
-    #[ORM\Column(unique: true)]
-    private ?int $rank = null;
-
-    #[Assert\NotBlank]
-    #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
-
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
+    )]
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updated_at = null;
+    private ?\DateTimeImmutable $updatedAt = null;
 
-    #[Assert\GreaterThanOrEqual(0)]
-    #[Assert\LessThanOrEqual(14)]
-    private float $odds;
-
-    private string $slug;
+    public function __construct()
+    {
+        $this->playerTeams = new ArrayCollection();
+        $this->sisterTeams = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -65,79 +92,150 @@ class Team
         return $this;
     }
 
-    public function getVictory(): ?int
+    public function getTricode(): ?string
     {
-        return $this->victory;
+        return $this->tricode;
     }
 
-    public function setVictory(int $victory): self
+    public function setTricode(string $tricode): self
     {
-        $this->victory = $victory;
+        $this->tricode = $tricode;
 
         return $this;
     }
 
-    public function getRank(): ?int
+    public function getSlug(): ?string
     {
-        return $this->rank;
+        return $this->slug;
     }
 
-    public function setRank(int $rank): self
+    public function setSlug(?string $slug): void
     {
-        $this->rank = $rank;
+        $this->slug = $slug;
+    }
+
+    public function getCreatedIn(): ?\DateTimeInterface
+    {
+        return $this->createdIn;
+    }
+
+    public function setCreatedIn(\DateTimeInterface $createdIn): self
+    {
+        $this->createdIn = $createdIn;
 
         return $this;
     }
+
+    public function getEndedIn(): ?\DateTimeInterface
+    {
+        return $this->endedIn;
+    }
+
+    public function setEndedIn(?\DateTimeInterface $endedIn): self
+    {
+        $this->endedIn = $endedIn;
+
+        return $this;
+    }
+
+    public function getLeague(): ?League
+    {
+        return $this->league;
+    }
+
+    public function setLeague(?League $league): self
+    {
+        $this->league = $league;
+
+        return $this;
+    }
+
+    public function getSisterTeam(): ?Team
+    {
+        return $this->sisterTeam;
+    }
+
+    public function setSisterTeam(?Team $sisterTeam): void
+    {
+        $this->sisterTeam = $sisterTeam;
+    }
+
+    /**
+     * @return Collection<int, Team>
+     */
+    public function getSisterTeams(): Collection
+    {
+        return $this->sisterTeams;
+    }
+
+    public function addSisterTeam(Team $sisterTeam): void
+    {
+        if (!$this->sisterTeams->contains($sisterTeam)) {
+            $this->sisterTeams->add($sisterTeam);
+            $sisterTeam->setSisterTeam($this);
+        }
+    }
+
+    public function removeSisterTeam(Team $sisterTeam): void
+    {
+        if ($this->sisterTeams->removeElement($sisterTeam)) {
+            $sisterTeam->setSisterTeam(null);
+        }
+    }
+
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updated_at): self
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
     {
-        $this->updated_at = $updated_at;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    public function getOdds(): float
+    /**
+     * @return Collection<int, PlayerTeams>
+     */
+    public function getPlayerTeams(): Collection
     {
-        return $this->odds;
+        return $this->playerTeams;
     }
 
-    public function setOdds(float $odds): self
+    public function addPlayerTeam(PlayerTeams $playerTeam): self
     {
-        $this->odds = $odds;
+        if (!$this->playerTeams->contains($playerTeam)) {
+            $this->playerTeams->add($playerTeam);
+            $playerTeam->setTeam($this);
+        }
 
         return $this;
     }
 
-    public function getSlug(): string
+    public function removePlayerTeam(PlayerTeams $playerTeam): self
     {
-        return $this->slug;
-    }
-
-    public function setSlug(): self
-    {
-        $this->slug = implode('_', explode(' ', $this->getName()));
+        if ($this->playerTeams->removeElement($playerTeam)) {
+            // set the owning side to null (unless already changed)
+            if ($playerTeam->getTeam() === $this) {
+                $playerTeam->setTeam(null);
+            }
+        }
 
         return $this;
     }
-
-
-
 
 }

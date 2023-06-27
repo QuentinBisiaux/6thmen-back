@@ -16,17 +16,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180, unique: true)]
+    #[ORM\Column(length: 180, unique: true, nullable: true)]
     private ?string $username = null;
+
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
+    private ?string $email = null;
 
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\Column(unique: true, nullable: true)]
+    private ?string $twitterId = null;
 
     public function getId(): ?int
     {
@@ -41,6 +44,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(string $username): self
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
 
         return $this;
     }
@@ -85,6 +100,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getTwitterId(): ?string
+    {
+        return $this->twitterId;
+    }
+
+    public function setTwitterId(string $twitterId): self
+    {
+        $this->twitterId = $twitterId;
 
         return $this;
     }

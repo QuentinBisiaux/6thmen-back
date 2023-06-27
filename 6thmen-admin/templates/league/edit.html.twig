@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit League{% endblock %}
+
+{% block body %}
+    <h1 class="font-extrabold text-2xl my-4">Edit League</h1>
+    <a class="text-zinc-400 underline" href="{{ path('app_league_index') }}">Back to list</a>
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        {{ include('league/_form.html.twig', {'button_label': 'Update'}) }}
+        {{ include('league/_delete_form.html.twig') }}
+    </div>
+
+{% endblock %}

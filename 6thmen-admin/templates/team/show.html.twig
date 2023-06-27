@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Team{% endblock %}
+
+{% block body %}
+    <h1>Team</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ team.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ team.name }}</td>
+            </tr>
+            <tr>
+                <th>Tricode</th>
+                <td>{{ team.tricode }}</td>
+            </tr>
+            <tr>
+                <th>Slug</th>
+                <td>{{ team.slug }}</td>
+            </tr>
+            <tr>
+                <th>Sister</th>
+                <td>{{ team.sister }}</td>
+            </tr>
+            <tr>
+                <th>CreatedIn</th>
+                <td>{{ team.createdIn ? team.createdIn|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>EndedIn</th>
+                <td>{{ team.endedIn ? team.endedIn|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ team.createdAt ? team.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>UpdatedAt</th>
+                <td>{{ team.updatedAt ? team.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_team_index') }}">back to list</a>
+
+    <a href="{{ path('app_team_edit', {'id': team.id}) }}">edit</a>
+
+    {{ include('team/_delete_form.html.twig') }}
+{% endblock %}

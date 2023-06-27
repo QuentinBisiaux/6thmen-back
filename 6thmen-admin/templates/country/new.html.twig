@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Country{% endblock %}
+
+{% block body %}
+    <h1 class="font-extrabold text-2xl my-4">Create new Country</h1>
+    <a class="text-zinc-400 underline" href="{{ path('app_country_index') }}">Back to list</a>
+
+    {{ include('country/_form.html.twig') }}
+
+{% endblock %}

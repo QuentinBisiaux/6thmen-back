@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\Odds;
 use App\Entity\Team;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -40,20 +39,23 @@ class TeamRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-    * @return Team[] Returns an array of Team objects
-    */
-    public function findTeamsByRankWithOdds(): array
+    public function findAllWithLeague(): array
     {
-        $teams = $this->createQueryBuilder('t')
-                    ->orderBy('t.rank', 'DESC')
-                    ->getQuery()
-                    ->getResult()
-            ;
-        foreach ($teams as $team) {
-            $team->setSlug()->setOdds(Odds::ODDS[$team->getRank() - 1]);
-        }
-        return $teams;
+        return $this->createQueryBuilder('team')
+            ->leftJoin('team.league', 'league')
+            ->leftJoin('team.sisterTeam', 'sisterTeam')
+            ->addSelect('league')
+            ->addSelect('sisterTeam')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAllCurentTeams(): array
+    {
+        return $this->createQueryBuilder('team')
+            ->where('team.endedIn IS NULL')
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**
