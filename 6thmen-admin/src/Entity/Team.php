@@ -69,10 +69,14 @@ class Team
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\OneToMany(mappedBy: 'team', targetEntity: Standing::class)]
+    private Collection $standings;
+
     public function __construct()
     {
         $this->playerTeams = new ArrayCollection();
         $this->sisterTeams = new ArrayCollection();
+        $this->standings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -232,6 +236,36 @@ class Team
             // set the owning side to null (unless already changed)
             if ($playerTeam->getTeam() === $this) {
                 $playerTeam->setTeam(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Standing>
+     */
+    public function getStandings(): Collection
+    {
+        return $this->standings;
+    }
+
+    public function addStanding(Standing $standing): static
+    {
+        if (!$this->standings->contains($standing)) {
+            $this->standings->add($standing);
+            $standing->setTeam($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStanding(Standing $standing): static
+    {
+        if ($this->standings->removeElement($standing)) {
+            // set the owning side to null (unless already changed)
+            if ($standing->getTeam() === $this) {
+                $standing->setTeam(null);
             }
         }
 

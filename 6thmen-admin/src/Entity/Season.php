@@ -42,9 +42,13 @@ class Season
     #[ORM\OneToMany(mappedBy: 'season', targetEntity: PlayerTeams::class)]
     private Collection $playerTeams;
 
+    #[ORM\OneToMany(mappedBy: 'Season', targetEntity: Standing::class)]
+    private Collection $standings;
+
     public function __construct()
     {
         $this->playerTeams = new ArrayCollection();
+        $this->standings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -112,6 +116,36 @@ class Season
             // set the owning side to null (unless already changed)
             if ($playerTeam->getSeason() === $this) {
                 $playerTeam->setSeason(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Standing>
+     */
+    public function getStandings(): Collection
+    {
+        return $this->standings;
+    }
+
+    public function addStanding(Standing $standing): static
+    {
+        if (!$this->standings->contains($standing)) {
+            $this->standings->add($standing);
+            $standing->setSeason($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStanding(Standing $standing): static
+    {
+        if ($this->standings->removeElement($standing)) {
+            // set the owning side to null (unless already changed)
+            if ($standing->getSeason() === $this) {
+                $standing->setSeason(null);
             }
         }
 

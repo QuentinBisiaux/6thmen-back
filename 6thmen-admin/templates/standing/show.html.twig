@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Standing{% endblock %}
+
+{% block body %}
+    <h1>Standing</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ standing.id }}</td>
+            </tr>
+            <tr>
+                <th>Victory</th>
+                <td>{{ standing.victory }}</td>
+            </tr>
+            <tr>
+                <th>Loses</th>
+                <td>{{ standing.loses }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_standing_index') }}">back to list</a>
+
+    <a href="{{ path('app_standing_edit', {'id': standing.id}) }}">edit</a>
+
+    {{ include('standing/_delete_form.html.twig') }}
+{% endblock %}

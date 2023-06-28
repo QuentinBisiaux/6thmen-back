@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230627155811 extends AbstractMigration
+final class Version20230628160624 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -24,7 +24,7 @@ final class Version20230627155811 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE league_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE season_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE sport_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE SEQUENCE stat_lottery_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE standing_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE team_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE "user_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE country (id INT NOT NULL, name VARCHAR(255) NOT NULL, alpha2 VARCHAR(2) NOT NULL, alpha3 VARCHAR(3) NOT NULL, code VARCHAR(3) NOT NULL, region VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
@@ -51,8 +51,10 @@ final class Version20230627155811 extends AbstractMigration
         $this->addSql('CREATE TABLE sport (id INT NOT NULL, name VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN sport.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN sport.updated_at IS \'(DC2Type:datetime_immutable)\'');
-        $this->addSql('CREATE TABLE stat_lottery (id INT NOT NULL, result JSON NOT NULL, done_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('COMMENT ON COLUMN stat_lottery.done_at IS \'(DC2Type:datetime_immutable)\'');
+        $this->addSql('CREATE TABLE standing (id INT NOT NULL, league_id INT NOT NULL, season_id INT NOT NULL, team_id INT NOT NULL, victory INT NOT NULL, loses INT NOT NULL, rank INT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_619A8AD858AFC4DE ON standing (league_id)');
+        $this->addSql('CREATE INDEX IDX_619A8AD84EC001D1 ON standing (season_id)');
+        $this->addSql('CREATE INDEX IDX_619A8AD8296CD8AE ON standing (team_id)');
         $this->addSql('CREATE TABLE team (id INT NOT NULL, sister_team_id INT DEFAULT NULL, league_id INT NOT NULL, name VARCHAR(255) NOT NULL, tricode VARCHAR(255) NOT NULL, slug VARCHAR(255) NOT NULL, created_in DATE NOT NULL, ended_in DATE DEFAULT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_C4E0A61F2618F47 ON team (sister_team_id)');
         $this->addSql('CREATE INDEX IDX_C4E0A61F58AFC4DE ON team (league_id)');
@@ -82,8 +84,13 @@ final class Version20230627155811 extends AbstractMigration
         $this->addSql('ALTER TABLE player_teams ADD CONSTRAINT FK_29B0591E4EC001D1 FOREIGN KEY (season_id) REFERENCES season (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE player_teams ADD CONSTRAINT FK_29B0591E99E6F5DF FOREIGN KEY (player_id) REFERENCES player (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE player_teams ADD CONSTRAINT FK_29B0591E296CD8AE FOREIGN KEY (team_id) REFERENCES team (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE standing ADD CONSTRAINT FK_619A8AD858AFC4DE FOREIGN KEY (league_id) REFERENCES league (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE standing ADD CONSTRAINT FK_619A8AD84EC001D1 FOREIGN KEY (season_id) REFERENCES season (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE standing ADD CONSTRAINT FK_619A8AD8296CD8AE FOREIGN KEY (team_id) REFERENCES team (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE standing ADD CONSTRAINT unique_standing UNIQUE (league_id, season_id, team_id, rank)');
         $this->addSql('ALTER TABLE team ADD CONSTRAINT FK_C4E0A61F2618F47 FOREIGN KEY (sister_team_id) REFERENCES team (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE team ADD CONSTRAINT FK_C4E0A61F58AFC4DE FOREIGN KEY (league_id) REFERENCES league (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+
     }
 
     public function down(Schema $schema): void
@@ -94,7 +101,7 @@ final class Version20230627155811 extends AbstractMigration
         $this->addSql('DROP SEQUENCE league_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE season_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE sport_id_seq CASCADE');
-        $this->addSql('DROP SEQUENCE stat_lottery_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE standing_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE team_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE "user_id_seq" CASCADE');
         $this->addSql('ALTER TABLE league DROP CONSTRAINT FK_3EB4C318AC78BCF8');
@@ -102,6 +109,10 @@ final class Version20230627155811 extends AbstractMigration
         $this->addSql('ALTER TABLE player_teams DROP CONSTRAINT FK_29B0591E4EC001D1');
         $this->addSql('ALTER TABLE player_teams DROP CONSTRAINT FK_29B0591E99E6F5DF');
         $this->addSql('ALTER TABLE player_teams DROP CONSTRAINT FK_29B0591E296CD8AE');
+        $this->addSql('ALTER TABLE standing DROP CONSTRAINT FK_619A8AD858AFC4DE');
+        $this->addSql('ALTER TABLE standing DROP CONSTRAINT FK_619A8AD84EC001D1');
+        $this->addSql('ALTER TABLE standing DROP CONSTRAINT FK_619A8AD8296CD8AE');
+        $this->addSql('ALTER TABLE standing DROP CONSTRAINT unique_standing');
         $this->addSql('ALTER TABLE team DROP CONSTRAINT FK_C4E0A61F2618F47');
         $this->addSql('ALTER TABLE team DROP CONSTRAINT FK_C4E0A61F58AFC4DE');
         $this->addSql('DROP TABLE country');
@@ -110,7 +121,7 @@ final class Version20230627155811 extends AbstractMigration
         $this->addSql('DROP TABLE player_teams');
         $this->addSql('DROP TABLE season');
         $this->addSql('DROP TABLE sport');
-        $this->addSql('DROP TABLE stat_lottery');
+        $this->addSql('DROP TABLE standing');
         $this->addSql('DROP TABLE team');
         $this->addSql('DROP TABLE "user"');
         $this->addSql('DROP TABLE messenger_messages');

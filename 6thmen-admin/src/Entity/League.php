@@ -42,9 +42,13 @@ class League
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\OneToMany(mappedBy: 'League', targetEntity: Standing::class, orphanRemoval: true)]
+    private Collection $standings;
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
+        $this->standings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -126,6 +130,36 @@ class League
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Standing>
+     */
+    public function getStandings(): Collection
+    {
+        return $this->standings;
+    }
+
+    public function addStanding(Standing $standing): static
+    {
+        if (!$this->standings->contains($standing)) {
+            $this->standings->add($standing);
+            $standing->setLeague($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStanding(Standing $standing): static
+    {
+        if ($this->standings->removeElement($standing)) {
+            // set the owning side to null (unless already changed)
+            if ($standing->getLeague() === $this) {
+                $standing->setLeague(null);
+            }
+        }
 
         return $this;
     }
