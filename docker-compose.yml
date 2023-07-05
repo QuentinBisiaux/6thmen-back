@@ -8,26 +8,21 @@ services:
     ports:
       - "802:80"
     volumes:
-      - ./6thmen-admin:/var/www:ro,cached
+      - ./.:/var/www:ro,cached
       - ./docker/admin/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
-      - 6thmen-admin
-    networks:
-      - 6thmen-admin
+      - 6thmen
 
-  6thmen-admin:
-    build: ./6thmen-admin
+  6thmen:
+    build: .
     container_name: 6thmen-admin-php
     user: rayuruna:rayuruna
     restart: always
     volumes:
-      - ./6thmen-admin:/var/www
+      - ./.:/var/www
       - ./docker/php.ini:/usr/local/etc/php/php.ini
       - ./docker/www.conf:/usr/local/etc/php-fpm.d/www.conf
     depends_on:
-      - 6thmen-db
-    networks:
-      - 6thmen-admin
       - 6thmen-db
 
   nginx-api:
@@ -37,31 +32,15 @@ services:
     ports:
       - "803:80"
     volumes:
-      - ./6thmen-api:/var/www:ro,cached
+      - ./.:/var/www:ro,cached
       - ./docker/api/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
-      - 6thmen-api
-    networks:
-      - 6thmen-api
-
-  6thmen-api:
-    build: ./6thmen-api
-    container_name: 6thmen-api-php
-    user: rayuruna:rayuruna
-    restart: always
-    volumes:
-      - ./6thmen-api:/var/www
-      - ./docker/php.ini:/usr/local/etc/php/php.ini
-      - ./docker/www.conf:/usr/local/etc/php-fpm.d/www.conf
-    depends_on:
-      - 6thmen-db
-    networks:
-      - 6thmen-api
-      - 6thmen-db
+      - 6thmen
 
   6thmen-db:
     image: postgres:${POSTGRES_VERSION}-alpine
     container_name: 6thmen-db
+    restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -70,27 +49,14 @@ services:
       - "5432:5432"
     volumes:
       - ~/Développement/6thmen-back/docker/data:/var/lib/postgresql/data:rw
-    networks:
-      - 6thmen-db
 
   adminer:
     image: adminer
     container_name: 6thmen-adminer
     environment:
       ADMINER_DESIGN: konya
-      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DEFAULT_SERVER: 6thmen-db
     ports:
       - "8080:8080"
     depends_on:
       - 6thmen-db
-    networks:
-      - 6thmen-db
-
-networks:
-  6thmen-admin:
-    name: 6thmen-admin
-  6thmen-api:
-    name: 6thmen-api
-  6thmen-db:
-    name: 6thmen-db
-    driver: bridge
