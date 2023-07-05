@@ -5,7 +5,7 @@
 /config/secrets/prod/prod.decrypt.private.php
 /docker/data/
 /public/bundles/
-/var/*
+/var/
 /vendor/
 /phpunit.xml
 .phpunit.result.cache
