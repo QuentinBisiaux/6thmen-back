@@ -8,8 +8,8 @@ services:
     container_name: 6thmen-admin-nginx
     restart: always
     volumes:
-      - ./6thmen-admin:/var/www:ro,cached
-      - ./docker/admin/default.conf:/etc/nginx/conf.d/default.conf
+      - .:/var/www:ro,cached
+      - ./docker/prod/default.conf:/etc/nginx/conf.d/default.conf
     networks:
       - proxy_web
     depends_on:

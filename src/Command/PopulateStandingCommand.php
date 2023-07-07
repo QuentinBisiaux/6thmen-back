@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Library\Standing;
+use App\Entity\Library\StandingDraft;
 use App\Repository\Library\LeagueRepository;
 use App\Repository\Library\SeasonRepository;
 use App\Repository\Library\TeamRepository;
@@ -14,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'populate:standings',
+    name: 'populate:standing-draft',
     description: 'Add a short description for your command',
 )]
 class PopulateStandingsCommand extends Command
@@ -41,7 +42,7 @@ class PopulateStandingsCommand extends Command
             'rank'      => 27
         ],
         [
-            'name'      => 'Portland Trail Blazers',
+            'name'      => 'Portland Trailblazers',
             'victory'   => 33,
             'rank'      => 26
         ],
@@ -90,6 +91,41 @@ class PopulateStandingsCommand extends Command
             'victory'   => 42,
             'rank'      => 17
         ],
+        [
+            'name'      => 'Atlanta Hawks',
+            'victory'   => 41,
+            'rank'      => 16
+        ],
+        [
+            'name'      => 'Minnesota Timberwolves',
+            'victory'   => 42,
+            'rank'      => 15
+        ],
+        [
+            'name'      => 'Los Angeles Lakers',
+            'victory'   => 43,
+            'rank'      => 14
+        ],
+        [
+            'name'      => 'Golden State Warriors',
+            'victory'   => 44,
+            'rank'      => 13
+        ],
+        [
+            'name'      => 'Los Angeles Clippers',
+            'victory'   => 44,
+            'rank'      => 12
+        ],
+        [
+            'name'      => 'Miami Heat',
+            'victory'   => 44,
+            'rank'      => 11
+        ],
+        [
+            'name'      => 'Brooklyn Nets',
+            'victory'   => 45,
+            'rank'      => 10
+        ],
 
     ];
 
@@ -110,7 +146,7 @@ class PopulateStandingsCommand extends Command
         $league = $this->leagueRepository->findOneBy(['name' => 'NBA']);
         foreach ($this->teams as $rawStanding) {
             $team = $this->teamRepository->findOneBy(['name' => $rawStanding['name'], 'endedIn' => null]);
-            $existingStanding = $this->manager->getRepository(Standing::class)->findOneBy([
+            $existingStanding = $this->manager->getRepository(StandingDraft::class)->findOneBy([
                 'league' => $league,
                 'season' => $season,
                 'team' => $team,
@@ -120,7 +156,7 @@ class PopulateStandingsCommand extends Command
                 continue;
             }
 
-            $standing = new Standing();
+            $standing = new StandingDraft();
             $standing
                 ->setSeason($season)
                 ->setLeague($league)
@@ -128,6 +164,7 @@ class PopulateStandingsCommand extends Command
                 ->setRank($rawStanding['rank'])
                 ->setVictory($rawStanding['victory'])
                 ->setLoses(82 - $rawStanding['victory'])
+                ->setOdds()
                 ->setCreatedAt(new \DateTimeImmutable());
             $this->manager->persist($standing);
             $io->success('will Insert ' . $season->getYear() . ' - ' . $league->getName() . ' ' . $team->getName() );
