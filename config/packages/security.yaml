@@ -7,22 +7,31 @@ security:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
-                class: App\Entity\Admin\User
+                class: App\Entity\Library\User
                 property: username
+    enable_authenticator_manager: true
     firewalls:
         admin:
-            pattern: ^/
-            host: admin.6thmen.com
+            host: '%env(resolve:HOST_ADMIN)%'
             lazy: true
             provider: app_user_provider
             form_login:
-                login_path: app_login
-                check_path: app_login
+                login_path: admin_login
+                check_path: admin_login
             logout:
                 path: app_logout
+            access_denied_handler: App\Security\Admin\AdminAccessDeniedHandler
+        api_login:
+            host: '%env(resolve:HOST_API)%'
+            stateless: true
+            json_login:
+                check_path: /login_check
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
         api:
-            pattern: ^/
-            host: api.6thmen.com
+            host: '%env(resolve:HOST_API)%'
+            stateless: true
+            jwt: ~
             # Add any additional security configurations specific to the API firewall
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -37,8 +46,13 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/, host: 'admin.6thmen.com', roles: ROLE_ADMIN }
-        - { path: ^/, host: 'api.6thmen.com', roles: ROLE_API }
+        - { path: ^/login, roles: PUBLIC_ACCESS, host: '%env(resolve:HOST_ADMIN)%', port: 802 }
+        - { path: ^/, roles: ROLE_ADMIN, host: '%env(resolve:HOST_ADMIN)%', port: 802 }
+        - { path: ^/login, roles: PUBLIC_ACCESS, host: '%env(resolve:HOST_API)%', port: 803 }
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY, host: '%env(resolve:HOST_API)%', port: 803 }
+    role_hierarchy:
+        ROLE_ADMIN: IS_AUTHENTICATED_FULLY
+        IS_AUTHENTICATED_FULLY: PUBLIC_ACCESS
 
 when@test:
     security:

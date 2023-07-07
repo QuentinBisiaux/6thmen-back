@@ -19,7 +19,6 @@ class LotteryController extends AbstractController
         foreach ($standingsDraft as $standingDraft) {
             $standingDraft->setOdds(Odds::ODDS[$standingDraft->getRank() - 1]);
         }
-        //dd($standingsDraft);
         return $this->json($standingsDraft, 200, [], ['groups' => 'read:pre-lottery']);
     }
 

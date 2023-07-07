@@ -12,7 +12,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/standing')]
-#[IsGranted('ROLE_ADMIN')]
 class StandingController extends AbstractController
 {
     #[Route('/', name: 'app_standing_index', methods: ['GET'])]

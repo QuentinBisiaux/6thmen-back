@@ -6,33 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="9dd8fad2-70ee-482b-b0e0-4f2ca7831aab" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/6thmen-back.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/6thmen-back.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/phpspec.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/phpspec.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.prod.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/CreatePlayerTeamCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/CreatePlayerTeamCommand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/CreateTeamCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/CreateTeamCommand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/PopulateStandingsCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/PopulateStandingCommand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/TestDraftCommand.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/LoginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/LoginController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/StandingController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/StandingController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Api/LotteryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/LotteryController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Api/PlayerController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/PlayerController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Api/TeamController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/TeamController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DataFixtures/TeamFixture.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Api/Combination.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Api/Combination.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Api/Lottery.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Api/Lottery.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Library/Country.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/Country.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Library/Player.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/Player.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Library/PlayerTeam.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/PlayerTeam.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Library/Season.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/Season.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Library/Standing.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/Standing.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Library/Team.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/Team.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/Library/StandingRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/Library/StandingRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/.idea/sqldialects.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/Lottery.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/Lottery.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/TeamRow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/TeamRow.vue" afterDir="false" />
@@ -447,7 +426,7 @@
       <workItem from="1688546424649" duration="16448000" />
       <workItem from="1688576381695" duration="4901000" />
       <workItem from="1688637139242" duration="4802000" />
-      <workItem from="1688733586460" duration="43000" />
+      <workItem from="1688733586460" duration="5450000" />
     </task>
     <servers />
   </component>
