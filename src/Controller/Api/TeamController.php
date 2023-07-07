@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Library\Team;
 use App\Repository\Library\TeamRepository;
+use phpDocumentor\Reflection\Types\Collection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,8 +39,19 @@ class TeamController extends AbstractController
     #[Route('/{slug}/players', name: 'api_team_players', methods: ['GET'])]
     public function allPlayersFromTeam(Team $team): JsonResponse
     {
-        return $this->json($team->getPlayerTeams());
-    }
+        $playerTeams = $team->getPlayerTeams();
+        $data = [];
+        $data['team'] = $team;
+        $data['players'] = [];
+        dump($playerTeams);
+        foreach ($playerTeams as $playerTeam) {
+            if (!in_array($playerTeam->getPlayer(), $data['players'])) {
+                $data['players'][$playerTeam->getPlayer()->getId()] = $playerTeam->getPlayer();
+            }
+        }
 
+        dd($data);
+        return $this->json($team->getPlayerTeams(), 200, [], ['groups' => 'read:player']);
+    }
 
 }

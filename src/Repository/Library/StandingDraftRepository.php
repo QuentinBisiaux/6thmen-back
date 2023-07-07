@@ -15,7 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Standing[]    findAll()
  * @method Standing[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class StandingRepository extends ServiceEntityRepository
+class StandingDraftRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -38,6 +38,11 @@ class StandingRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findByYearToPreLottery(Season $season): array
+    {
+        return $this->findBy(['season' => $season], ['rank' => 'DESC']);
     }
 
 //    /**

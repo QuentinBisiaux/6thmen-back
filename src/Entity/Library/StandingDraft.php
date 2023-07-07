@@ -5,10 +5,11 @@ namespace App\Entity\Library;
 use App\Repository\Library\StandingRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: StandingRepository::class)]
 #[UniqueEntity(fields: ['league', 'season', 'team', 'rank'])]
-class Standing
+class StandingDraft
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -24,16 +25,28 @@ class Standing
     private ?Season $season = null;
 
     #[ORM\Column]
+    #[Groups([
+        'read:pre-lottery'
+    ])]
     private ?int $victory = null;
 
     #[ORM\Column]
+    #[Groups([
+        'read:pre-lottery'
+    ])]
     private ?int $loses = null;
 
     #[ORM\Column]
+    #[Groups([
+        'read:pre-lottery'
+    ])]
     private ?int $rank = null;
 
     #[ORM\ManyToOne(inversedBy: 'standings')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups([
+        'read:pre-lottery'
+    ])]
     private ?Team $team = null;
 
     #[ORM\Column]
@@ -41,6 +54,12 @@ class Standing
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\Column]
+    #[Groups([
+        'read:pre-lottery'
+    ])]
+    private float $odds;
 
     public function getId(): ?int
     {
@@ -139,6 +158,18 @@ class Standing
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getOdds(): ?float
+    {
+        return $this->odds;
+    }
+
+    public function setOdds(float $odds): static
+    {
+        $this->odds = $odds;
 
         return $this;
     }

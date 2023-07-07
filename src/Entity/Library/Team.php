@@ -17,11 +17,14 @@ class Team
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups([
+        'read:team'
+    ])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Groups([
-        'read:pre-lottery', 'read:team'
+        'read:pre-lottery', 'read:team', 'read:player'
     ])]
     private ?string $name = null;
 

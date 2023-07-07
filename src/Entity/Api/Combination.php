@@ -2,8 +2,7 @@
 
 namespace App\Entity\Api;
 
-use App\Entity\Library\Standing;
-use App\Entity\Library\Team;
+use App\Entity\Library\StandingDraft;
 use Doctrine\Common\Collections\Collection;
 
 class Combination
@@ -67,7 +66,7 @@ class Combination
         }
     }
 
-    public function draw(): Standing
+    public function draw(): StandingDraft
     {
         $key = '';
         while(!array_key_exists($key, $this->combinationsTeam)) {

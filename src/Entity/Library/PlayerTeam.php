@@ -16,25 +16,41 @@ class PlayerTeam
 
     #[ORM\ManyToOne(inversedBy: 'playerTeams')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups([
+        'read:player',
+    ])]
     private ?Season $season = null;
 
-    #[Groups(['team_player'])]
     #[ORM\ManyToOne(inversedBy: 'playerTeams')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups([
+        'read:player',
+    ])]
     private ?Player $player = null;
 
-    #[Groups(['player_team'])]
     #[ORM\ManyToOne(inversedBy: 'playerTeams')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups([
+        'read:player',
+    ])]
     private ?Team $team = null;
 
+    #[Groups([
+        'read:player',
+    ])]
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $position = null;
 
+    #[Groups([
+        'read:player',
+    ])]
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $jerseyNumber = null;
 
     #[ORM\Column]
+    #[Groups([
+        'read:player',
+    ])]
     private ?bool $rookieYear = null;
 
     #[ORM\Column]

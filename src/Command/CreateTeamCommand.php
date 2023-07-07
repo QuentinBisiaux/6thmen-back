@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[AsCommand(
-    name: 'create:team1',
+    name: 'create:team',
     description: 'Add a short description for your command',
 )]
 class CreateTeamCommand extends Command

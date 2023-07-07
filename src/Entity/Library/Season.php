@@ -13,17 +13,20 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 #[ORM\Entity(repositoryClass: SeasonRepository::class)]
 class Season
 {
-    #[Groups(['season'])]
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['season'])]
+
     #[ORM\Column(length: 10)]
+    #[Groups([
+        'read:player',
+    ])]
     private ?string $year = null;
 
-    #[Groups(['season'])]
+
     #[ORM\Column]
     #[Context(
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
@@ -31,7 +34,6 @@ class Season
     )]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[Groups(['season'])]
     #[ORM\Column(nullable: true)]
     #[Context(
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
@@ -42,14 +44,17 @@ class Season
     #[ORM\OneToMany(mappedBy: 'season', targetEntity: PlayerTeam::class)]
     private Collection $playerTeams;
 
-    #[Groups(['season'])]
     #[ORM\OneToMany(mappedBy: 'season', targetEntity: Standing::class)]
     private Collection $standings;
+
+    #[ORM\OneToMany(mappedBy: 'season', targetEntity: StandingDraft::class)]
+    private Collection $standingsDraft;
 
     public function __construct()
     {
         $this->playerTeams = new ArrayCollection();
         $this->standings = new ArrayCollection();
+        $this->standingsDraft = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -147,6 +152,36 @@ class Season
             // set the owning side to null (unless already changed)
             if ($standing->getSeason() === $this) {
                 $standing->setSeason(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, StandingDraft>
+     */
+    public function getStandingDrafts(): Collection
+    {
+        return $this->standingsDraft;
+    }
+
+    public function addStandingDraft(StandingDraft $standingDraft): static
+    {
+        if (!$this->standingsDraft->contains($standingDraft)) {
+            $this->standingsDraft->add($standingDraft);
+            $standingDraft->setSeason($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStandingDraft(StandingDraft $standingDraft): static
+    {
+        if ($this->standingsDraft->removeElement($standingDraft)) {
+            // set the owning side to null (unless already changed)
+            if ($standingDraft->getSeason() === $this) {
+                $standingDraft->setSeason(null);
             }
         }
 

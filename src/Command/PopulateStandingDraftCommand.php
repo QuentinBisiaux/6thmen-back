@@ -2,7 +2,8 @@
 
 namespace App\Command;
 
-use App\Entity\Library\Standing;
+use App\Entity\Api\Odds;
+use App\Entity\Library\StandingDraft;
 use App\Repository\Library\LeagueRepository;
 use App\Repository\Library\SeasonRepository;
 use App\Repository\Library\TeamRepository;
@@ -12,26 +13,27 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use function Symfony\Component\String\s;
 
 #[AsCommand(
-    name: 'populate:standing:full',
-    description: 'Add a short description for your command',
+    name: 'populate:standing:draft',
+    description: 'Generate standing for draft lottery',
 )]
-class PopulateStandingCommand extends Command
+class PopulateStandingDraftCommand extends Command
 {
-    private array $teams = [
+    private array $draftTeams = [
         [
             'name'      => 'Detroit Pistons',
             'victory'   => 17,
             'rank'      => 30
         ],
         [
-            'name'      => 'San Antonio Spurs',
+            'name'      => 'Houston Rockets',
             'victory'   => 22,
             'rank'      => 29
         ],
         [
-            'name'      => 'Houston Rockets',
+            'name'      => 'San Antonio Spurs',
             'victory'   => 22,
             'rank'      => 28
         ],
@@ -71,12 +73,12 @@ class PopulateStandingCommand extends Command
             'rank'      => 21
         ],
         [
-            'name'      => 'Oklahoma City Thunder',
+            'name'      => 'Chicago Bulls',
             'victory'   => 40,
             'rank'      => 20
         ],
         [
-            'name'      => 'Chicago Bulls',
+            'name'      => 'Oklahoma City Thunder',
             'victory'   => 40,
             'rank'      => 19
         ],
@@ -86,91 +88,10 @@ class PopulateStandingCommand extends Command
             'rank'      => 18
         ],
         [
-            'name'      => 'Atlanta Hawks',
-            'victory'   => 41,
-            'rank'      => 16
-        ],
-        [
             'name'      => 'New Orleans Pelicans',
             'victory'   => 42,
             'rank'      => 17
-        ],
-        [
-            'name'      => 'Minnesota Timberwolves',
-            'victory'   => 42,
-            'rank'      => 15
-        ],
-        [
-            'name'      => 'Los Angeles Lakers',
-            'victory'   => 43,
-            'rank'      => 14
-        ],
-        [
-            'name'      => 'Golden State Warriors',
-            'victory'   => 44,
-            'rank'      => 13
-        ],
-        [
-            'name'      => 'Los Angeles Clippers',
-            'victory'   => 44,
-            'rank'      => 12
-        ],
-        [
-            'name'      => 'Miami Heat',
-            'victory'   => 44,
-            'rank'      => 11
-        ],
-        [
-            'name'      => 'Brooklyn Nets',
-            'victory'   => 45,
-            'rank'      => 10
-        ],
-        [
-            'name'      => 'Phoenix Suns',
-            'victory'   => 45,
-            'rank'      => 9
-        ],
-        [
-            'name'      => 'New York Knicks',
-            'victory'   => 47,
-            'rank'      => 8
-        ],
-        [
-            'name'      => 'Sacramento Kings',
-            'victory'   => 48,
-            'rank'      => 7
-        ],
-        [
-            'name'      => 'Cleveland Cavaliers',
-            'victory'   => 48,
-            'rank'      => 6
-        ],
-        [
-            'name'      => 'Memphis Grizzlies',
-            'victory'   => 51,
-            'rank'      => 5
-        ],
-        [
-            'name'      => 'Denver Nuggets',
-            'victory'   => 53,
-            'rank'      => 4
-        ],
-        [
-            'name'      => 'Philadelphia 76ers',
-            'victory'   => 54,
-            'rank'      => 3
-        ],
-        [
-            'name'      => 'Boston Celtics',
-            'victory'   => 57,
-            'rank'      => 2
-        ],
-        [
-            'name'      => 'Milwaukee Bucks',
-            'victory'   => 58,
-            'rank'      => 1
         ]
-
     ];
 
     public function __construct(
@@ -188,9 +109,9 @@ class PopulateStandingCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $season = $this->seasonRepository->findOneBy(['year' => '2022-23']);
         $league = $this->leagueRepository->findOneBy(['name' => 'NBA']);
-        foreach ($this->teams as $rawStanding) {
+        foreach ($this->draftTeams as $rawStanding) {
             $team = $this->teamRepository->findOneBy(['name' => $rawStanding['name'], 'endedIn' => null]);
-            $existingStanding = $this->manager->getRepository(Standing::class)->findOneBy([
+            $existingStanding = $this->manager->getRepository(StandingDraft::class)->findOneBy([
                 'league' => $league,
                 'season' => $season,
                 'team' => $team,
@@ -200,7 +121,7 @@ class PopulateStandingCommand extends Command
                 continue;
             }
 
-            $standing = new Standing();
+            $standing = new StandingDraft();
             $standing
                 ->setSeason($season)
                 ->setLeague($league)
@@ -208,8 +129,12 @@ class PopulateStandingCommand extends Command
                 ->setRank($rawStanding['rank'])
                 ->setVictory($rawStanding['victory'])
                 ->setLoses(82 - $rawStanding['victory'])
+                ->setOdds(Odds::ODDS[$rawStanding['rank'] - 1])
                 ->setCreatedAt(new \DateTimeImmutable());
             $this->manager->persist($standing);
+            dump($team);
+            dump($season);
+            dump($league);
             $io->success('will Insert ' . $season->getYear() . ' - ' . $league->getName() . ' ' . $team->getName() );
         }
         $this->manager->flush();

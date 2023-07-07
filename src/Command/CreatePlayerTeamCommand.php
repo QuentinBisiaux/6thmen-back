@@ -17,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 #[AsCommand(
-    name: 'create:player-team',
+    name: 'create:player:team',
     description: 'Add a short description for your command',
 )]
 class CreatePlayerTeamCommand extends Command

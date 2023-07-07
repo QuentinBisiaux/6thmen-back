@@ -13,33 +13,32 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 #[ORM\Entity(repositoryClass: CountryRepository::class)]
 class Country
 {
-    #[Groups(['country'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['country'])]
     #[ORM\Column(length: 255)]
+    #[Groups([
+        'read:player',
+    ])]
     private ?string $name = null;
 
-    #[Groups(['country'])]
     #[ORM\Column(length: 2)]
     private ?string $alpha2 = null;
 
-    #[Groups(['country'])]
     #[ORM\Column(length: 3)]
+    #[Groups([
+        'read:player',
+    ])]
     private ?string $alpha3 = null;
 
-    #[Groups(['country'])]
     #[ORM\Column(length: 3)]
     private ?string $code = null;
 
-    #[Groups(['country'])]
     #[ORM\Column(length: 255)]
     private ?string $region = null;
 
-    #[Groups(['country'])]
     #[ORM\Column]
     #[Context(
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
@@ -47,7 +46,6 @@ class Country
     )]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[Groups(['country'])]
     #[ORM\Column(nullable: true)]
     #[Context(
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],

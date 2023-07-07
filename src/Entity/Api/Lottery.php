@@ -3,10 +3,7 @@
 namespace App\Entity\Api;
 
 
-use App\Entity\Library\Standing;
-use App\Repository\Library\StandingRepository;
-use App\Entity\Library\Season;
-use App\Entity\Library\Team;
+use App\Entity\Library\StandingDraft;
 use Doctrine\Common\Collections\Collection;
 
 class Lottery
@@ -50,7 +47,7 @@ class Lottery
         }
     }
 
-    private function isAlreadyDrawn(Standing $team): bool
+    private function isAlreadyDrawn(StandingDraft $team): bool
     {
         foreach ($this->results as $drawnTeam) {
             if($drawnTeam->getId() === $team->getId()) {
