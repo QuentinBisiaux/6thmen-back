@@ -7,7 +7,7 @@ use Defuse\Crypto\Key;
 
 class EncryptionService
 {
-    private $encryptionKey;
+    private Key $encryptionKey;
 
     public function __construct(string $encryptionKey)
     {
