@@ -24,18 +24,21 @@ class Team
 
     #[ORM\Column(length: 255)]
     #[Groups([
-        'read:pre-lottery', 'read:team', 'read:player'
+        'read:lottery',
+        'read:team',
+        'read:player'
     ])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
     #[Groups([
-        'read:pre-lottery'
+        'read:lottery'
     ])]
     private ?string $tricode = null;
 
     #[Groups([
-        'read:pre-lottery'
+        'read:lottery',
+        'read:team'
     ])]
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
@@ -50,6 +53,9 @@ class Team
     #[ORM\ManyToOne(inversedBy: 'teams')]
     #[ORM\JoinColumn(nullable: false)]
     private ?League $league = null;
+
+    #[ORM\OneToMany(mappedBy: 'favoriteTeam', targetEntity: UserProfile::class)]
+    private ?Collection $users = null;
     
     #[Context(
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'Y'],
@@ -87,9 +93,10 @@ class Team
 
     public function __construct()
     {
-        $this->playerTeams = new ArrayCollection();
-        $this->sisterTeams = new ArrayCollection();
-        $this->standings = new ArrayCollection();
+        $this->playerTeams  = new ArrayCollection();
+        $this->sisterTeams  = new ArrayCollection();
+        $this->users        = new ArrayCollection();
+        $this->standings    = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -167,6 +174,30 @@ class Team
         return $this;
     }
 
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUsers(UserProfile $userProfile): self
+    {
+        if($this->users->contains($userProfile)) {
+            $this->users[] = $userProfile;
+            $userProfile->setFavoriteTeam($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(UserProfile $userProfile): self
+    {
+        if ($this->users->removeElement($userProfile)) {
+            $userProfile->setFavoriteTeam(null);
+        }
+
+        return $this;
+    }
+
     public function getSisterTeam(): ?Team
     {
         return $this->sisterTeam;
@@ -199,7 +230,6 @@ class Team
             $sisterTeam->setSisterTeam(null);
         }
     }
-
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {

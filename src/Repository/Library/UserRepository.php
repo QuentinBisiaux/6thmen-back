@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository\Api;
+namespace App\Repository\Library;
 
-use App\Entity\Api\User;
+use App\Entity\Library\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -56,6 +56,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->save($user, true);
     }
 
+    public function findOneByUsername(string $username): ?User
+    {
+        return $this->findOneBy(['username' => $username]);
+    }
+
+    public function findOneByEmail(string $email): ?User
+    {
+        return $this->findOneBy(['email' => $email]);
+    }
+
+    public function findOneByTwitterId(string $twitterId): ?User
+    {
+        return $this->findOneBy(['twitterId' => $twitterId]);
+    }
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

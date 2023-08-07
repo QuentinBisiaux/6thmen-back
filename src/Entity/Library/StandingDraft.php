@@ -26,26 +26,26 @@ class StandingDraft
 
     #[ORM\Column]
     #[Groups([
-        'read:pre-lottery'
+        'read:lottery'
     ])]
     private ?int $victory = null;
 
     #[ORM\Column]
     #[Groups([
-        'read:pre-lottery'
+        'read:lottery'
     ])]
     private ?int $loses = null;
 
     #[ORM\Column]
     #[Groups([
-        'read:pre-lottery'
+        'read:lottery'
     ])]
     private ?int $rank = null;
 
     #[ORM\ManyToOne(inversedBy: 'standings')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups([
-        'read:pre-lottery'
+        'read:lottery'
     ])]
     private ?Team $team = null;
 
@@ -57,7 +57,7 @@ class StandingDraft
 
     #[ORM\Column]
     #[Groups([
-        'read:pre-lottery'
+        'read:lottery'
     ])]
     private float $odds;
 

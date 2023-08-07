@@ -50,7 +50,6 @@ class TeamController extends AbstractController
             }
         }
 
-        dd($data);
         return $this->json($team->getPlayerTeams(), 200, [], ['groups' => 'read:player']);
     }
 

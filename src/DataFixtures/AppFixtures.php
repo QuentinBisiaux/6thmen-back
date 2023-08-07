@@ -46,7 +46,7 @@ class AppFixtures extends Fixture
             $newCountry->setCreatedAt(new \DateTimeImmutable());
             $manager->persist($newCountry);
         }
-        for ($startingYear = 1900; $startingYear <= 2150; $startingYear++) {
+        for ($startingYear = 1850; $startingYear <= 2150; $startingYear++) {
             $season = new Season();
             $season->setYear($startingYear);
             $season->setCreatedAt(new \DateTimeImmutable());

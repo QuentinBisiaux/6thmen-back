@@ -5,16 +5,38 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9dd8fad2-70ee-482b-b0e0-4f2ca7831aab" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/6thmen-back.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/6thmen-back.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/phpspec.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/phpspec.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/framework.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/framework.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/LoginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/LoginController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/StandingController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/StandingController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/services.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/api/default.conf" beforeDir="false" afterPath="$PROJECT_DIR$/docker/api/default.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20230628160624.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20230628170905.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20230705161343.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20230705193917.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Api/LotteryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/LotteryController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Api/SecurityController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/SecurityController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Api/TeamController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/TeamController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DataFixtures/UserFixture.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/UserFixture.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Library/StandingDraft.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/StandingDraft.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Library/Team.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/Team.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Library/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/Admin/UserRepository.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/Api/UserRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/Library/UserRepository.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/.idea/sqldialects.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/App.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/Lottery.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/Lottery.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/TeamRow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/TeamRow.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/navbar/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/navbar/Navbar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/security/Signup.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/security/Signup.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/store/userStore.js" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/store/userStore.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,9 +48,16 @@
       <option value="$PROJECT_DIR$/6thmen-admin/composer.json" />
     </option>
   </component>
-  <component name="ComposerSettings">
+  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Vue Composition API Component" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -334,6 +363,7 @@
       <path value="$PROJECT_DIR$/vendor/lcobucci/jwt" />
       <path value="$PROJECT_DIR$/vendor/lexik/jwt-authentication-bundle" />
       <path value="$PROJECT_DIR$/vendor/namshi/jose" />
+      <path value="$PROJECT_DIR$/vendor/abraham/twitteroauth" />
     </include_path>
   </component>
   <component name="ProjectId" id="2S3lJOZOGpkp9YZJiyJvQj0Fum4" />
@@ -353,9 +383,14 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsDialog.application.dockerMachine&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/snap/phpstorm/341/plugins/javascript-impl/jsLanguageServicesImpl/external&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/snap/phpstorm/345/plugins/javascript-impl/jsLanguageServicesImpl/external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;vue.recent.templates&quot;: [
+      &quot;Vue Composition API Component&quot;
+    ]
   }
 }</component>
   <component name="RecentsManager">
@@ -426,7 +461,24 @@
       <workItem from="1688546424649" duration="16448000" />
       <workItem from="1688576381695" duration="4901000" />
       <workItem from="1688637139242" duration="4802000" />
-      <workItem from="1688733586460" duration="5450000" />
+      <workItem from="1688733586460" duration="8721000" />
+      <workItem from="1688986311098" duration="3595000" />
+      <workItem from="1689008268359" duration="837000" />
+      <workItem from="1689085655906" duration="2476000" />
+      <workItem from="1689148845850" duration="435000" />
+      <workItem from="1689163438804" duration="1497000" />
+      <workItem from="1689172085233" duration="1678000" />
+      <workItem from="1689174973022" duration="809000" />
+      <workItem from="1689247477074" duration="4367000" />
+      <workItem from="1689261232747" duration="2501000" />
+      <workItem from="1689778842049" duration="13337000" />
+      <workItem from="1689945305475" duration="7660000" />
+      <workItem from="1689953598016" duration="2101000" />
+      <workItem from="1691412493487" duration="135000" />
+      <workItem from="1691412634844" duration="7000" />
+      <workItem from="1691412943897" duration="44000" />
+      <workItem from="1691412998852" duration="24000" />
+      <workItem from="1691413368930" duration="404000" />
     </task>
     <servers />
   </component>

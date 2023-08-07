@@ -8,18 +8,20 @@ use App\Entity\Library\Season;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/lottery')]
 class LotteryController extends AbstractController
 {
     #[Route('/{year}', name: 'app_lottery', requirements: ['year' => '\d{4}-\d{2}'], methods: ['GET'])]
+    #[IsGranted('PUBLIC_ACCESS')]
     public function index(Season $season): JsonResponse
     {
         $standingsDraft = $season->getStandingDrafts();
         foreach ($standingsDraft as $standingDraft) {
             $standingDraft->setOdds(Odds::ODDS[$standingDraft->getRank() - 1]);
         }
-        return $this->json($standingsDraft, 200, [], ['groups' => 'read:pre-lottery']);
+        return $this->json($standingsDraft, 200, [], ['groups' => 'read:lottery']);
     }
 
     #[Route('/{year}/launch', name: 'app_lottery_launch', requirements: ['year' => '\d{4}-\d{2}'], methods: ['POST'])]
@@ -32,6 +34,6 @@ class LotteryController extends AbstractController
         $lottery = new Lottery($standingsDraft);
         $results = $lottery->getResults();
 
-        return $this->json($results, 200, [], ['groups' => 'read:pre-lottery']);
+        return $this->json($results, 200, [], ['groups' => 'read:lottery']);
     }
 }
