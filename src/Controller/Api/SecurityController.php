@@ -6,6 +6,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Entity\Library\User;
 use App\Entity\Library\UserProfile;
 use App\Repository\Library\UserRepository;
+use App\Service\EncryptionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +27,8 @@ class SecurityController extends AbstractController
         private UserPasswordHasherInterface $hasher,
         private JWTTokenManagerInterface $jwtManager,
         private UserRepository $userRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private EncryptionService $encryptionService
     )
     {}
 
@@ -117,10 +119,10 @@ class SecurityController extends AbstractController
 
     private function createOrFindUser(string $idStr): ?User
     {
-        $user = $this->entityManager->getRepository(User::class)->findOneByTwitterId($idStr);
+        $user = $this->entityManager->getRepository(User::class)->findOneByTwitterId($this->encryptionService->encrypt($idStr));
         if ($user instanceof User) return $user;
         $newUser = new User();
-        $newUser->setTwitterId($idStr);
+        $newUser->setTwitterId($this->encryptionService->encrypt($idStr));
         $newUser->setCreatedAt(new \DateTimeImmutable());
         $this->entityManager->persist($newUser);
         $this->entityManager->flush();
