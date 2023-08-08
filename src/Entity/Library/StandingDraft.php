@@ -2,12 +2,12 @@
 
 namespace App\Entity\Library;
 
-use App\Repository\Library\StandingRepository;
+use App\Repository\Library\StandingDraftRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: StandingRepository::class)]
+#[ORM\Entity(repositoryClass: StandingDraftRepository::class)]
 #[UniqueEntity(fields: ['league', 'season', 'team', 'rank'])]
 class StandingDraft
 {

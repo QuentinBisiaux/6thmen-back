@@ -132,9 +132,6 @@ class PopulateStandingDraftCommand extends Command
                 ->setOdds(Odds::ODDS[$rawStanding['rank'] - 1])
                 ->setCreatedAt(new \DateTimeImmutable());
             $this->manager->persist($standing);
-            dump($team);
-            dump($season);
-            dump($league);
             $io->success('will Insert ' . $season->getYear() . ' - ' . $league->getName() . ' ' . $team->getName() );
         }
         $this->manager->flush();

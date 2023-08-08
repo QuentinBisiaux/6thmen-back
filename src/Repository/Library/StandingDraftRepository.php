@@ -3,26 +3,26 @@
 namespace App\Repository\Library;
 
 use App\Entity\Library\Season;
-use App\Entity\Library\Standing;
+use App\Entity\Library\StandingDraft;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Standing>
+ * @extends ServiceEntityRepository<StandingDraft>
  *
- * @method Standing|null find($id, $lockMode = null, $lockVersion = null)
- * @method Standing|null findOneBy(array $criteria, array $orderBy = null)
- * @method Standing[]    findAll()
- * @method Standing[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method StandingDraft|null find($id, $lockMode = null, $lockVersion = null)
+ * @method StandingDraft|null findOneBy(array $criteria, array $orderBy = null)
+ * @method StandingDraft[]    findAll()
+ * @method StandingDraft[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class StandingDraftRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Standing::class);
+        parent::__construct($registry, StandingDraft::class);
     }
 
-    public function save(Standing $entity, bool $flush = false): void
+    public function save(StandingDraft $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -31,7 +31,7 @@ class StandingDraftRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Standing $entity, bool $flush = false): void
+    public function remove(StandingDraft $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
