@@ -3,6 +3,7 @@
 namespace App\Entity\Library;
 
 use App\Repository\Library\UserDataRepository;
+use App\Service\EncryptionService;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -58,6 +59,9 @@ class UserProfile
     )]
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    public function __construct()
+    {}
 
     public function getId(): int
     {
@@ -136,14 +140,30 @@ class UserProfile
         return $this;
     }
 
-    public function getRawData(): array
+    public function getRawData(EncryptionService $encryptionService): array
     {
-        return $this->rawData;
+        $decryptedData = [];
+        foreach ($this->rawData as $key => $securedData) {
+            if(is_array($securedData)) {
+                $decryptedData[$key] = $securedData;
+                continue;
+            }
+            $decryptedData[$key] = $securedData !== null ? $encryptionService->encrypt($securedData) : null;
+        }
+        return $decryptedData;
     }
 
-    public function setRawData(array $rawData): self
+    public function setRawData(array $rawData, EncryptionService $encryptionService): self
     {
-        $this->rawData = $rawData;
+        $securedData = [];
+        foreach ($rawData as $key => $data) {
+            if(is_array($data)) {
+                $securedData[$key] = $data;
+                continue;
+            }
+            $securedData[$key] = $data !== null ? $encryptionService->encrypt($data) : null;
+        }
+        $this->rawData = $securedData;
 
         return $this;
     }

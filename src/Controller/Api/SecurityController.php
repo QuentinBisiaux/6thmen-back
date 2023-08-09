@@ -11,9 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -24,11 +22,11 @@ class SecurityController extends AbstractController
 
     public function __construct
     (
-        private UserPasswordHasherInterface $hasher,
         private JWTTokenManagerInterface $jwtManager,
-        private UserRepository $userRepository,
         private EntityManagerInterface $entityManager,
-        private EncryptionService $encryptionService
+        private EncryptionService $encryptionService,
+//        private UserPasswordHasherInterface $hasher,
+//        private UserRepository $userRepository,
     )
     {}
 
@@ -45,12 +43,19 @@ class SecurityController extends AbstractController
     }
 
 
-    #[Route('/login/twitter/callback', name: 'login_twitter_callback', methods: ['GET'])]
+    #[Route('/login/twitter/callback', name: 'login_twitter_callback', methods: ['POST'])]
     #[IsGranted('PUBLIC_ACCESS')]
     public function twitterCallback(Request $request): JsonResponse
     {
-        $oauthToken = $request->get('oauth_token');
-        $oauthVerifier = $request->get('oauth_verifier');
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+
+        $oauthToken = $data['oauth_token'] ?? null;
+        $oauthVerifier = $data['oauth_verifier'] ?? null;
+
+        if (!$oauthToken || !$oauthVerifier) {
+            return  $this->json(['error' => 'Invalid request body'], 400);
+        }
 
         // Exchange the OAuth token and verifier for an access token
         $tokens = $this->exchangeAccessToken($oauthToken, $oauthVerifier);
@@ -65,12 +70,11 @@ class SecurityController extends AbstractController
         $token = $this->jwtManager->create($user);
 
         // Return the user's data and authentication token
-        return $this->json(['user' => $user, 'token' => $token, 200, [], ['groups' => 'read:user']]);
+        return $this->json(['user' => $user, 'token' => $token], 200, [], ['groups' => 'read:user']);
     }
 
     private function exchangeAccessToken(string $oauthToken, string $oauthVerifier): array
     {
-
         $connection = new TwitterOAuth(
             'pVxqp6s1JU1piXSH8HFvYgFIQ',
             'TPHhOWpHNr5fkxY0IShujhKrUIqGOlirNmtHreWMMGnQCeFVCR'
@@ -105,7 +109,8 @@ class SecurityController extends AbstractController
         $userProfile->setName($userData->name);
         $userProfile->setLocation($userData->location);
         $userProfile->setProfileImageUrl($userData->profile_image_url_https);
-        $userProfile->setRawData(json_decode(json_encode($userData), true));
+        $userDataArray = json_decode(json_encode($userData), true);
+        $userProfile->setRawData($userDataArray, $this->encryptionService);
         $userProfile->setUser($user);
         $userProfile->setCreatedAt(new \DateTimeImmutable());
         $this->entityManager->persist($userProfile);
@@ -119,16 +124,16 @@ class SecurityController extends AbstractController
 
     private function createOrFindUser(string $idStr): ?User
     {
-        $user = $this->entityManager->getRepository(User::class)->findOneByTwitterId($this->encryptionService->encrypt($idStr));
+        $user = $this->entityManager->getRepository(User::class)->findOneByTwitterId($this->encryptionService->deterministicEncrypt($idStr));
         if ($user instanceof User) return $user;
         $newUser = new User();
-        $newUser->setTwitterId($this->encryptionService->encrypt($idStr));
+        $newUser->setTwitterId($this->encryptionService->deterministicEncrypt($idStr));
         $newUser->setCreatedAt(new \DateTimeImmutable());
         $this->entityManager->persist($newUser);
         $this->entityManager->flush();
         return $newUser;
     }
-
+/* FOR FUTURE DEVELOPMENT
     #[Route('/register', name: 'api_register_plain', methods: ['POST'])]
     public function register(Request $request): JsonResponse
     {
@@ -180,7 +185,7 @@ class SecurityController extends AbstractController
 
 
     #[Route('/login', name: 'api_login_plain', methods: ['POST'])]
-    public function login(Request $request): Response
+    public function login(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
@@ -211,5 +216,5 @@ class SecurityController extends AbstractController
         // Return the token as a response
         return new Response(['token' => $token]);
     }
-
+*/
 }
