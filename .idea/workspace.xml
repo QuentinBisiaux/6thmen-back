@@ -6,11 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="9dd8fad2-70ee-482b-b0e0-4f2ca7831aab" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Library/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/api/default.conf" beforeDir="false" afterPath="$PROJECT_DIR$/docker/api/default.conf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/App.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/Lottery.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/Lottery.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/navbar/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/navbar/Navbar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/security/LoginTwitter.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/security/LoginTwitter.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/security/TwitterCallback.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/security/TwitterCallback.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/top/top6/Menu.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/top/top6/Menu.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/top/top6/Top6.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/top/top6/Top6.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/router/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/service/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/service/api.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/store/userStore.js" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/store/userStore.js" afterDir="false" />
@@ -32,8 +36,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Vue Composition API Component" />
         <option value="JavaScript File" />
+        <option value="Vue Composition API Component" />
       </list>
     </option>
   </component>
@@ -471,7 +475,9 @@
       <workItem from="1691478487583" duration="7157000" />
       <workItem from="1691494619364" duration="4609000" />
       <workItem from="1691505644170" duration="8576000" />
-      <workItem from="1691564030220" duration="9777000" />
+      <workItem from="1691564030220" duration="11499000" />
+      <workItem from="1691593463155" duration="4895000" />
+      <workItem from="1691740849839" duration="2329000" />
     </task>
     <servers />
   </component>
