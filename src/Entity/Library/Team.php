@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
@@ -54,8 +55,8 @@ class Team
     #[ORM\JoinColumn(nullable: false)]
     private ?League $league = null;
 
-    #[ORM\OneToMany(mappedBy: 'favoriteTeam', targetEntity: UserProfile::class)]
-    private ?Collection $users = null;
+    #[ManyToMany(targetEntity: UserProfile::class, mappedBy: 'favoriteTeams')]
+    private Collection $fans;
     
     #[Context(
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'Y'],
@@ -95,8 +96,8 @@ class Team
     {
         $this->playerTeams  = new ArrayCollection();
         $this->sisterTeams  = new ArrayCollection();
-        $this->users        = new ArrayCollection();
         $this->standings    = new ArrayCollection();
+        $this->fans         = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -174,26 +175,23 @@ class Team
         return $this;
     }
 
-    public function getUsers(): Collection
+    public function getFans(): Collection
     {
-        return $this->users;
+        return $this->fans;
     }
 
-    public function addUsers(UserProfile $userProfile): self
+    public function addFan(UserProfile $userProfile): self
     {
-        if($this->users->contains($userProfile)) {
-            $this->users[] = $userProfile;
-            $userProfile->setFavoriteTeam($this);
+        if (!$this->fans->contains($userProfile)) {
+            $this->fans[] = $userProfile;
         }
 
         return $this;
     }
 
-    public function removeUser(UserProfile $userProfile): self
+    public function removeFan(UserProfile $userProfile): self
     {
-        if ($this->users->removeElement($userProfile)) {
-            $userProfile->setFavoriteTeam(null);
-        }
+        $this->fans->removeElement($userProfile);
 
         return $this;
     }

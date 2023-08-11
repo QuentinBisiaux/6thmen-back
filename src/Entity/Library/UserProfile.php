@@ -4,7 +4,10 @@ namespace App\Entity\Library;
 
 use App\Repository\Library\UserDataRepository;
 use App\Service\EncryptionService;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinTable;
 use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
@@ -30,6 +33,11 @@ class UserProfile
     #[Groups('read:user')]
     private ?string $username = null;
 
+    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'fans')]
+    #[JoinTable(name: 'user_favorite_teams')]
+    #[Groups('read:user')]
+    private Collection $favoriteTeams;
+
     #[ORM\Column]
     #[Groups('read:user')]
     private ?string $profileImageUrl = null;
@@ -37,11 +45,6 @@ class UserProfile
     #[ORM\Column]
     #[Groups('read:user')]
     private ?string $location = null;
-
-    #[ORM\ManyToOne(inversedBy: 'users')]
-    #[ORM\JoinColumn(nullable: true)]
-    #[Groups('read:user')]
-    private ?Team $favoriteTeam = null;
 
     #[ORM\Column(type: 'json', nullable : false)]
     private array $rawData;
@@ -61,7 +64,9 @@ class UserProfile
     private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()
-    {}
+    {
+        $this->favoriteTeams = new ArrayCollection();
+    }
 
     public function getId(): int
     {
@@ -104,6 +109,27 @@ class UserProfile
         return $this;
     }
 
+    public function getFavoriteTeams(): Collection
+    {
+        return $this->favoriteTeams;
+    }
+
+    public function addFavoriteTeam(Team $team): self
+    {
+        if (!$this->favoriteTeams->contains($team)) {
+            $this->favoriteTeams[] = $team;
+        }
+
+        return $this;
+    }
+
+    public function removeFavoriteTeam(Team $team): self
+    {
+        $this->favoriteTeams->removeElement($team);
+
+        return $this;
+    }
+
     public function getProfileImageUrl(): ?string
     {
         return $this->profileImageUrl;
@@ -124,18 +150,6 @@ class UserProfile
     public function setLocation(?string $location): self
     {
         $this->location = $location;
-
-        return $this;
-    }
-
-    public function getFavoriteTeam(): ?Team
-    {
-        return $this->favoriteTeam;
-    }
-
-    public function setFavoriteTeam(?Team $favoriteTeam): self
-    {
-        $this->favoriteTeam = $favoriteTeam;
 
         return $this;
     }

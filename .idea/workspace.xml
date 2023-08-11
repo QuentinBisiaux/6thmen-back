@@ -6,7 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="9dd8fad2-70ee-482b-b0e0-4f2ca7831aab" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/api/default.conf" beforeDir="false" afterPath="$PROJECT_DIR$/docker/api/default.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Library/Team.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/Team.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Library/UserProfile.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/UserProfile.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/App.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/Lottery.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/Lottery.vue" afterDir="false" />
@@ -42,7 +43,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../6thmen-front" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitToolBoxStore">
     <option name="recentBranches">
@@ -477,7 +478,7 @@
       <workItem from="1691505644170" duration="8576000" />
       <workItem from="1691564030220" duration="11499000" />
       <workItem from="1691593463155" duration="4895000" />
-      <workItem from="1691740849839" duration="2329000" />
+      <workItem from="1691740849839" duration="4060000" />
     </task>
     <servers />
   </component>
