@@ -76,6 +76,7 @@ class CreateTeamCommand extends Command
             $this->newTeam->setName($this->rawTeam['name']);
             $this->newTeam->setTricode($this->rawTeam['tricode']);
             $this->newTeam->setSlug($this->rawTeam['slug']);
+            $this->newTeam->setConference($this->rawTeam['conference']);
 
             if (($message = $this->setLeagues()) !== null) {
                 $io->error($message);
@@ -101,6 +102,7 @@ class CreateTeamCommand extends Command
         $this->rawTeam['createdIn'] = trim($teamData[3]);
         $this->rawTeam['endedIn']   = trim($teamData[4]);
         $this->rawTeam['sister']    = trim($teamData[5]);
+        $this->rawTeam['conference'] = trim($teamData[6]);
     }
 
     private function checkIfTeamExist(): ?string

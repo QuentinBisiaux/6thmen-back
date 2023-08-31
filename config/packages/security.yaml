@@ -12,7 +12,6 @@ security:
     enable_authenticator_manager: true
     firewalls:
         admin:
-            host: '%env(resolve:HOST_ADMIN)%'
             lazy: true
             provider: app_user_provider
             form_login:
@@ -22,10 +21,9 @@ security:
                 path: app_logout
             access_denied_handler: App\Security\Admin\AdminAccessDeniedHandler
         api_login:
-            host: '%env(resolve:HOST_API)%'
             stateless: true
             json_login:
-                check_path: api_login_plain
+                check_path: login_twitter_callback
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
         api:
@@ -46,9 +44,9 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/login, roles: PUBLIC_ACCESS, host: '%env(resolve:HOST_ADMIN)%', port: 802 }
-        - { path: ^/, roles: ROLE_ADMIN, host: '%env(resolve:HOST_ADMIN)%', port: 802 }
-        - { path: ^/login/twitter, roles: PUBLIC_ACCESS, host: '%env(resolve:HOST_API)%', port: 803 }
+        - { path: ^/admin/login, roles: PUBLIC_ACCESS }
+        - { path: ^/admin/, roles: ROLE_ADMIN }
+        - { path: ^/login/twitter, roles: PUBLIC_ACCESS }
     role_hierarchy:
         ROLE_ADMIN: IS_AUTHENTICATED_FULLY
         IS_AUTHENTICATED_FULLY: PUBLIC_ACCESS

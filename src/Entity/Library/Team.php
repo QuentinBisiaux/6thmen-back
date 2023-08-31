@@ -39,7 +39,8 @@ class Team
 
     #[Groups([
         'read:lottery',
-        'read:team'
+        'read:team',
+        'read:player'
     ])]
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
@@ -57,7 +58,13 @@ class Team
 
     #[ManyToMany(targetEntity: UserProfile::class, mappedBy: 'favoriteTeams')]
     private Collection $fans;
-    
+
+    #[ORM\Column(length: 55)]
+    #[Groups([
+        'read:team'
+    ])]
+    private string $conference;
+
     #[Context(
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'Y'],
         denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
@@ -171,6 +178,18 @@ class Team
     public function setLeague(?League $league): self
     {
         $this->league = $league;
+
+        return $this;
+    }
+
+    public function getConference(): string
+    {
+        return $this->conference;
+    }
+
+    public function setConference(string $conference): self
+    {
+        $this->conference = $conference;
 
         return $this;
     }

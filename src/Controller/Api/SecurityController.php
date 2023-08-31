@@ -5,14 +5,14 @@ namespace App\Controller\Api;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Entity\Library\User;
 use App\Entity\Library\UserProfile;
-use App\Repository\Library\UserRepository;
 use App\Service\EncryptionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Security\Http\Authentication\AuthenticationSuccessHandler;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -45,7 +45,7 @@ class SecurityController extends AbstractController
 
     #[Route('/login/twitter/callback', name: 'login_twitter_callback', methods: ['POST'])]
     #[IsGranted('PUBLIC_ACCESS')]
-    public function twitterCallback(Request $request): JsonResponse
+    public function twitterCallback(Request $request, AuthenticationSuccessHandler $authenticationSuccessHandler): Response
     {
         $content = $request->getContent();
         $data = json_decode($content, true);
@@ -67,10 +67,7 @@ class SecurityController extends AbstractController
         $user = $this->manageUserData($userData);
 
         // Generate an authentication token for the user
-        $token = $this->jwtManager->create($user);
-
-        // Return the user's data and authentication token
-        return $this->json(['user' => $user, 'token' => $token], 200, [], ['groups' => 'read:user']);
+        return $authenticationSuccessHandler->handleAuthenticationSuccess($user);
     }
 
     private function exchangeAccessToken(string $oauthToken, string $oauthVerifier): array

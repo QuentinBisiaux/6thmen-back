@@ -3,6 +3,8 @@
 namespace App\Entity\Library;
 
 use App\Repository\Library\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -52,6 +54,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\OneToMany(mappedBy: 'league', targetEntity: Team::class)]
+    #[Groups([
+        'read:league'
+    ])]
+    private Collection $pronoSeason;
+
+    public function __construct()
+    {
+        $this->pronoSeason = new ArrayCollection();
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -169,4 +181,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getPronoSeason(): Collection
+    {
+        return $this->pronoSeason;
+    }
+
+    public function addPronoSeason(PronoSeason $pronoSeason): self
+    {
+        if (!$this->pronoSeason->contains($pronoSeason)) {
+            $this->pronoSeason->add($pronoSeason);
+            $pronoSeason->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePronoSeason(PronoSeason $pronoSeason): self
+    {
+        if ($this->pronoSeason->removeElement($pronoSeason)) {
+            // set the owning side to null (unless already changed)
+            if ($pronoSeason->getUser() === $this) {
+                $pronoSeason->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+
 }

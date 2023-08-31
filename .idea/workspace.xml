@@ -5,19 +5,41 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9dd8fad2-70ee-482b-b0e0-4f2ca7831aab" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../6thmen-front/src/components/ux/banners/MustConnect.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/lexik_jwt_authentication.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/lexik_jwt_authentication.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20230811090727.php" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/Version20230811090727.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/CreateTeamCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/CreateTeamCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/CountryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/CountryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/HomeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/HomeController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/LeagueController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/LeagueController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/LoginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/LoginController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/SportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/SportController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/StandingController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/StandingController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/TeamController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/TeamController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Api/SecurityController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/SecurityController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Api/TeamController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/TeamController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Library/League.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/League.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Library/PlayerTeam.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/PlayerTeam.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Library/Season.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/Season.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/Library/Team.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/Team.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Library/UserProfile.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/UserProfile.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Library/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/Library/TeamRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/Library/TeamRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../6thmen-front/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/App.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/Lottery.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/Lottery.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/navbar/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/navbar/Navbar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/modals/WaitingModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/ux/modals/WaitingModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/navbar/Navbar.vue" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/security/LoginTwitter.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/security/LoginTwitter.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/security/TwitterCallback.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/security/TwitterCallback.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/teams/FavoriteTeams.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/teams/FavoriteTeams/FavoriteTeams.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/top/top6/Menu.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/top/top6/Menu.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/top/top6/Top6.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/top/top6/Top6.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/router/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/service/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/service/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/service/localStorageService.js" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/service/localStorageService.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/store/userStore.js" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/store/userStore.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -43,7 +65,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../6thmen-front" />
   </component>
   <component name="GitToolBoxStore">
     <option name="recentBranches">
@@ -351,6 +373,9 @@
       <path value="$PROJECT_DIR$/vendor/paragonie/random_compat" />
     </include_path>
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="2S3lJOZOGpkp9YZJiyJvQj0Fum4" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -368,8 +393,9 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/snap/phpstorm/348/plugins/javascript-impl/jsLanguageServicesImpl/external&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/snap/phpstorm/351/plugins/javascript-impl/jsLanguageServicesImpl/external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -386,6 +412,8 @@
       <recent name="$PROJECT_DIR$/src/Admin" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/../6thmen-front/src/components/ux" />
+      <recent name="$PROJECT_DIR$/../6thmen-front/src/components/teams/FavoriteTeams" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
@@ -478,7 +506,18 @@
       <workItem from="1691505644170" duration="8576000" />
       <workItem from="1691564030220" duration="11499000" />
       <workItem from="1691593463155" duration="4895000" />
-      <workItem from="1691740849839" duration="4060000" />
+      <workItem from="1691740849839" duration="8801000" />
+      <workItem from="1691765980465" duration="6736000" />
+      <workItem from="1692265806262" duration="3877000" />
+      <workItem from="1692435778584" duration="9133000" />
+      <workItem from="1692542222153" duration="2449000" />
+      <workItem from="1692605705320" duration="8127000" />
+      <workItem from="1692620394890" duration="10109000" />
+      <workItem from="1692631584415" duration="3713000" />
+      <workItem from="1692972486739" duration="621000" />
+      <workItem from="1693409574197" duration="81000" />
+      <workItem from="1693409692461" duration="4589000" />
+      <workItem from="1693476698101" duration="17007000" />
     </task>
     <servers />
   </component>

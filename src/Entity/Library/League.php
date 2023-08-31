@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Context;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 #[ORM\Entity(repositoryClass: LeagueRepository::class)]
@@ -22,9 +23,15 @@ class League
 
     #[ORM\ManyToOne(inversedBy: 'leagues')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups([
+        'read:sport'
+    ])]
     private ?Sport $sport = null;
 
     #[ORM\OneToMany(mappedBy: 'league', targetEntity: Team::class)]
+    #[Groups([
+        'read:league'
+    ])]
     private Collection $teams;
 
     #[Context(

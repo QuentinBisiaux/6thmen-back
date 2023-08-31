@@ -23,9 +23,6 @@ class PlayerTeam
 
     #[ORM\ManyToOne(inversedBy: 'playerTeams')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups([
-        'read:player',
-    ])]
     private ?Player $player = null;
 
     #[ORM\ManyToOne(inversedBy: 'playerTeams')]

@@ -58,16 +58,49 @@ class TeamRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function actualTeamsByConference(): array
+    {
+        return $this->createQueryBuilder('team')
+            ->where('team.endedIn IS NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * @return Team[] Returns an array of Team objects
      */
     public function findTeamsByNameOrdered(): array
     {
         return $this->createQueryBuilder('t')
+            ->where('t.endedIn IS NULL')
             ->orderBy('t.name', 'ASC')
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    /**
+     * @return Team[] Returns an array of Team objects
+     */
+    public function findTeamAndSisters(int $id): array
+    {
+        return $this->createQueryBuilder('t')
+            ->leftJoin('t.sisterTeam', 's')
+            ->where('t.id = :teamId OR s.id = :teamId')
+            ->setParameter('teamId', $id)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findTeamsByIds(array $ids): array
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.id IN (:teamIds)')
+            ->setParameter('teamIds', $ids)
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
 //    /**

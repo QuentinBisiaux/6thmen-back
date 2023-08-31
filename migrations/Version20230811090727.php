@@ -28,6 +28,7 @@ final class Version20230811090727 extends AbstractMigration
         $this->addSql('ALTER TABLE user_data DROP CONSTRAINT fk_d772bfaa743876c0');
         $this->addSql('DROP INDEX idx_d772bfaa743876c0');
         $this->addSql('ALTER TABLE user_data DROP favorite_team_id');
+        $this->addSql('ALTER TABLE team ADD conference VARCHAR(55) NOT NULL');
     }
 
     public function down(Schema $schema): void
@@ -40,5 +41,6 @@ final class Version20230811090727 extends AbstractMigration
         $this->addSql('ALTER TABLE "user_data" ADD favorite_team_id INT DEFAULT NULL');
         $this->addSql('ALTER TABLE "user_data" ADD CONSTRAINT fk_d772bfaa743876c0 FOREIGN KEY (favorite_team_id) REFERENCES team (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('CREATE INDEX idx_d772bfaa743876c0 ON "user_data" (favorite_team_id)');
+        $this->addSql('ALTER TABLE team DROP conference');
     }
 }

@@ -26,7 +26,6 @@ class Season
     ])]
     private ?string $year = null;
 
-
     #[ORM\Column]
     #[Context(
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
@@ -50,11 +49,16 @@ class Season
     #[ORM\OneToMany(mappedBy: 'season', targetEntity: StandingDraft::class)]
     private Collection $standingsDraft;
 
+    #[ORM\OneToMany(mappedBy: 'season', targetEntity: PronoSeason::class)]
+    private Collection $pronoSeason;
+
     public function __construct()
     {
         $this->playerTeams = new ArrayCollection();
         $this->standings = new ArrayCollection();
         $this->standingsDraft = new ArrayCollection();
+        $this->pronoSeason = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -182,6 +186,33 @@ class Season
             // set the owning side to null (unless already changed)
             if ($standingDraft->getSeason() === $this) {
                 $standingDraft->setSeason(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getPronoSeason(): Collection
+    {
+        return $this->pronoSeason;
+    }
+
+    public function addPronoSeason(PronoSeason $pronoSeason): self
+    {
+        if (!$this->pronoSeason->contains($pronoSeason)) {
+            $this->pronoSeason->add($pronoSeason);
+            $pronoSeason->setSeason($this);
+        }
+
+        return $this;
+    }
+
+    public function removePronoSeason(PronoSeason $pronoSeason): self
+    {
+        if ($this->pronoSeason->removeElement($pronoSeason)) {
+            // set the owning side to null (unless already changed)
+            if ($pronoSeason->getSeason() === $this) {
+                $pronoSeason->setSeason(null);
             }
         }
 
