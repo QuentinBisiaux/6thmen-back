@@ -12,7 +12,7 @@ services:
     networks:
       - proxy_web
     depends_on:
-      - 6thmen
+      - 6thmen-php
 
   6thmen-php:
     build: .
