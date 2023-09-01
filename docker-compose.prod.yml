@@ -5,7 +5,7 @@ version: '3.8'
 services:
   6thmen-nginx:
     image: nginx:alpine
-    container_name: 6thmen-back-nginx
+    container_name: 6thmen-nginx
     restart: always
     volumes:
       - .:/var/www:ro,cached
