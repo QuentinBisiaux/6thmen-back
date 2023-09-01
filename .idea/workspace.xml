@@ -6,7 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="9dd8fad2-70ee-482b-b0e0-4f2ca7831aab" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.prod.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/CountryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/CountryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/HomeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/HomeController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/LeagueController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/LeagueController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/LoginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/LoginController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/SportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/SportController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/StandingController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/StandingController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/TeamController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/TeamController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Api/LotteryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/LotteryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Api/PlayerController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/PlayerController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Api/Pronostiques/Season/PronoSeasonController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/Pronostiques/Season/PronoSeasonController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Api/SecurityController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/SecurityController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Api/TeamController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/TeamController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Api/UserProfileController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/UserProfileController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/Lottery.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/Lottery.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../mariage/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../mariage/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../mariage/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../mariage/docker-compose.yml" afterDir="false" />
@@ -487,7 +499,7 @@
       <workItem from="1693409574197" duration="81000" />
       <workItem from="1693409692461" duration="4589000" />
       <workItem from="1693476698101" duration="19824000" />
-      <workItem from="1693552459386" duration="3443000" />
+      <workItem from="1693552459386" duration="3922000" />
     </task>
     <servers />
   </component>

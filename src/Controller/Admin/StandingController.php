@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/admin/standing')]
+#[Route('/admin/standing', host: 'admin.6thmen.com')]
 class StandingController extends AbstractController
 {
     #[Route('/', name: 'app_standing_index', methods: ['GET'])]

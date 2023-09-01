@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/admin/sport')]
+#[Route('/admin/sport', host: 'admin.6thmen.com')]
 #[IsGranted('ROLE_ADMIN')]
 class SportController extends AbstractController
 {
