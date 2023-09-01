@@ -12,6 +12,7 @@ services:
       - ./docker/prod/default.conf:/etc/nginx/conf.d/default.conf
     networks:
       - proxy_web
+      - 6thmen_back
     depends_on:
       - 6thmen
 
@@ -24,6 +25,8 @@ services:
       - .:/var/www
       - ./docker/php.ini:/usr/local/etc/php/php.ini
       - ./docker/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    networks:
+      - 6thmen_back
     depends_on:
       - 6thmen-db
 
@@ -37,6 +40,7 @@ services:
     volumes:
       - /var/www/data/6thmen/:/var/lib/postgresql/data:rw
     networks:
+      - 6thmen_back
       - proxy_db
 
 networks:
@@ -46,3 +50,5 @@ networks:
   proxy_db:
     name: proxy_db
     external: true
+  6thmen_back:
+    name: 6thmen_back
