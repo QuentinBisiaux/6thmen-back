@@ -13,6 +13,7 @@ security:
     firewalls:
         admin:
             lazy: true
+            pattern: ^/admin
             provider: app_user_provider
             form_login:
                 login_path: admin_login
@@ -27,7 +28,7 @@ security:
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
         api:
-            host: '%env(resolve:HOST_API)%'
+            pattern: ^/api
             stateless: true
             jwt: ~
             # Add any additional security configurations specific to the API firewall
@@ -46,7 +47,7 @@ security:
     access_control:
         - { path: ^/admin/login, roles: PUBLIC_ACCESS }
         - { path: ^/admin/, roles: ROLE_ADMIN }
-        - { path: ^/login/twitter, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login/twitter, roles: PUBLIC_ACCESS }
     role_hierarchy:
         ROLE_ADMIN: IS_AUTHENTICATED_FULLY
         IS_AUTHENTICATED_FULLY: PUBLIC_ACCESS
