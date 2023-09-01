@@ -5,7 +5,7 @@ version: '3.8'
 services:
   6thmen-nginx:
     image: nginx:alpine
-    container_name: 6thmen-admin-nginx
+    container_name: 6thmen-back-nginx
     restart: always
     volumes:
       - .:/var/www:ro,cached
@@ -17,7 +17,7 @@ services:
 
   6thmen:
     build: .
-    container_name: 6thmen-admin-php
+    container_name: 6thmen-back-php
     user: rayuruna:rayuruna
     restart: always
     volumes:
