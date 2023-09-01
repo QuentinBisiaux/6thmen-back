@@ -5,7 +5,6 @@ version: '3.8'
 services:
   6thmen-nginx:
     image: nginx:alpine
-    container_name: 6thmen-back-nginx
     restart: always
     volumes:
       - .:/var/www:ro,cached
@@ -15,9 +14,8 @@ services:
     depends_on:
       - 6thmen
 
-  6thmen:
+  6thmen-php:
     build: .
-    container_name: 6thmen-back-php
     user: rayuruna:rayuruna
     restart: always
     volumes:
@@ -29,7 +27,6 @@ services:
 
   6thmen-db:
     image: postgres:${POSTGRES_VERSION}-alpine
-    container_name: 6thmen-db
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

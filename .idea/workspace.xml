@@ -7,6 +7,7 @@
     <list default="true" id="9dd8fad2-70ee-482b-b0e0-4f2ca7831aab" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.prod.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/prod/default.conf" beforeDir="false" afterPath="$PROJECT_DIR$/docker/prod/default.conf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/Lottery.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/Lottery.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -485,7 +486,7 @@
       <workItem from="1693409574197" duration="81000" />
       <workItem from="1693409692461" duration="4589000" />
       <workItem from="1693476698101" duration="19824000" />
-      <workItem from="1693552459386" duration="1721000" />
+      <workItem from="1693552459386" duration="2303000" />
     </task>
     <servers />
   </component>
