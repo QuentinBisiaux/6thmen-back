@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/lottery')]
+#[Route('/api/lottery')]
 class LotteryController extends AbstractController
 {
     #[Route('/{year}', name: 'app_lottery', requirements: ['year' => '\d{4}-\d{2}'], methods: ['GET'])]

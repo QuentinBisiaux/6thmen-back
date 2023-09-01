@@ -16,13 +16,12 @@ services:
       - 6thmen
 
   6thmen:
-    build: ./6thmen-admin
-    env_file: ./6thmen-admin/.env.prod
+    build: .
     container_name: 6thmen-admin-php
     user: rayuruna:rayuruna
     restart: always
     volumes:
-      - ./6thmen-admin:/var/www
+      - .:/var/www
       - ./docker/php.ini:/usr/local/etc/php/php.ini
       - ./docker/www.conf:/usr/local/etc/php-fpm.d/www.conf
     depends_on:

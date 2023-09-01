@@ -5,42 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9dd8fad2-70ee-482b-b0e0-4f2ca7831aab" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../6thmen-front/src/components/ux/banners/MustConnect.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/lexik_jwt_authentication.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/lexik_jwt_authentication.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20230811090727.php" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/Version20230811090727.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/CreateTeamCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/CreateTeamCommand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/CountryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/CountryController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/HomeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/HomeController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/LeagueController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/LeagueController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/LoginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/LoginController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/SportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/SportController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/StandingController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/StandingController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/TeamController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/TeamController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Api/SecurityController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/SecurityController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Api/TeamController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/TeamController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Library/League.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/League.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Library/PlayerTeam.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/PlayerTeam.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Library/Season.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/Season.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Library/Team.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/Team.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Library/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Library/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/Library/TeamRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/Library/TeamRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../6thmen-front/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../6thmen-front/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.prod.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Api/LotteryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/LotteryController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/Lottery.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/lottery/Lottery.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/modals/WaitingModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/ux/modals/WaitingModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/navbar/Navbar.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/security/LoginTwitter.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/security/LoginTwitter.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/security/TwitterCallback.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/security/TwitterCallback.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/teams/FavoriteTeams.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/teams/FavoriteTeams/FavoriteTeams.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/top/top6/Menu.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/top/top6/Menu.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/components/top/top6/Top6.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/components/top/top6/Top6.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/service/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/service/api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/service/localStorageService.js" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/service/localStorageService.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../6thmen-front/src/store/userStore.js" beforeDir="false" afterPath="$PROJECT_DIR$/../6thmen-front/src/store/userStore.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +34,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../6thmen-front" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitToolBoxStore">
     <option name="recentBranches">
@@ -517,7 +486,8 @@
       <workItem from="1692972486739" duration="621000" />
       <workItem from="1693409574197" duration="81000" />
       <workItem from="1693409692461" duration="4589000" />
-      <workItem from="1693476698101" duration="17007000" />
+      <workItem from="1693476698101" duration="19824000" />
+      <workItem from="1693552459386" duration="401000" />
     </task>
     <servers />
   </component>
