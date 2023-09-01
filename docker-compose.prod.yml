@@ -13,9 +13,9 @@ services:
     networks:
       - proxy_web
     depends_on:
-      - 6thmen-php
+      - 6thmen
 
-  6thmen-php:
+  6thmen:
     build: .
     container_name: 6thmen-php
     user: rayuruna:rayuruna

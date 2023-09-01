@@ -276,5 +276,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="6thmen-front" />
+    <orderEntry type="module" module-name="Mariage" />
   </component>
 </module>
