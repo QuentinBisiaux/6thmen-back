@@ -27,7 +27,7 @@ class SecurityController extends AbstractController
     )
     {}
 
-    #[Route('/login/twitter', name: 'login_twitter', host: 'api.6thmen.com', methods: ['GET'])]
+    #[Route('/twitter', name: 'login_twitter', host: 'api.6thmen.com', methods: ['GET'])]
     #[IsGranted('PUBLIC_ACCESS')]
     public function twitterLogin(HttpClientInterface $httpClient): JsonResponse
     {
@@ -40,7 +40,7 @@ class SecurityController extends AbstractController
     }
 
 
-    #[Route('/login/twitter/callback', name: 'login_twitter_callback', host: 'api.6thmen.com', methods: ['POST'])]
+    #[Route('/twitter/callback', name: 'login_twitter_callback', host: 'api.6thmen.com', methods: ['POST'])]
     #[IsGranted('PUBLIC_ACCESS')]
     public function twitterCallback(Request $request, AuthenticationSuccessHandler $authenticationSuccessHandler): Response
     {
