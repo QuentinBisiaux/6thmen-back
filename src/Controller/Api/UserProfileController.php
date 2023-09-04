@@ -37,7 +37,7 @@ class UserProfileController extends AbstractController
         return $this->json(['user' => $user], 200, [], ['groups' => 'read:user']);
     }
 
-    #[Route('/favorite-team', name: 'api_favorite_team', methods: ['POST'])]
+    #[Route('/favorite-team', name: 'api_user_favorite_team', methods: ['POST'])]
     public function manageUserFavoriteTeams(Request $request): JsonResponse
     {
         try{
@@ -51,18 +51,29 @@ class UserProfileController extends AbstractController
 
         $content = $request->getContent();
         $data = json_decode($content, true);
-        foreach($userProfile->getFavoriteTeams() as $team) {
-            $userProfile->removeFavoriteTeam($team);
-            $this->entityManager->persist($userProfile);
-        }
+        $this->entityManager->persist($userProfile->cleanAllFavoriteTeams());
         $teams = $this->entityManager->getRepository(Team::class)->findTeamsByIds($data);
         foreach($teams as $team) {
-            $userProfile->addFavoriteTeam($team);
-            $this->entityManager->persist($userProfile);
+            $this->entityManager->persist($userProfile->addFavoriteTeam($team));
         }
         $this->entityManager->flush();
 
         return $this->json([]);
+    }
+
+    #[Route('/delete', name: 'api_user_delete', methods: ['DELETE'])]
+    public function deleteUser(Request $request): JsonResponse
+    {
+        try{
+            $user        = $this->JWTAuth->getUserFromRequest($request);
+        } catch(NoBearerException $bearerException) {
+            return $this->json(['error' => $bearerException->getMessage()], 401);
+        } catch(UserDoesNotExistException $userException) {
+            return $this->json(['error' => $userException->getMessage()], 403);
+        }
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
+        return $this->json([], 204);
     }
 
 }

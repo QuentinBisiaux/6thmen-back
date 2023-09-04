@@ -20,7 +20,7 @@ class PronoSeason
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
-    #[ORM\ManyToOne(inversedBy: 'pronoSeason')]
+    #[ORM\ManyToOne(targetEntity: Season::class, inversedBy: 'pronoSeason')]
     #[ORM\JoinColumn(nullable: false)]
     private Season $season;
 

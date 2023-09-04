@@ -34,7 +34,7 @@ class UserProfile
     private ?string $username = null;
 
     /** @var Collection <int, Team>  */
-    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'fans', cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'fans')]
     #[JoinTable(name: 'user_favorite_teams')]
     #[Groups('read:user')]
     private Collection $favoriteTeams;
@@ -121,6 +121,14 @@ class UserProfile
             $this->favoriteTeams[] = $team;
         }
 
+        return $this;
+    }
+
+    public function cleanAllFavoriteTeams(): self
+    {
+        foreach($this->getFavoriteTeams() as $team) {
+            $this->removeFavoriteTeam($team);
+        }
         return $this;
     }
 

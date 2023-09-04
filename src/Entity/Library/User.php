@@ -32,7 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(unique: true, nullable: true)]
     private ?string $twitterId = null;
 
-    #[ORM\OneToOne(inversedBy: 'user', targetEntity: UserProfile::class, cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OneToOne(inversedBy: 'user', targetEntity: UserProfile::class)]
     #[Groups('read:user')]
     private ?UserProfile $profile = null;
 
@@ -54,10 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'league', targetEntity: Team::class, cascade: ['persist'], orphanRemoval: true)]
-    #[Groups([
-        'read:league'
-    ])]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: PronoSeason::class)]
     private Collection $pronoSeason;
 
     public function __construct()
