@@ -16,7 +16,7 @@ class PronoSeason
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'pronoSeason')]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ["remove"], inversedBy: 'pronoSeason')]
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 

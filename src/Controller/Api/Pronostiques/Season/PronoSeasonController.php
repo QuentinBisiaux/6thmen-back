@@ -65,9 +65,14 @@ class PronoSeasonController extends AbstractController
         $data = json_decode($content, true);
 
         $pronoSeasonRepo = $this->entityManager->getRepository(PronoSeason::class);
+        /** @var PronoSeason $prono */
         $prono = $pronoSeasonRepo->findUserPronoForSeason($user, $season)[0];
         if(empty($prono)) return $this->json($prono, 200, [], ['groups' => 'api:read:pronoSeason']);
 
+        $prono->setValid(false);
+        if($this->isPronoCompleted($data)) {
+            $prono->setValid(true);
+        }
         $prono->setData($data);
         $prono->setUpdatedAt(new \DateTimeImmutable());
         $this->entityManager->persist($prono);
@@ -100,6 +105,19 @@ class PronoSeasonController extends AbstractController
         }
 
         return $prono->setData($teamsByConference);
+    }
+
+    ##@TODO change this part to be check in front end by looping or adding a new hitpoint
+    private function isPronoCompleted($data): bool
+    {
+        foreach ($data as $conference) {
+            foreach($conference as $pronoLine) {
+                if($pronoLine['victories'] == 0 || $pronoLine['defeats'] == 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 }
