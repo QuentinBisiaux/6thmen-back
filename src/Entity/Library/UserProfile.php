@@ -21,7 +21,7 @@ class UserProfile
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'profile', targetEntity: User::class, cascade: ["remove"])]
+    #[ORM\OneToOne(inversedBy: 'profile', targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
@@ -33,7 +33,8 @@ class UserProfile
     #[Groups('read:user')]
     private ?string $username = null;
 
-    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'fans')]
+    /** @var Collection <int, Team>  */
+    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'fans', cascade: ['persist'], orphanRemoval: true)]
     #[JoinTable(name: 'user_favorite_teams')]
     #[Groups('read:user')]
     private Collection $favoriteTeams;

@@ -56,7 +56,8 @@ class Team
     #[ORM\JoinColumn(nullable: false)]
     private ?League $league = null;
 
-    #[ManyToMany(targetEntity: UserProfile::class, mappedBy: 'favoriteTeams', cascade: ["remove"])]
+    /** @var Collection<int, UserProfile> */
+    #[ManyToMany(targetEntity: UserProfile::class, mappedBy: 'favoriteTeams')]
     private Collection $fans;
 
     #[ORM\Column(length: 55)]
