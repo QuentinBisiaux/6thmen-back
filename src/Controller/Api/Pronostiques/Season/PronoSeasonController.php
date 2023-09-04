@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api\Pronostiques\Season;
 
+use App\Controller\Api\ApiController;
 use App\Entity\Library\PronoSeason;
 use App\Entity\Library\Season;
 use App\Entity\Library\Team;
@@ -15,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/pronostic/saison')]
-class PronoSeasonController extends AbstractController
+class PronoSeasonController extends ApiController
 {
 
     public function __construct
@@ -23,16 +24,16 @@ class PronoSeasonController extends AbstractController
         private JWTAuth $JWTAuth,
         private EntityManagerInterface $entityManager
     )
-    {}
+    {
+        parent::__construct($this->JWTAuth);
+    }
     #[Route('/{year}', name: 'api_prono_saison', methods: ['GET'])]
     public function setupUserProno(Request $request, Season $season): JsonResponse
     {
-        try{
-            $user = $this->JWTAuth->getUserFromRequest($request);
-        } catch(NoBearerException $bearerException) {
-            return $this->json(['error' => $bearerException->getMessage()], 401);
-        } catch(UserDoesNotExistException $userException) {
-            return $this->json(['error' => $userException->getMessage()], 403);
+        try {
+            $user = $this->tryToConnecUser($request);
+        } catch (\Exception $ex) {
+            return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
 
         $pronoSeasonRepo = $this->entityManager->getRepository(PronoSeason::class);
@@ -53,12 +54,10 @@ class PronoSeasonController extends AbstractController
     #[Route('/{year}/update', name: 'api_prono_saison_update', methods: ['POST'])]
     public function updateUserProno(Request $request, Season $season): JsonResponse
     {
-        try{
-            $user = $this->JWTAuth->getUserFromRequest($request);
-        } catch(NoBearerException $bearerException) {
-            return $this->json(['error' => $bearerException->getMessage()], 401);
-        } catch(UserDoesNotExistException $userException) {
-            return $this->json(['error' => $userException->getMessage()], 403);
+        try {
+            $user = $this->tryToConnecUser($request);
+        } catch (\Exception $ex) {
+            return $this->json(['error' => $ex->getMessage()], $ex->getCode());
         }
 
         $content = $request->getContent();

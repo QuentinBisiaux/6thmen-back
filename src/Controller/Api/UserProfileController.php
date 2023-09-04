@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/user-profile')]
-class UserProfileController extends AbstractController
+class UserProfileController extends ApiController
 {
 
     public function __construct
@@ -21,33 +21,31 @@ class UserProfileController extends AbstractController
         private JWTAuth $JWTAuth,
         private EntityManagerInterface $entityManager
     )
-    {}
+    {
+        parent::__construct($this->JWTAuth);
+    }
+
 
     #[Route('/data', name: 'api_user_data', methods: ['POST'])]
     public function getUserData(Request $request): JsonResponse
     {
         try {
-            $user = $this->JWTAuth->getUserFromRequest($request);
-        } catch (NoBearerException $bearerException) {
-            return $this->json(['error' => $bearerException->getMessage()], 401);
-        } catch (UserDoesNotExistException $userException) {
-            return $this->json(['error' => $userException->getMessage()], 403);
+            $user = $this->tryToConnecUser($request);
+        } catch (\Exception $ex) {
+            return $this->json(['error' => $ex->getMessage()], $ex->getCode());
         }
-
         return $this->json(['user' => $user], 200, [], ['groups' => 'read:user']);
     }
 
     #[Route('/favorite-team', name: 'api_user_favorite_team', methods: ['POST'])]
     public function manageUserFavoriteTeams(Request $request): JsonResponse
     {
-        try{
-           $user        = $this->JWTAuth->getUserFromRequest($request);
-           $userProfile = $user->getProfile();
-        } catch(NoBearerException $bearerException) {
-            return $this->json(['error' => $bearerException->getMessage()], 401);
-        } catch(UserDoesNotExistException $userException) {
-            return $this->json(['error' => $userException->getMessage()], 403);
+        try {
+            $user = $this->tryToConnecUser($request);
+        } catch (\Exception $ex) {
+            return $this->json(['error' => $ex->getMessage()], $ex->getCode());
         }
+        $userProfile = $user->getProfile();
 
         $content = $request->getContent();
         $data = json_decode($content, true);
@@ -64,13 +62,12 @@ class UserProfileController extends AbstractController
     #[Route('/delete', name: 'api_user_delete', methods: ['DELETE'])]
     public function deleteUser(Request $request): JsonResponse
     {
-        try{
-            $user        = $this->JWTAuth->getUserFromRequest($request);
-        } catch(NoBearerException $bearerException) {
-            return $this->json(['error' => $bearerException->getMessage()], 401);
-        } catch(UserDoesNotExistException $userException) {
-            return $this->json(['error' => $userException->getMessage()], 403);
+        try {
+            $user = $this->tryToConnecUser($request);
+        } catch (\Exception $ex) {
+            return $this->json(['error' => $ex->getMessage()], $ex->getCode());
         }
+
         $this->entityManager->remove($user);
         $this->entityManager->flush();
         return $this->json([], 204);
