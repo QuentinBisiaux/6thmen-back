@@ -56,7 +56,7 @@ class UserProfileController extends ApiController
         }
         $this->entityManager->flush();
 
-        return $this->json([]);
+        return $this->json(['user' => $user], 200, [], ['groups' => 'read:user']);
     }
 
     #[Route('/delete', name: 'api_user_delete', methods: ['DELETE'])]

@@ -27,7 +27,8 @@ class Team
     #[Groups([
         'read:lottery',
         'read:team',
-        'read:player'
+        'read:player',
+        'read:user'
     ])]
     private ?string $name = null;
 
@@ -40,7 +41,8 @@ class Team
     #[Groups([
         'read:lottery',
         'read:team',
-        'read:player'
+        'read:player',
+        'read:user'
     ])]
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
