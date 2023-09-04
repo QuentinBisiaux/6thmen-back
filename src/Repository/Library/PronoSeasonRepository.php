@@ -41,7 +41,7 @@ class PronoSeasonRepository extends ServiceEntityRepository
         }
     }
 
-    public function findUserPronoForSeason(User $user, Season $season): pronoSeason
+    public function findUserPronoForSeason(User $user, Season $season): ?pronoSeason
     {
         $userProno = $this->createQueryBuilder('ps')
             ->where('ps.user = :userId')
@@ -51,7 +51,7 @@ class PronoSeasonRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
             ;
-        return $userProno[0];
+        return $userProno[0] ?? null;
     }
 
 //    /**
