@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-#[Route('/api/login', host: 'api.6thmen.com')]
+#[Route('/api/login')]
 class SecurityController extends AbstractController
 {
 

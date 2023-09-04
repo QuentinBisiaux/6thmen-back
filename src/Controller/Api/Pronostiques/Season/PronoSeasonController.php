@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/pronostic/saison', host: 'api.6thmen.com')]
+#[Route('/api/pronostic/saison')]
 class PronoSeasonController extends AbstractController
 {
 

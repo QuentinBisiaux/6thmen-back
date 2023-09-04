@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/user-profile', host: 'api.6thmen.com')]
+#[Route('/api/user-profile')]
 class UserProfileController extends AbstractController
 {
 

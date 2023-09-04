@@ -22,19 +22,6 @@ security:
                 path: app_logout
             access_denied_handler: App\Security\Admin\AdminAccessDeniedHandler
 
-#        api_login:
-#            pattern: ^/api/login/twitter
-#            stateless: true
-#            json_login:
-#                check_path: login_twitter_callback
-#                success_handler: lexik_jwt_authentication.handler.authentication_success
-#                failure_handler: lexik_jwt_authentication.handler.authentication_failure
-#        api:
-#            pattern: ^/api
-#            stateless: true
-#            jwt: ~
-            # Add any additional security configurations specific to the API firewall
-
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
@@ -50,7 +37,6 @@ security:
     access_control:
         - { path: ^/admin/login, roles: PUBLIC_ACCESS }
         - { path: ^/admin/, roles: ROLE_ADMIN }
-        - { path: ^/api/login/twitter, roles: PUBLIC_ACCESS }
     role_hierarchy:
         ROLE_ADMIN: IS_AUTHENTICATED_FULLY
         IS_AUTHENTICATED_FULLY: PUBLIC_ACCESS

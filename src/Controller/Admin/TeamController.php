@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/admin/team', host: 'admin.6thmen.com')]
+#[Route('/admin/team')]
 #[IsGranted('ROLE_ADMIN')]
 class TeamController extends AbstractController
 {

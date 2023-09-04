@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/team', host: 'api.6thmen.com')]
+#[Route('/api/team')]
 class TeamController extends AbstractController
 {
     public function __construct(
