@@ -9,7 +9,6 @@ security:
             entity:
                 class: App\Entity\Library\User
                 property: email
-    enable_authenticator_manager: true
     firewalls:
         admin:
             lazy: true
