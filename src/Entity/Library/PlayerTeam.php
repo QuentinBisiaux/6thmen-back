@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class PlayerTeam
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
