@@ -68,16 +68,14 @@ class PronoSeasonController extends ApiController
         $prono = $pronoSeasonRepo->findUserPronoForSeason($user, $season);
         if(empty($prono)) return $this->json($prono, 200, [], ['groups' => 'api:read:pronoSeason']);
 
-        $prono->setValid(false);
-        if($this->isPronoCompleted($data)) {
-            $prono->setValid(true);
-        }
+        $prono->setValid($this->isPronoCompleted($data));
+
         $prono->setData($data);
         $prono->setUpdatedAt(new \DateTimeImmutable());
         $this->entityManager->persist($prono);
         $this->entityManager->flush();
 
-        return $this->json([]);
+        return $this->json(['isComplete' => $prono->isValid()]);
     }
 
     private function setUpTeamForNewProno(PronoSeason $prono): PronoSeason
