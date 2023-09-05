@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 class Player
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups([
         'read:player',
