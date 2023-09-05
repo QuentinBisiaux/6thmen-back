@@ -65,7 +65,7 @@ class PronoSeasonController extends ApiController
 
         $pronoSeasonRepo = $this->entityManager->getRepository(PronoSeason::class);
         /** @var PronoSeason $prono */
-        $prono = $pronoSeasonRepo->findUserPronoForSeason($user, $season)[0];
+        $prono = $pronoSeasonRepo->findUserPronoForSeason($user, $season);
         if(empty($prono)) return $this->json($prono, 200, [], ['groups' => 'api:read:pronoSeason']);
 
         $prono->setValid(false);
