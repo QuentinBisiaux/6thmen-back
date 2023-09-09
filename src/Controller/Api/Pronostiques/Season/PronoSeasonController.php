@@ -31,7 +31,7 @@ class PronoSeasonController extends ApiController
     public function setupUserProno(Request $request, Season $season): JsonResponse
     {
         try {
-            $user = $this->tryToConnecUser($request);
+            $user = $this->tryToConnectUser($request);
         } catch (\Exception $ex) {
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
@@ -55,7 +55,7 @@ class PronoSeasonController extends ApiController
     public function updateUserProno(Request $request, Season $season): JsonResponse
     {
         try {
-            $user = $this->tryToConnecUser($request);
+            $user = $this->tryToConnectUser($request);
         } catch (\Exception $ex) {
             return $this->json(['error' => $ex->getMessage()], $ex->getCode());
         }

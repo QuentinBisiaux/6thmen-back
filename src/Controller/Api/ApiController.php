@@ -17,7 +17,7 @@ class ApiController extends AbstractController
         private JWTAuth $JWTAuth,
     )
     {}
-    protected function tryToConnecUser(Request $request): User
+    protected function tryToConnectUser(Request $request): User
     {
         try {
             return $this->JWTAuth->getUserFromRequest($request);
@@ -25,6 +25,7 @@ class ApiController extends AbstractController
             throw new \Exception($bearerException->getMessage(), 401);
         } catch (UserDoesNotExistException $userException) {
             throw new \Exception($userException->getMessage(), 403);
+        } catch (\Exception $e) {
         }
     }
 
