@@ -30,7 +30,7 @@ class UserProfileController extends ApiController
     public function getUserData(Request $request): JsonResponse
     {
         try {
-            $user = $this->tryToConnecUser($request);
+            $user = $this->tryToConnectUser($request);
         } catch (\Exception $ex) {
             return $this->json(['error' => $ex->getMessage()], $ex->getCode());
         }
@@ -41,7 +41,7 @@ class UserProfileController extends ApiController
     public function manageUserFavoriteTeams(Request $request): JsonResponse
     {
         try {
-            $user = $this->tryToConnecUser($request);
+            $user = $this->tryToConnectUser($request);
         } catch (\Exception $ex) {
             return $this->json(['error' => $ex->getMessage()], $ex->getCode());
         }
@@ -63,7 +63,7 @@ class UserProfileController extends ApiController
     public function deleteUser(Request $request): JsonResponse
     {
         try {
-            $user = $this->tryToConnecUser($request);
+            $user = $this->tryToConnectUser($request);
         } catch (\Exception $ex) {
             return $this->json(['error' => $ex->getMessage()], $ex->getCode());
         }
