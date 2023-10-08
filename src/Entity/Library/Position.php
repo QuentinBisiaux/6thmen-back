@@ -15,11 +15,14 @@ class Position
         'PG' => ['Meneur'],
         'SG' => ['Arrière'],
         'G' => ['Meneur', 'Arrière'],
-        'F' => ['Ailier', 'Ailier Fort'],
+        'G-F' => ['Meneur', 'Arrière', 'Ailier'],
+        'F-G' => ['Meneur', 'Arrière', 'Ailier'],
         'SF' => ['Ailier'],
         'PF' => ['Ailier Fort'],
-        'F-C' => ['Ailier', 'Ailier Fort', 'Pivot'],
+        'F' => ['Ailier', 'Ailier Fort'],
         'C' => ['Pivot'],
+        'F-C' => ['Ailier', 'Ailier Fort', 'Pivot'],
+        'C-F' => ['Ailier', 'Ailier Fort', 'Pivot'],
     ];
 
     static function getPositionByAbbreviation(string $abbreviation): array

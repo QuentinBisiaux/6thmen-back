@@ -67,24 +67,40 @@ class TeamController extends AbstractController
 
         $data = [];
         $data['teams'] = $teams;
-        $data['players'] = [];
+        $players = [];
 
         foreach ($playerTeams as $playerTeam) {
             foreach($playerTeam as $value) {
                 $player = $value->getPlayer();
-                if(array_key_exists($player->getFirstName() . ' ' . $player->getLastName(), $data['players'])) {
-                    $data['players'][$player->getFirstName() . ' ' . $player->getLastName()]['played'] += 1;
+                if(array_key_exists($player->getId(), $players)) {
+                    $players[$player->getId()]['played'] += 1;
                 } else {
-                    $data['players'][$player->getFirstName() . ' ' . $player->getLastName()]['played'] = 1;
-                    $data['players'][$player->getFirstName() . ' ' . $player->getLastName()]['position'] = [];
+                    $players[$player->getId()]['name'] = $player->getFullName();
+                    $players[$player->getId()]['played'] = 1;
+                    $players[$player->getId()]['position'] = [];
                 }
-                if(!in_array(Position::getPositionByAbbreviation($value->getPosition()), $data['players'][$player->getFirstName() . ' ' . $player->getLastName()]['position']))
+                if(!in_array(Position::getPositionByAbbreviation($value->getPosition()), $players[$player->getId()]['position']))
                 {
-                    $data['players'][$player->getFirstName() . ' ' . $player->getLastName()]['position'][] = Position::getPositionByAbbreviation($value->getPosition());
+                    $players[$player->getId()]['position'][] = Position::getPositionByAbbreviation($value->getPosition());
                 }
             }
         }
-        arsort($data['players']);
+        arsort($players);
+        $playersByPosition = [];
+        foreach ($players as $id => $playerProcessed) {
+            foreach ($playerProcessed['position'] as $position) {
+                $playersByPosition[$position[0]][] = ['id' => $id, 'name' => $playerProcessed['name'], 'played' => $playerProcessed['played']];
+            }
+        }
+        foreach ($playersByPosition as &$position) {
+            usort($position, function ($a, $b) {
+                if ($a['played'] == $b['played']) {
+                    return strcmp($a['name'], $b['name']);
+                }
+                return $b['played'] - $a['played'];
+            });
+        }
+        $data['players'] = $playersByPosition;
         return $this->json($data, 200, [], ['groups' => 'read:player', 'read:team']);
     }
 

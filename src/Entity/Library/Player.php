@@ -93,6 +93,11 @@ class Player
         return $this;
     }
 
+    public function getFullName(): string
+    {
+        return $this->firstname . ' ' . $this->lastname;
+    }
+
     public function getBirthPlace(): ?Country
     {
         return $this->birthPlace;
