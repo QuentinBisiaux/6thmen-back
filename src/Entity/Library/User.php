@@ -57,9 +57,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: PronoSeason::class, orphanRemoval: true)]
     private Collection $pronoSeason;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: StartingFive::class, orphanRemoval: true)]
+    private Collection $startingFive;
+
     public function __construct()
     {
         $this->pronoSeason = new ArrayCollection();
+        $this->startingFive = new ArrayCollection();
     }
     public function getId(): ?int
     {
@@ -200,6 +204,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($pronoSeason->getUser() === $this) {
                 $pronoSeason->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getStartingFive(): Collection
+    {
+        return $this->startingFive;
+    }
+
+    public function addStartingFive(StartingFive $startingFive): self
+    {
+        if (!$this->pronoSeason->contains($startingFive)) {
+            $this->pronoSeason->add($startingFive);
+            $startingFive->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStartingFive(StartingFive $startingFive): self
+    {
+        if ($this->pronoSeason->removeElement($startingFive)) {
+            // set the owning side to null (unless already changed)
+            if ($startingFive->getUser() === $this) {
+                $startingFive->setUser(null);
             }
         }
 
