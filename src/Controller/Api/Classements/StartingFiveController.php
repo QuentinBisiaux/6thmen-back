@@ -32,7 +32,7 @@ class StartingFiveController extends ApiController
         } catch (\Exception $ex) {
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
-        
+
 
 
         $this->entityManager->persist($pronoCompleted);
