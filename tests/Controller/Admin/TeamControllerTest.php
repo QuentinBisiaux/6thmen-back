@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Test\Controller;
+namespace App\Tests\Controller\Admin;
 
 use App\Entity\Library\Team;
-use App\Repository\TeamRepository;
-use App\Repository\UserRepository;
+use App\Repository\Library\TeamRepository;
+use App\Repository\Library\UserRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -48,14 +48,14 @@ class TeamControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(200, '/admin/team1/ new doesnt responded with 200');
 
         $this->client->submitForm('Save', [
-            'team1[name]' => 'Testing',
-            'team1[victory]' => 82,
-            'team1[rank]' => 1
+            'team[name]' => 'Testing',
+            'team[victory]' => 82,
+            'team[rank]' => 1
         ]);
 
-        self::assertSame($originalNumObjectsInRepository + 1, count($this->repository->findAll()), 'No new team1 inserted');
+        self::assertSame($originalNumObjectsInRepository + 1, count($this->repository->findAll()), 'No new team inserted');
 
-        self::assertResponseRedirects('/admin/team1/', 303, 'after submit new team1 doesnt redirect');
+        self::assertResponseRedirects('/admin/team1/', 303, 'after submit new team doesnt redirect');
 
     }
 

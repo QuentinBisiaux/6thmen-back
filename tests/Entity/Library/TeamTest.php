@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Test\Entity;
+namespace App\Tests\Entity\Library;
 
 use App\Entity\Library\Team;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
