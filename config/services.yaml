@@ -22,8 +22,8 @@ services:
     App\Controller\Api\SecurityController:
         tags: [ 'controller.service_arguments' ]
         arguments:
-            $consumerKey: '%env(TWITTER_CONSUMER_KEY)'
-            $consumerSecret: '%env(TWITTER_CONSUMER_SECRET)'
+            $consumerKey: '%env(TWITTER_CONSUMER_KEY)%'
+            $consumerSecret: '%env(TWITTER_CONSUMER_SECRET)%'
     App\Service\EncryptionService:
         arguments:
             $encryptionKey: '%env(ENCRYPTION_KEY)%'
