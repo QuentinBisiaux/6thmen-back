@@ -24,6 +24,8 @@ class SecurityController extends AbstractController
     (
         private EntityManagerInterface $entityManager,
         private EncryptionService $encryptionService,
+        private string $consumerKey,
+        private string $consumerSecret
     )
     {}
 
@@ -32,9 +34,13 @@ class SecurityController extends AbstractController
     public function twitterLogin(HttpClientInterface $httpClient): JsonResponse
     {
         $connection = new TwitterOAuth(
-            'pVxqp6s1JU1piXSH8HFvYgFIQ',
-            'TPHhOWpHNr5fkxY0IShujhKrUIqGOlirNmtHreWMMGnQCeFVCR'
+            $this->consumerKey,
+            $this->consumerSecret,
         );
+/*        $connection = new TwitterOAuth(
+            'amtPWHZkZWVnSWV0bnc0SE5aclY6MTpjaQ',
+            'bIMWYg2gkWth9M6thfM_I3Y5Jve3yNfBeI_bCYlvQkUS8jPzo6'
+        );*/
         $content = $connection->oauth('oauth/request_token', []);
         return $this->json(['authUrl' => 'https://api.twitter.com/oauth/authorize?oauth_token=' . $content['oauth_token']]);
     }
