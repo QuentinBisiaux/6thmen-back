@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[Route('/api/login')]
 class SecurityController extends AbstractController
@@ -24,23 +23,19 @@ class SecurityController extends AbstractController
     (
         private EntityManagerInterface $entityManager,
         private EncryptionService $encryptionService,
-        private string $consumerKey,
-        private string $consumerSecret
+        private readonly string $consumerKey,
+        private readonly string $consumerSecret
     )
     {}
 
     #[Route('/twitter', name: 'login_twitter', methods: ['GET'])]
     #[IsGranted('PUBLIC_ACCESS')]
-    public function twitterLogin(HttpClientInterface $httpClient): JsonResponse
+    public function twitterLogin(): JsonResponse
     {
         $connection = new TwitterOAuth(
             $this->consumerKey,
             $this->consumerSecret,
         );
-/*        $connection = new TwitterOAuth(
-            'amtPWHZkZWVnSWV0bnc0SE5aclY6MTpjaQ',
-            'bIMWYg2gkWth9M6thfM_I3Y5Jve3yNfBeI_bCYlvQkUS8jPzo6'
-        );*/
         $content = $connection->oauth('oauth/request_token', []);
         return $this->json(['authUrl' => 'https://api.twitter.com/oauth/authorize?oauth_token=' . $content['oauth_token']]);
     }
