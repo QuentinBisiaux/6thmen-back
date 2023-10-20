@@ -71,8 +71,8 @@ class SecurityController extends AbstractController
     private function exchangeAccessToken(string $oauthToken, string $oauthVerifier): array
     {
         $connection = new TwitterOAuth(
-            'pVxqp6s1JU1piXSH8HFvYgFIQ',
-            'TPHhOWpHNr5fkxY0IShujhKrUIqGOlirNmtHreWMMGnQCeFVCR'
+            $this->consumerKey,
+            $this->consumerSecret,
         );
         try {
             return $connection->oauth('oauth/access_token', ["oauth_token" => $oauthToken, "oauth_verifier" => $oauthVerifier]);
@@ -85,8 +85,8 @@ class SecurityController extends AbstractController
     private function getUserData(array $tokens): \stdClass
     {
         $connection = new TwitterOAuth(
-            'pVxqp6s1JU1piXSH8HFvYgFIQ',
-            'TPHhOWpHNr5fkxY0IShujhKrUIqGOlirNmtHreWMMGnQCeFVCR',
+            $this->consumerKey,
+            $this->consumerSecret,
             $tokens['oauth_token'],
             $tokens['oauth_token_secret']
         );
