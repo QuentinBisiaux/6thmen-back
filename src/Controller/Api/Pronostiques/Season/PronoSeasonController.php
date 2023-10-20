@@ -6,11 +6,8 @@ use App\Controller\Api\ApiController;
 use App\Entity\Library\PronoSeason;
 use App\Entity\Library\Season;
 use App\Entity\Library\Team;
-use App\Exception\Api\NoBearerException;
-use App\Exception\Api\UserDoesNotExistException;
 use App\Security\Api\JWTAuth;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -68,8 +65,7 @@ class PronoSeasonController extends ApiController
         $prono = $pronoSeasonRepo->findUserPronoForSeason($user, $season);
         if(empty($prono)) return $this->json($prono, 200, [], ['groups' => 'api:read:pronoSeason']);
 
-        $prono->setValid($this->isPronoCompleted($data));
-
+        $prono->setValid($this->isTotalVictoriesOk($data));
         $prono->setData($data);
         $prono->setUpdatedAt(new \DateTimeImmutable());
         $this->entityManager->persist($prono);
@@ -93,28 +89,22 @@ class PronoSeasonController extends ApiController
                 'victories'     => 0,
                 'defeats'       => 0,
             ];
-
-            if ($conference === 'East') {
-                $teamsByConference['east'][] = $teamData;
-            } elseif ($conference === 'West') {
-                $teamsByConference['west'][] = $teamData;
-            }
+            $teamsByConference[lcfirst($conference)][] = $teamData;
         }
 
         return $prono->setData($teamsByConference);
     }
 
-    ##@TODO change this part to be check in front end by looping or adding a new hitpoint
-    private function isPronoCompleted($data): bool
+    private function isTotalVictoriesOk($data): bool
     {
+        $totalVictories = 0;
+        $expectedVictories = 82 * 30 / 2;
         foreach ($data as $conference) {
             foreach($conference as $pronoLine) {
-                if($pronoLine['victories'] == 0 || $pronoLine['defeats'] == 0) {
-                    return false;
-                }
+                $totalVictories += $pronoLine['victories'];
             }
         }
-        return true;
+        return $totalVictories === $expectedVictories;
     }
 
 }
