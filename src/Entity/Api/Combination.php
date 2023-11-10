@@ -13,53 +13,41 @@ class Combination
 
     const MAX_COMBINATION = 1001;
 
-    const MAX_PING_PONG_BALL = 14;
-
     const PING_PONG_BALLS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 
 
     public function __construct()
     {
-        $workingNumber = 1;
-        while ($workingNumber < self::MAX_PING_PONG_BALL) {
-            $lockedNumber1 = $workingNumber + 1;
-            $lockedNumber2 = $workingNumber + 2;
-            $lockedNumber3 = $workingNumber + 3;
-            while ($lockedNumber1 <= self::MAX_PING_PONG_BALL) {
-                while ($lockedNumber2 <= self::MAX_PING_PONG_BALL) {
-                    while ($lockedNumber3 <= self::MAX_PING_PONG_BALL) {
-                        $this->rawCombinations[] = "$workingNumber,$lockedNumber1,$lockedNumber2,$lockedNumber3";
-                        $lockedNumber3++;
+        $count = 0;
+        $size = count(self::PING_PONG_BALLS);
+
+        for ($i = 0; $i < $size - 3; $i++) {
+            for ($j = $i + 1; $j < $size - 2; $j++) {
+                for ($k = $j + 1; $k < $size - 1; $k++) {
+                    for ($l = $k + 1; $l < $size; $l++) {
+                        $this->rawCombinations[] = implode(',', [
+                            self::PING_PONG_BALLS[$i],
+                            self::PING_PONG_BALLS[$j],
+                            self::PING_PONG_BALLS[$k],
+                            self::PING_PONG_BALLS[$l]
+                        ]);
+
+                        $count++;
+                        if ($count >= self::MAX_COMBINATION) {
+                            break 4; // Exit all loops if the maximum number of combinations is reached
+                        }
                     }
-                    $lockedNumber2++;
-                    $lockedNumber3 = $lockedNumber2 + 1;
                 }
-                $lockedNumber1++;
-                $lockedNumber2 = $lockedNumber1+ 1;
-                $lockedNumber3 = $lockedNumber2 + 1;
             }
-            $workingNumber++;
         }
-        /*for ($workingNumber = 1; $workingNumber < self::MAX_PING_PONG_BALL - 2; $workingNumber++) {
-            for ($lockedNumber1 = $workingNumber + 1; $lockedNumber1 < self::MAX_PING_PONG_BALL - 1; $lockedNumber1++) {
-                for ($lockedNumber2 = $lockedNumber1 + 1; $lockedNumber2 < self::MAX_PING_PONG_BALL; $lockedNumber2++) {
-                    for ($lockedNumber3 = $lockedNumber2 + 1; $lockedNumber3 < self::MAX_PING_PONG_BALL; $lockedNumber3++) {
-                        $this->rawCombinations[] = [$workingNumber, $lockedNumber1, $lockedNumber2, $lockedNumber3];
-                    }
-                }
-            }
-        }*/
     }
 
     public function setCombinationsToTeams(Collection $standings): void
     {
-        $key = array_rand($this->rawCombinations);
-        unset($this->rawCombinations[$key]);
-
-        foreach ($standings as $standing)
-        {
-            for ($x = 0; $x < (self::MAX_COMBINATION - 1) * $standing->getOdds() / 100; $x++) {
-                $key = array_rand($this->rawCombinations);
+        foreach ($standings as $standing) {
+            $combinationsCount = (int) ((self::MAX_COMBINATION - 1) * $standing->getOdds() / 100);
+            $keys = (array) array_rand($this->rawCombinations, $combinationsCount);
+            foreach ($keys as $key) {
                 $this->combinationsTeam[$this->rawCombinations[$key]] = $standing;
                 unset($this->rawCombinations[$key]);
             }
@@ -68,18 +56,7 @@ class Combination
 
     public function draw(): StandingDraft
     {
-        $key = '';
-        while(!array_key_exists($key, $this->combinationsTeam)) {
-            $key = $this->drawWinningCombination();
-        }
-        return $this->combinationsTeam[$key];
-    }
-
-    private function drawWinningCombination(): string
-    {
-        $combination = array_rand(array_flip(self::PING_PONG_BALLS), 4);
-
-        return implode(',', $combination);
+        return $this->combinationsTeam[array_rand($this->combinationsTeam)];
     }
 
 }

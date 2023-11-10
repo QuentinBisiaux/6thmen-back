@@ -3,14 +3,14 @@
 namespace App\Entity\Api;
 
 
-use App\Entity\Library\StandingDraft;
+use App\Entity\Library\Team;
 use Doctrine\Common\Collections\Collection;
 
 class Lottery
 {
     private Combination $combination;
-
     private array $results = [];
+    private array $drawnTeams = [];
 
     public function __construct
     (
@@ -29,31 +29,25 @@ class Lottery
 
     private function setResults(): void
     {
-        $counter = 0;
-        while($counter < 4) {
+        while(count($this->results) < 4) {
             $result = $this->combination->draw();
-            if($this->isAlreadyDrawn($result)) {
+            if($this->isAlreadyDrawn($result->getTeam())) {
                 continue;
             }
-            $this->results[$counter] = $result;
-            $counter++;
+            $this->results[] = $result;
+            $this->drawnTeams[$result->getTeam()->getId()] = true;
         }
         $standings = $this->standings;
         foreach ($standings as $standing) {
-            if($this->isAlreadyDrawn($standing)) {
+            if($this->isAlreadyDrawn($standing->getTeam())) {
                 continue;
             }
             $this->results[] = $standing;
         }
     }
 
-    private function isAlreadyDrawn(StandingDraft $team): bool
+    private function isAlreadyDrawn(Team $team): bool
     {
-        foreach ($this->results as $drawnTeam) {
-            if($drawnTeam->getId() === $team->getId()) {
-                return true;
-            }
-        }
-        return false;
+        return isset($this->drawnTeams[$team->getId()]);
     }
 }
