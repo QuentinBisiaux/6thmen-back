@@ -3,6 +3,8 @@
 namespace App\Repository\Library;
 
 use App\Entity\Library\StartingFive;
+use App\Entity\Library\Team;
+use App\Entity\Library\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -37,6 +39,17 @@ class StartingFiveRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findStartingFiveForUserAndTeam(User $user, Team $team): array
+    {
+        return $this->createQueryBuilder('sf')
+            ->where('sf.user = :user')
+            ->andWhere('sf.team = :team')
+            ->setParameter('user', $user)
+            ->setParameter('team', $team)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

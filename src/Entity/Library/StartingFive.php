@@ -20,28 +20,28 @@ class StartingFive
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'startingFives')]
+    #[ORM\ManyToOne(targetEntity: Team::class, inversedBy: 'startingFives')]
     #[ORM\JoinColumn(nullable: false)]
     private Team $team;
 
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimePointGuard')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private Player $pointGuard;
 
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimeGuard')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private Player $guard;
 
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimeForward')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private Player $forward;
 
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimeSmallForward')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private Player $smallForward;
 
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimeCenter')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private Player $center;
 
     #[ORM\Column]
@@ -54,7 +54,7 @@ class StartingFive
         denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
     )]
     #[Groups('api:read:starting-five')]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $createdAt;
 
     #[ORM\Column(nullable: true)]
     #[Context(

@@ -55,9 +55,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: PronoSeason::class, orphanRemoval: true)]
+    #[Groups('read:user')]
     private Collection $pronoSeason;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: StartingFive::class, orphanRemoval: true)]
+    #[Groups('read:user')]
     private Collection $startingFive;
 
     public function __construct()
