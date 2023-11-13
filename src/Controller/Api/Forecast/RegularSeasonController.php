@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controller\Api\Pronostiques\Season;
+namespace App\Controller\Api\Forecast;
 
 use App\Controller\Api\ApiController;
-use App\Entity\Library\PronoSeason;
+use App\Entity\Library\ForecastRegularSeason;
 use App\Entity\Library\Season;
 use App\Entity\Library\Team;
 use App\Security\Api\JWTAuth;
@@ -12,8 +12,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/pronostic/saison')]
-class PronoSeasonController extends ApiController
+#[Route('/api/forecast/regular-season')]
+class RegularSeasonController extends ApiController
 {
 
     public function __construct
@@ -25,7 +25,7 @@ class PronoSeasonController extends ApiController
         parent::__construct($this->JWTAuth);
     }
     #[Route('/{year}', name: 'api_prono_saison', methods: ['GET'])]
-    public function setupUserProno(Request $request, Season $season): JsonResponse
+    public function setupUserForecast(Request $request, Season $season): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -33,18 +33,18 @@ class PronoSeasonController extends ApiController
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
 
-        $pronoSeasonRepo = $this->entityManager->getRepository(PronoSeason::class);
-        $prono = $pronoSeasonRepo->findUserPronoForSeason($user, $season);
-        if(!empty($prono))  return $this->json($prono, 200, [], ['groups' => 'api:read:pronoSeason']);
+        $forecastRegularSeasonRepo = $this->entityManager->getRepository(ForecastRegularSeason::class);
+        $forecastRegularSeason = $forecastRegularSeasonRepo->findUserForecastRegularSeason($user, $season);
+        if(!empty($prono))  return $this->json($forecastRegularSeason, 200, [], ['groups' => 'api:read:forecast-regular-season']);
 
-        $prono = new PronoSeason();
-        $prono->setUser($user)->setSeason($season)->setCreatedAt(new \DateTimeImmutable());
-        $pronoCompleted = $this->setUpTeamForNewProno($prono);
+        $forecastRegularSeason = new ForecastRegularSeason();
+        $forecastRegularSeason->setUser($user)->setSeason($season)->setCreatedAt(new \DateTimeImmutable());
+        $forecastCompleted = $this->setUpTeamForNewForecast($forecastRegularSeason);
 
-        $this->entityManager->persist($pronoCompleted);
+        $this->entityManager->persist($forecastCompleted);
         $this->entityManager->flush();
 
-        return $this->json($pronoCompleted, 201, [], ['groups' => 'api:read:pronoSeason']);
+        return $this->json($forecastCompleted, 201, [], ['groups' => 'api:read:forecast-regular-season']);
 
     }
 
@@ -60,8 +60,8 @@ class PronoSeasonController extends ApiController
         $content = $request->getContent();
         $data = json_decode($content, true);
 
-        $pronoSeasonRepo = $this->entityManager->getRepository(PronoSeason::class);
-        /** @var PronoSeason $prono */
+        $pronoSeasonRepo = $this->entityManager->getRepository(ForecastRegularSeason::class);
+        /** @var ForecastRegularSeason $prono */
         $prono = $pronoSeasonRepo->findUserPronoForSeason($user, $season);
         if(empty($prono)) return $this->json($prono, 200, [], ['groups' => 'api:read:pronoSeason']);
 
@@ -74,7 +74,7 @@ class PronoSeasonController extends ApiController
         return $this->json(['isComplete' => $prono->isValid()]);
     }
 
-    private function setUpTeamForNewProno(PronoSeason $prono): PronoSeason
+    private function setUpTeamForNewForecast(ForecastRegularSeason $forecast): ForecastRegularSeason
     {
         $teams = $this->entityManager->getRepository(Team::class)->actualTeamsByConference();
 
@@ -92,7 +92,7 @@ class PronoSeasonController extends ApiController
             $teamsByConference[lcfirst($conference)][] = $teamData;
         }
 
-        return $prono->setData($teamsByConference);
+        return $forecast->setData($teamsByConference);
     }
 
     private function isTotalVictoriesOk($data): bool
@@ -100,8 +100,8 @@ class PronoSeasonController extends ApiController
         $totalVictories = 0;
         $expectedVictories = 82 * 30 / 2;
         foreach ($data as $conference) {
-            foreach($conference as $pronoLine) {
-                $totalVictories += $pronoLine['victories'];
+            foreach($conference as $forecastLine) {
+                $totalVictories += $forecastLine['victories'];
             }
         }
         return $totalVictories === $expectedVictories;

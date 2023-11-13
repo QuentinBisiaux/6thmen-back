@@ -2,34 +2,34 @@
 
 namespace App\Entity\Library;
 
-use App\Repository\Library\PronoSeasonRepository;
+use App\Repository\Library\ForecastRegularSeasonRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
-#[ORM\Entity(repositoryClass: PronoSeasonRepository::class)]
-class PronoSeason
+#[ORM\Entity(repositoryClass: ForecastRegularSeasonRepository::class)]
+class ForecastRegularSeason
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'pronoSeason')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'forecastRegularSeason')]
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
-    #[ORM\ManyToOne(targetEntity: Season::class, inversedBy: 'pronoSeason')]
+    #[ORM\ManyToOne(targetEntity: Season::class, inversedBy: 'forecastRegularSeason')]
     #[ORM\JoinColumn(nullable: false)]
     private Season $season;
 
     #[ORM\Column]
-    #[Groups('api:read:pronoSeason')]
+    #[Groups('api:read:forecast-regular-season')]
     private bool $valid = false;
 
     #[ORM\Column(type: 'json', nullable : false)]
-    #[Groups('api:read:pronoSeason')]
+    #[Groups('api:read:forecast-regular-season')]
     private array $data;
 
     #[ORM\Column]
@@ -37,7 +37,7 @@ class PronoSeason
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
         denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
     )]
-    #[Groups('api:read:pronoSeason')]
+    #[Groups('api:read:forecast-regular-season')]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
@@ -45,7 +45,7 @@ class PronoSeason
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
         denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
     )]
-    #[Groups('api:read:pronoSeason')]
+    #[Groups('api:read:forecast-regular-season')]
     private ?\DateTimeImmutable $updatedAt = null;
 
     public function getId(): ?int
@@ -58,7 +58,7 @@ class PronoSeason
         return $this->user;
     }
 
-    public function setUser(User $user): self
+    public function setUser(?User $user): self
     {
         $this->user = $user;
         return $this;

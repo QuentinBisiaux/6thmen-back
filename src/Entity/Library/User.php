@@ -54,9 +54,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: PronoSeason::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ForecastRegularSeason::class, orphanRemoval: true)]
     #[Groups('read:user')]
-    private Collection $pronoSeason;
+    private Collection $forecastRegularSeason;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: StartingFive::class, orphanRemoval: true)]
     #[Groups('read:user')]
@@ -64,7 +64,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->pronoSeason = new ArrayCollection();
+        $this->forecastRegularSeason = new ArrayCollection();
         $this->startingFive = new ArrayCollection();
     }
     public function getId(): ?int
@@ -185,28 +185,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPronoSeason(): Collection
+    public function getForecastRegularSeason(): Collection
     {
-        return $this->pronoSeason;
+        return $this->forecastRegularSeason;
     }
 
-    public function addPronoSeason(PronoSeason $pronoSeason): self
+    public function addForecastRegularSeason(ForecastRegularSeason $forecastRegularSeason): self
     {
-        if (!$this->pronoSeason->contains($pronoSeason)) {
-            $this->pronoSeason->add($pronoSeason);
-            $pronoSeason->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removePronoSeason(PronoSeason $pronoSeason): self
-    {
-        if ($this->pronoSeason->removeElement($pronoSeason)) {
-            // set the owning side to null (unless already changed)
-            if ($pronoSeason->getUser() === $this) {
-                $pronoSeason->setUser(null);
-            }
+        if (!$this->forecastRegularSeason->contains($forecastRegularSeason)) {
+            $this->forecastRegularSeason->add($forecastRegularSeason);
+            $forecastRegularSeason->setUser($this);
         }
 
         return $this;
@@ -219,25 +207,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addStartingFive(StartingFive $startingFive): self
     {
-        if (!$this->pronoSeason->contains($startingFive)) {
-            $this->pronoSeason->add($startingFive);
+        if (!$this->startingFive->contains($startingFive)) {
+            $this->startingFive->add($startingFive);
             $startingFive->setUser($this);
         }
 
         return $this;
     }
-
-    public function removeStartingFive(StartingFive $startingFive): self
-    {
-        if ($this->pronoSeason->removeElement($startingFive)) {
-            // set the owning side to null (unless already changed)
-            if ($startingFive->getUser() === $this) {
-                $startingFive->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-
 }

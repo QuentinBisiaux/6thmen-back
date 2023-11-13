@@ -49,15 +49,15 @@ class Season
     #[ORM\OneToMany(mappedBy: 'season', targetEntity: StandingDraft::class)]
     private Collection $standingsDraft;
 
-    #[ORM\OneToMany(mappedBy: 'season', targetEntity: PronoSeason::class)]
-    private Collection $pronoSeason;
+    #[ORM\OneToMany(mappedBy: 'season', targetEntity: ForecastRegularSeason::class)]
+    private Collection $forecastRegularSeason;
 
     public function __construct()
     {
         $this->playerTeams = new ArrayCollection();
         $this->standings = new ArrayCollection();
         $this->standingsDraft = new ArrayCollection();
-        $this->pronoSeason = new ArrayCollection();
+        $this->forecastRegularSeason = new ArrayCollection();
 
     }
 
@@ -192,28 +192,16 @@ class Season
         return $this;
     }
 
-    public function getPronoSeason(): Collection
+    public function getForecastRegularSeason(): Collection
     {
-        return $this->pronoSeason;
+        return $this->forecastRegularSeason;
     }
 
-    public function addPronoSeason(PronoSeason $pronoSeason): self
+    public function addForecastRegularSeason(ForecastRegularSeason $forecastRegularSeason): self
     {
-        if (!$this->pronoSeason->contains($pronoSeason)) {
-            $this->pronoSeason->add($pronoSeason);
-            $pronoSeason->setSeason($this);
-        }
-
-        return $this;
-    }
-
-    public function removePronoSeason(PronoSeason $pronoSeason): self
-    {
-        if ($this->pronoSeason->removeElement($pronoSeason)) {
-            // set the owning side to null (unless already changed)
-            if ($pronoSeason->getSeason() === $this) {
-                $pronoSeason->setSeason(null);
-            }
+        if (!$this->forecastRegularSeason->contains($forecastRegularSeason)) {
+            $this->forecastRegularSeason->add($forecastRegularSeason);
+            $forecastRegularSeason->setSeason($this);
         }
 
         return $this;
