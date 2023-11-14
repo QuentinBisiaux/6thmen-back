@@ -12,17 +12,17 @@ class Position
         5 => 'Pivot',
     ];
     const POSITION_MATRIX = [
-        'PG' => ['Meneur'],
-        'SG' => ['Arrière'],
-        'G' => ['Meneur', 'Arrière'],
-        'G-F' => ['Meneur', 'Arrière', 'Ailier'],
-        'F-G' => ['Meneur', 'Arrière', 'Ailier'],
-        'SF' => ['Ailier'],
-        'PF' => ['Ailier Fort'],
-        'F' => ['Ailier', 'Ailier Fort'],
-        'C' => ['Pivot'],
-        'F-C' => ['Ailier', 'Ailier Fort', 'Pivot'],
-        'C-F' => ['Ailier', 'Ailier Fort', 'Pivot'],
+        'PG'    => ['Meneur'],
+        'SG'    => ['Arriere'],
+        'G'     => ['Meneur', 'Arriere'],
+        'G-F'   => ['Meneur', 'Arriere', 'Ailier'],
+        'F-G'   => ['Meneur', 'Arriere', 'Ailier'],
+        'SF'    => ['Ailier'],
+        'PF'    => ['AilierFort'],
+        'F'     => ['Ailier', 'AilierFort'],
+        'C'     => ['Pivot'],
+        'F-C'   => ['Ailier', 'AilierFort', 'Pivot'],
+        'C-F'   => ['Ailier', 'AilierFort', 'Pivot'],
     ];
 
     static function getPositionByAbbreviation(string $abbreviation): array
