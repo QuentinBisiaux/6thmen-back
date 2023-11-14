@@ -18,14 +18,14 @@ class RegularSeasonController extends ApiController
 
     public function __construct
     (
-        private JWTAuth $JWTAuth,
-        private EntityManagerInterface $entityManager
+        private readonly JWTAuth                $JWTAuth,
+        private readonly EntityManagerInterface $entityManager
     )
     {
         parent::__construct($this->JWTAuth);
     }
-    #[Route('/{year}', name: 'api_prono_saison', methods: ['GET'])]
-    public function setupUserForecast(Request $request, Season $season): JsonResponse
+    #[Route('/{year}', name: 'api_forecast_regular_season_show', methods: ['GET'])]
+    public function show(Request $request, Season $season): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -35,7 +35,7 @@ class RegularSeasonController extends ApiController
 
         $forecastRegularSeasonRepo = $this->entityManager->getRepository(ForecastRegularSeason::class);
         $forecastRegularSeason = $forecastRegularSeasonRepo->findUserForecastRegularSeason($user, $season);
-        if(!empty($prono))  return $this->json($forecastRegularSeason, 200, [], ['groups' => 'api:read:forecast-regular-season']);
+        if(!empty($forecastRegularSeason))  return $this->json($forecastRegularSeason, 200, [], ['groups' => 'api:read:forecast-regular-season']);
 
         $forecastRegularSeason = new ForecastRegularSeason();
         $forecastRegularSeason->setUser($user)->setSeason($season)->setCreatedAt(new \DateTimeImmutable());
@@ -48,8 +48,8 @@ class RegularSeasonController extends ApiController
 
     }
 
-    #[Route('/{year}/update', name: 'api_prono_saison_update', methods: ['POST'])]
-    public function updateUserProno(Request $request, Season $season): JsonResponse
+    #[Route('/{year}/update', name: 'api_forecast_regular_season_update', methods: ['POST'])]
+    public function update(Request $request, Season $season): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -60,18 +60,18 @@ class RegularSeasonController extends ApiController
         $content = $request->getContent();
         $data = json_decode($content, true);
 
-        $pronoSeasonRepo = $this->entityManager->getRepository(ForecastRegularSeason::class);
-        /** @var ForecastRegularSeason $prono */
-        $prono = $pronoSeasonRepo->findUserPronoForSeason($user, $season);
-        if(empty($prono)) return $this->json($prono, 200, [], ['groups' => 'api:read:pronoSeason']);
+        $forecastRegularSeasonRepo = $this->entityManager->getRepository(ForecastRegularSeason::class);
+        /** @var ForecastRegularSeason $forecastRegularSeason */
+        $forecastRegularSeason = $forecastRegularSeasonRepo->findUserForecastRegularSeason($user, $season);
+        if(empty($forecastRegularSeason)) return $this->json($forecastRegularSeason, 200, [], ['groups' => 'api:read:forecast-regular-season']);
 
-        $prono->setValid($this->isTotalVictoriesOk($data));
-        $prono->setData($data);
-        $prono->setUpdatedAt(new \DateTimeImmutable());
-        $this->entityManager->persist($prono);
+        $forecastRegularSeason->setValid($this->isTotalVictoriesOk($data));
+        $forecastRegularSeason->setData($data);
+        $forecastRegularSeason->setUpdatedAt(new \DateTimeImmutable());
+        $this->entityManager->persist($forecastRegularSeason);
         $this->entityManager->flush();
 
-        return $this->json(['isComplete' => $prono->isValid()]);
+        return $this->json(['isComplete' => $forecastRegularSeason->isValid()]);
     }
 
     private function setUpTeamForNewForecast(ForecastRegularSeason $forecast): ForecastRegularSeason
