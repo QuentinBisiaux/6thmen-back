@@ -14,34 +14,42 @@ class StartingFive
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('api:read:starting-five')]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'startingFives')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('api:read:starting-five')]
     private User $user;
 
     #[ORM\ManyToOne(targetEntity: Team::class, inversedBy: 'startingFives')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('api:read:starting-five')]
     private Team $team;
 
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimePointGuard')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups('api:read:starting-five')]
     private Player $pointGuard;
 
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimeGuard')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups('api:read:starting-five')]
     private Player $guard;
 
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimeForward')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups('api:read:starting-five')]
     private Player $forward;
 
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimeSmallForward')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups('api:read:starting-five')]
     private Player $smallForward;
 
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimeCenter')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups('api:read:starting-five')]
     private Player $center;
 
     #[ORM\Column]

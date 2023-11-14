@@ -3,10 +3,8 @@
 namespace App\Controller\Api\Rankings;
 
 use App\Controller\Api\ApiController;
-use App\Entity\Library\Position;
 use App\Entity\Library\StartingFive;
 use App\Entity\Library\Team;
-use App\Repository\Library\StartingFiveRepository;
 use App\Security\Api\JWTAuth;
 use App\Service\Rankings\StartingFiveService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,12 +34,13 @@ class StartingFiveController extends ApiController
         } catch (\Exception $ex) {
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
-        $teams =  $this->entityManager->getRepository(Team::class)->findTeamsByNameOrdered();
+        $teams          =  $this->entityManager->getRepository(Team::class)->findTeamsByNameOrdered();
+        $startingFive   =  $this->entityManager->getRepository(StartingFive::class)->findStartingFiveForUser($user);
         $data = [
-            'teams' => $teams,
-            'userStatingFive' => $user->getStartingFive()
+            'teams'         => $teams,
+            'startingFives'  => $startingFive
         ];
-        return $this->json($data, 200, [], ['groups' => 'read:team', 'read:user', 'api:read:starting-five']);
+        return $this->json($data, 200, [], ['groups' => ['read:team', 'api:read:starting-five']]);
 
     }
 
@@ -54,7 +53,7 @@ class StartingFiveController extends ApiController
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
         $data = $this->startingFiveService->getStartingFiveData($user, $team);
-        return $this->json($data, 200, [], ['groups' => 'read:player', 'read:team']);
+        return $this->json($data, 200, [], ['groups' => '']);
 
     }
 

@@ -52,6 +52,15 @@ class StartingFiveRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findStartingFiveForUser(User $user): array
+    {
+        return $this->createQueryBuilder('sf')
+            ->where('sf.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Country[] Returns an array of Country objects
 //     */
