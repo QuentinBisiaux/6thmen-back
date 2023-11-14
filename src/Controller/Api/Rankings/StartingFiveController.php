@@ -53,7 +53,7 @@ class StartingFiveController extends ApiController
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
         $data = $this->startingFiveService->getStartingFiveData($user, $team);
-        return $this->json($data, 200, [], ['groups' => '']);
+        return $this->json($data, 200, [], ['groups' => 'read:player', 'read:team']);
 
     }
 
