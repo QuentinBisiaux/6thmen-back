@@ -15,7 +15,7 @@ services:
 
   6thmen:
     build: .
-    container_name: 6thmen-admin-php
+    container_name: 6thmen-php
     user: rayuruna:rayuruna
     restart: always
     volumes:
