@@ -47,12 +47,21 @@ class PlayerRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->join('p.playerTeams', 'pt')
-            ->where('pt.team1 = :team1')
+            ->where('pt.team = :team')
             ->groupBy('p.id')
             ->select('p.id', 'p.firstname', 'p.lastname', 'p.birthday')
-            ->setParameter('team1', $team)
+            ->setParameter('team', $team)
             ->getQuery()
             ->getResult();
+    }
+
+    public function findOneById(int $playerId): ?Player
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.id = :playerId')
+            ->setParameter('playerId', $playerId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
 
