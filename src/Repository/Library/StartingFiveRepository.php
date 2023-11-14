@@ -41,7 +41,7 @@ class StartingFiveRepository extends ServiceEntityRepository
         }
     }
 
-    public function findStartingFiveForUserAndTeam(User $user, Team $team): array
+    public function findStartingFiveForUserAndTeam(User $user, Team $team): ?StartingFive
     {
         return $this->createQueryBuilder('sf')
             ->where('sf.user = :user')
@@ -49,7 +49,7 @@ class StartingFiveRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->setParameter('team', $team)
             ->getQuery()
-            ->getResult();
+            ->getOneOrNullResult();
     }
 
     public function findStartingFiveForUser(User $user): array

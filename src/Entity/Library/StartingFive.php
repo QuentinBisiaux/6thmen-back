@@ -30,27 +30,27 @@ class StartingFive
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimePointGuard')]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups('api:read:starting-five')]
-    private Player $pointGuard;
+    private ?Player $pointGuard = null;
 
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimeGuard')]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups('api:read:starting-five')]
-    private Player $guard;
+    private ?Player $guard = null;
 
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimeForward')]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups('api:read:starting-five')]
-    private Player $forward;
+    private ?Player $forward = null;
 
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimeSmallForward')]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups('api:read:starting-five')]
-    private Player $smallForward;
+    private ?Player $smallForward = null;
 
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimeCenter')]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups('api:read:starting-five')]
-    private Player $center;
+    private ?Player $center = null;
 
     #[ORM\Column]
     #[Groups('api:read:starting-five')]
@@ -61,7 +61,6 @@ class StartingFive
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
         denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
     )]
-    #[Groups('api:read:starting-five')]
     private ?\DateTimeImmutable $createdAt;
 
     #[ORM\Column(nullable: true)]
@@ -69,7 +68,6 @@ class StartingFive
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
         denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
     )]
-    #[Groups('api:read:starting-five')]
     private ?\DateTimeImmutable $updatedAt = null;
 
     public function getId(): ?int
@@ -99,7 +97,7 @@ class StartingFive
         return $this;
     }
 
-    public function getPointGuard(): Player
+    public function getPointGuard(): ?Player
     {
         return $this->pointGuard;
     }
@@ -110,7 +108,7 @@ class StartingFive
         return $this;
     }
 
-    public function getGuard(): Player
+    public function getGuard(): ?Player
     {
         return $this->guard;
     }
@@ -121,7 +119,7 @@ class StartingFive
         return $this;
     }
 
-    public function getForward(): Player
+    public function getForward(): ?Player
     {
         return $this->forward;
     }
@@ -132,7 +130,7 @@ class StartingFive
         return $this;
     }
 
-    public function getSmallForward(): Player
+    public function getSmallForward(): ?Player
     {
         return $this->smallForward;
     }
@@ -143,7 +141,7 @@ class StartingFive
         return $this;
     }
 
-    public function getCenter(): Player
+    public function getCenter(): ?Player
     {
         return $this->center;
     }
@@ -159,9 +157,15 @@ class StartingFive
         return $this->valid;
     }
 
-    public function setValid(bool $valid): self
+    public function setValid(): self
     {
-        $this->valid = $valid;
+        $this->valid = (
+            !is_null($this->getPointGuard()) &&
+            !is_null($this->getGuard()) &&
+            !is_null($this->getForward()) &&
+            !is_null($this->getSmallForward()) &&
+            !is_null($this->getCenter())
+        );
         return $this;
     }
 

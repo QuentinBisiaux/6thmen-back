@@ -53,7 +53,23 @@ class StartingFiveController extends ApiController
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
         $data = $this->startingFiveService->getStartingFiveData($user, $team);
-        return $this->json($data, 200, [], ['groups' => 'read:player', 'read:team']);
+        return $this->json($data, 200, [], ['groups' => ['read:player', 'read:team', 'api:read:starting-five']]);
+
+    }
+
+    #[Route('/{slug}/update', name: 'api_starting_five_update', methods: ['POST'])]
+    public function update(Request $request, Team $team): JsonResponse
+    {
+        try {
+            $user = $this->tryToConnectUser($request);
+        } catch (\Exception $ex) {
+            return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
+        }
+        $startingFive   =  $this->entityManager->getRepository(StartingFive::class)->findStartingFiveForUserAndTeam($user, $team);
+        $data = json_decode($request->getContent(), true);
+        $completed = $this->startingFiveService->updateStartingFive($startingFive, $data);
+
+        return $this->json(['isCompleted' => $completed]);
 
     }
 
