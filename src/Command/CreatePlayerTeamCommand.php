@@ -60,7 +60,8 @@ class CreatePlayerTeamCommand extends Command
         $totalError     = 0;
         $totalInsert    = 0;
         foreach ($fileContent as $playerTeamsData) {
-            $this->populateRawPlayer(explode(';', $playerTeamsData));
+            $explodedData = explode(';', $playerTeamsData);
+            $this->populateRawPlayer($explodedData);
             if (is_null($this->rawPlayer['season'])) {
                 $io->error('Error Season ' . $playerTeamsData);
                 $seasonError++;
@@ -124,14 +125,14 @@ class CreatePlayerTeamCommand extends Command
 
     private function populateRawPlayer(array $playerData): void
     {
-        $names = explode(' ', trim($playerData[3]));
+        $names        = explode(' ', trim($playerData[3]));
         $firstname    = array_shift($names);
-        $lastname     = implode(' ', $names);
+        $lastname     = str_replace(' (TW)', "", implode(' ', $names));
         $this->rawPlayer['season']          = $this->initSeason(trim($playerData[0]));
-        $this->rawPlayer['team']            = $this->initTeam(trim($playerData[1]));
+        $this->rawPlayer['team']            = $this->initTeam(trim($playerData[1]), trim($playerData[0]));
         $this->rawPlayer['jerseyNumber']    = trim($playerData[2]);
         $this->rawPlayer['playerFirstname'] = $firstname;
-        $this->rawPlayer['playerLastname']      = $lastname;
+        $this->rawPlayer['playerLastname']  = $lastname;
         $this->rawPlayer['birthday']        = new \DateTimeImmutable(trim($playerData[7]));
         $this->rawPlayer['birthplace']      = $this->initCountry(strtoupper(trim($playerData[8])));
         $this->rawPlayer['player']          = $this->initPlayer();
@@ -144,9 +145,10 @@ class CreatePlayerTeamCommand extends Command
         return $this->manager->getRepository(Season::class)->findOneBy(['year' => $year]);
     }
 
-    private function initTeam(string $name): ?Team
+    private function initTeam(string $name, string $year): ?Team
     {
-        return $this->manager->getRepository(Team::class)->findOneBy(['name' => $name]);
+        $date = new \DateTimeImmutable(substr($year, 0, 4) . '-01-02');
+        return $this->manager->getRepository(Team::class)->findByNameAndDate($name, $date);
     }
 
     private function initPlayer(): ?Player

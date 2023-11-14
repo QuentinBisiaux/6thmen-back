@@ -103,6 +103,22 @@ class TeamRepository extends ServiceEntityRepository
             ;
     }
 
+    public function findByNameAndDate(string $name, \DateTimeImmutable $date): ?Team
+    {
+        $qb = $this->createQueryBuilder('t');
+
+        $qb->where('t.name = :name')
+            ->setParameter('name', $name)
+            ->andWhere($qb->expr()->orX(
+                $qb->expr()->isNull('t.endedIn'),
+                $qb->expr()->gte('t.endedIn', ':date')
+            ))
+            ->setParameter('date', $date)
+            ->andWhere('t.createdIn <= :date');
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
 //    /**
 //     * @return Team[] Returns an array of Team objects
 //     */
