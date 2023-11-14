@@ -12,7 +12,7 @@ class TeamControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
     private TeamRepository $repository;
-    private string $path = '/admin/team1/';
+    private string $path = '/admin/team/';
 
     protected function setUp(): void
     {

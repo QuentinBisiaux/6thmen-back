@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20231024104811 extends AbstractMigration
+final class Version20231114081630 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,10 +21,10 @@ final class Version20231024104811 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SEQUENCE country_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE forecast_regular_season_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE league_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE player_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE player_team_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE SEQUENCE prono_season_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE season_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE sport_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE standing_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
@@ -36,6 +36,11 @@ final class Version20231024104811 extends AbstractMigration
         $this->addSql('CREATE TABLE country (id INT NOT NULL, name VARCHAR(255) NOT NULL, alpha2 VARCHAR(2) NOT NULL, alpha3 VARCHAR(3) NOT NULL, code VARCHAR(3) NOT NULL, region VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN country.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN country.updated_at IS \'(DC2Type:datetime_immutable)\'');
+        $this->addSql('CREATE TABLE forecast_regular_season (id INT NOT NULL, user_id INT NOT NULL, season_id INT NOT NULL, valid BOOLEAN NOT NULL, data JSON NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_D9CD7FB9A76ED395 ON forecast_regular_season (user_id)');
+        $this->addSql('CREATE INDEX IDX_D9CD7FB94EC001D1 ON forecast_regular_season (season_id)');
+        $this->addSql('COMMENT ON COLUMN forecast_regular_season.created_at IS \'(DC2Type:datetime_immutable)\'');
+        $this->addSql('COMMENT ON COLUMN forecast_regular_season.updated_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE league (id INT NOT NULL, sport_id INT NOT NULL, name VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_3EB4C318AC78BCF8 ON league (sport_id)');
         $this->addSql('COMMENT ON COLUMN league.created_at IS \'(DC2Type:datetime_immutable)\'');
@@ -51,11 +56,6 @@ final class Version20231024104811 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_66FAF62C296CD8AE ON player_team (team_id)');
         $this->addSql('COMMENT ON COLUMN player_team.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN player_team.updated_at IS \'(DC2Type:datetime_immutable)\'');
-        $this->addSql('CREATE TABLE prono_season (id INT NOT NULL, user_id INT NOT NULL, season_id INT NOT NULL, valid BOOLEAN NOT NULL, data JSON NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX IDX_D0EC7821A76ED395 ON prono_season (user_id)');
-        $this->addSql('CREATE INDEX IDX_D0EC78214EC001D1 ON prono_season (season_id)');
-        $this->addSql('COMMENT ON COLUMN prono_season.created_at IS \'(DC2Type:datetime_immutable)\'');
-        $this->addSql('COMMENT ON COLUMN prono_season.updated_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE season (id INT NOT NULL, year VARCHAR(10) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN season.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN season.updated_at IS \'(DC2Type:datetime_immutable)\'');
@@ -119,13 +119,13 @@ final class Version20231024104811 extends AbstractMigration
         $$ LANGUAGE plpgsql;');
         $this->addSql('DROP TRIGGER IF EXISTS notify_trigger ON messenger_messages;');
         $this->addSql('CREATE TRIGGER notify_trigger AFTER INSERT OR UPDATE ON messenger_messages FOR EACH ROW EXECUTE PROCEDURE notify_messenger_messages();');
+        $this->addSql('ALTER TABLE forecast_regular_season ADD CONSTRAINT FK_D9CD7FB9A76ED395 FOREIGN KEY (user_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE forecast_regular_season ADD CONSTRAINT FK_D9CD7FB94EC001D1 FOREIGN KEY (season_id) REFERENCES season (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE league ADD CONSTRAINT FK_3EB4C318AC78BCF8 FOREIGN KEY (sport_id) REFERENCES sport (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE player ADD CONSTRAINT FK_98197A65B4BB6BBC FOREIGN KEY (birth_place_id) REFERENCES country (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE player_team ADD CONSTRAINT FK_66FAF62C4EC001D1 FOREIGN KEY (season_id) REFERENCES season (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE player_team ADD CONSTRAINT FK_66FAF62C99E6F5DF FOREIGN KEY (player_id) REFERENCES player (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE player_team ADD CONSTRAINT FK_66FAF62C296CD8AE FOREIGN KEY (team_id) REFERENCES team (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('ALTER TABLE prono_season ADD CONSTRAINT FK_D0EC7821A76ED395 FOREIGN KEY (user_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('ALTER TABLE prono_season ADD CONSTRAINT FK_D0EC78214EC001D1 FOREIGN KEY (season_id) REFERENCES season (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE standing ADD CONSTRAINT FK_619A8AD858AFC4DE FOREIGN KEY (league_id) REFERENCES league (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE standing ADD CONSTRAINT FK_619A8AD84EC001D1 FOREIGN KEY (season_id) REFERENCES season (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE standing ADD CONSTRAINT FK_619A8AD8296CD8AE FOREIGN KEY (team_id) REFERENCES team (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
@@ -154,10 +154,10 @@ final class Version20231024104811 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SCHEMA public');
         $this->addSql('DROP SEQUENCE country_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE forecast_regular_season_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE league_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE player_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE player_team_id_seq CASCADE');
-        $this->addSql('DROP SEQUENCE prono_season_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE season_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE sport_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE standing_id_seq CASCADE');
@@ -166,13 +166,13 @@ final class Version20231024104811 extends AbstractMigration
         $this->addSql('DROP SEQUENCE team_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE "user_id_seq" CASCADE');
         $this->addSql('DROP SEQUENCE "user_data_id_seq" CASCADE');
+        $this->addSql('ALTER TABLE forecast_regular_season DROP CONSTRAINT FK_D9CD7FB9A76ED395');
+        $this->addSql('ALTER TABLE forecast_regular_season DROP CONSTRAINT FK_D9CD7FB94EC001D1');
         $this->addSql('ALTER TABLE league DROP CONSTRAINT FK_3EB4C318AC78BCF8');
         $this->addSql('ALTER TABLE player DROP CONSTRAINT FK_98197A65B4BB6BBC');
         $this->addSql('ALTER TABLE player_team DROP CONSTRAINT FK_66FAF62C4EC001D1');
         $this->addSql('ALTER TABLE player_team DROP CONSTRAINT FK_66FAF62C99E6F5DF');
         $this->addSql('ALTER TABLE player_team DROP CONSTRAINT FK_66FAF62C296CD8AE');
-        $this->addSql('ALTER TABLE prono_season DROP CONSTRAINT FK_D0EC7821A76ED395');
-        $this->addSql('ALTER TABLE prono_season DROP CONSTRAINT FK_D0EC78214EC001D1');
         $this->addSql('ALTER TABLE standing DROP CONSTRAINT FK_619A8AD858AFC4DE');
         $this->addSql('ALTER TABLE standing DROP CONSTRAINT FK_619A8AD84EC001D1');
         $this->addSql('ALTER TABLE standing DROP CONSTRAINT FK_619A8AD8296CD8AE');
@@ -195,10 +195,10 @@ final class Version20231024104811 extends AbstractMigration
         $this->addSql('ALTER TABLE user_favorite_teams DROP CONSTRAINT FK_4BCFD6256B9DD454');
         $this->addSql('ALTER TABLE user_favorite_teams DROP CONSTRAINT FK_4BCFD625296CD8AE');
         $this->addSql('DROP TABLE country');
+        $this->addSql('DROP TABLE forecast_regular_season');
         $this->addSql('DROP TABLE league');
         $this->addSql('DROP TABLE player');
         $this->addSql('DROP TABLE player_team');
-        $this->addSql('DROP TABLE prono_season');
         $this->addSql('DROP TABLE season');
         $this->addSql('DROP TABLE sport');
         $this->addSql('DROP TABLE standing');

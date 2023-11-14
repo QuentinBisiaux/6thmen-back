@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Api\Classements;
+namespace App\Controller\Api\Rankings;
 
 use App\Controller\Api\ApiController;
 use App\Entity\Library\Position;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/ratings/starting-five')]
+#[Route('/api/rankings/starting-five')]
 class StartingFiveController extends ApiController
 {
 
@@ -27,8 +27,8 @@ class StartingFiveController extends ApiController
         parent::__construct($this->JWTAuth);
     }
 
-    #[Route('/all', name: 'api_starting_five_all', methods: ['GET'])]
-    public function all(Request $request): JsonResponse
+    #[Route('/', name: 'api_starting_five_index', methods: ['GET'])]
+    public function index(Request $request): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -44,8 +44,8 @@ class StartingFiveController extends ApiController
 
     }
 
-    #[Route('/{slug}', name: 'api_starting_five_team', methods: ['GET'])]
-    public function initStartingFive(Request $request, Team $team): JsonResponse
+    #[Route('/{slug}', name: 'api_starting_five_show', methods: ['GET'])]
+    public function show(Request $request, Team $team): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -65,32 +65,25 @@ class StartingFiveController extends ApiController
         }
         $data['startingFive'] = $currentStartingFive;
 
-        $teams = $this->entityManager->getRepository(Team::class)->findTeamAndSisters($team->getId());
-        $playerTeams = [];
-        foreach($teams as $team) {
-            $playerTeams[] = $team->getPlayerTeams();
-        }
-
-        $data['teams'] = $teams;
+        $data['teams'] = $this->entityManager->getRepository(Team::class)->findTeamAndSisters($team->getId());
         $players = [];
-
-        foreach ($playerTeams as $playerTeam) {
-            foreach($playerTeam as $value) {
+        foreach($data['teams'] as $team) {
+            foreach($team->getPlayerTeams() as $value) {
                 $player = $value->getPlayer();
+                $positionPlayed = Position::getPositionByAbbreviation($value->getPosition());
                 if(array_key_exists($player->getId(), $players)) {
                     $players[$player->getId()]['played'] += 1;
+                    if(!in_array($positionPlayed, $players[$player->getId()]['position'])) {
+                        $players[$player->getId()]['position'][] = $positionPlayed;
+                    }
                 } else {
-                    $players[$player->getId()]['name'] = $player->getFullName();
-                    $players[$player->getId()]['played'] = 1;
-                    $players[$player->getId()]['position'] = [];
-                }
-                $positionPlayed = Position::getPositionByAbbreviation($value->getPosition());
-                if(!in_array($positionPlayed, $players[$player->getId()]['position']))
-                {
-                    $players[$player->getId()]['position'][] = $positionPlayed;
+                    $players[$player->getId()]['name']      = $player->getFullName();
+                    $players[$player->getId()]['played']    = 1;
+                    $players[$player->getId()]['position']  = $positionPlayed;
                 }
             }
         }
+
         arsort($players);
         $playersByPosition = [];
         foreach ($players as $id => $playerProcessed) {
