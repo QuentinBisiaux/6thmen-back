@@ -28,6 +28,9 @@ services:
         arguments:
             $encryptionKey: '%env(ENCRYPTION_KEY)%'
             $deterministicKey: '%env(DETERMINISTIC_KEY)%'
+    Doctrine\ORM\Mapping\Driver\AttributeDriver:
+        arguments:
+            $reportFieldsWhereDeclared: true
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
