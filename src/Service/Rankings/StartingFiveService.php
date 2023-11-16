@@ -21,9 +21,10 @@ readonly class StartingFiveService
     public function getStartingFiveData(User $user, Team $team): array
     {
         $data = [];
+        $data['team']           = $team;
         $data['startingFive']   = $this->findOrCreateStartingFive($user, $team);
-        $data['teams']          = $this->entityManager->getRepository(Team::class)->findTeamAndSisters($team->getId());
-        $players                = $this->processPlayers($data['teams']);
+        $teams                  = $this->entityManager->getRepository(Team::class)->findTeamAndSisters($team->getId());
+        $players                = $this->processPlayers($teams);
         $data['players']        = $this->organizePlayersByPosition($players);
         return $data;
     }
@@ -86,26 +87,29 @@ readonly class StartingFiveService
 
     public function updateStartingFive(StartingFive $startingFive, array $data): bool
     {
+        foreach ($data as $position => $playerId) {
+            $player = null;
+            if(!is_null($playerId)) {
+                $player = $this->entityManager->getRepository(Player::class)->findOneById($playerId);
+            }
 
-        $position = $data['position'];
-        $player = $this->entityManager->getRepository(Player::class)->findOneById($data['playerId']);
-
-        switch ($position) {
-            case 'Meneur':
-                $startingFive->setPointGuard($player);
-                break;
-            case 'Arriere':
-                $startingFive->setGuard($player);
-                break;
-            case 'Ailier':
-                $startingFive->setForward($player);
-                break;
-            case 'AilierFort':
-                $startingFive->setSmallForward($player);
-                break;
-            case 'Pivot':
-                $startingFive->setCenter($player);
-                break;
+            switch ($position) {
+                case 'Meneur':
+                    $startingFive->setPointGuard($player);
+                    break;
+                case 'Arriere':
+                    $startingFive->setGuard($player);
+                    break;
+                case 'Ailier':
+                    $startingFive->setForward($player);
+                    break;
+                case 'AilierFort':
+                    $startingFive->setSmallForward($player);
+                    break;
+                case 'Pivot':
+                    $startingFive->setCenter($player);
+                    break;
+            }
         }
         $startingFive->setValid();
         $startingFive->setUpdatedAt(new \DateTimeImmutable());

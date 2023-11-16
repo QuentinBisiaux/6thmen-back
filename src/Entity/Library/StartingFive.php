@@ -102,7 +102,7 @@ class StartingFive
         return $this->pointGuard;
     }
 
-    public function setPointGuard(Player $pointGuard): self
+    public function setPointGuard(?Player $pointGuard): self
     {
         $this->pointGuard = $pointGuard;
         return $this;
@@ -113,7 +113,7 @@ class StartingFive
         return $this->guard;
     }
 
-    public function setGuard(Player $guard): self
+    public function setGuard(?Player $guard): self
     {
         $this->guard = $guard;
         return $this;
@@ -124,7 +124,7 @@ class StartingFive
         return $this->forward;
     }
 
-    public function setForward(Player $forward): self
+    public function setForward(?Player $forward): self
     {
         $this->forward = $forward;
         return $this;
@@ -135,7 +135,7 @@ class StartingFive
         return $this->smallForward;
     }
 
-    public function setSmallForward(Player $smallForward): self
+    public function setSmallForward(?Player $smallForward): self
     {
         $this->smallForward = $smallForward;
         return $this;
@@ -146,7 +146,7 @@ class StartingFive
         return $this->center;
     }
 
-    public function setCenter(Player $center): self
+    public function setCenter(?Player $center): self
     {
         $this->center = $center;
         return $this;
