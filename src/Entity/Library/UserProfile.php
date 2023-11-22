@@ -25,11 +25,11 @@ class UserProfile
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
-    #[ORM\Column(length: 180, unique: true, nullable: true)]
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
     #[Groups('read:user')]
     private ?string $name = null;
 
-    #[ORM\Column(length: 180, unique: true, nullable: true)]
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
     #[Groups('read:user')]
     private ?string $username = null;
 
@@ -171,7 +171,7 @@ class UserProfile
                 $decryptedData[$key] = $securedData;
                 continue;
             }
-            $decryptedData[$key] = $securedData !== null ? $encryptionService->encrypt($securedData) : null;
+            $decryptedData[$key] = $securedData !== null ? $this->encryptionService->decrypt($securedData) : null;
         }
         return $decryptedData;
     }

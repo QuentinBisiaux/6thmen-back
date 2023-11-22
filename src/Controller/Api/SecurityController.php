@@ -21,10 +21,10 @@ class SecurityController extends AbstractController
 
     public function __construct
     (
-        private EntityManagerInterface $entityManager,
-        private EncryptionService $encryptionService,
-        private readonly string $consumerKey,
-        private readonly string $consumerSecret
+        private readonly EntityManagerInterface $entityManager,
+        private readonly EncryptionService      $encryptionService,
+        private readonly string                 $consumerKey,
+        private readonly string                 $consumerSecret
     )
     {}
 
@@ -100,7 +100,7 @@ class SecurityController extends AbstractController
         if (is_null($userProfile)) {
             $userProfile = new UserProfile();
         }
-        $userProfile->setUsername($userData->screen_name);
+        $userProfile->setUsername($this->encryptionService->deterministicEncrypt($userData->screen_name));
         $userProfile->setName($userData->name);
         $userProfile->setLocation($userData->location);
         $userProfile->setProfileImageUrl($userData->profile_image_url_https);

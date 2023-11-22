@@ -10,13 +10,13 @@ use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Symfony\Component\HttpFoundation\Request;
 
-class JWTAuth
+readonly class JWTAuth
 {
 
     public function __construct
     (
         private JWTEncoderInterface $JWTEncoder,
-        private UserRepository $userRepository
+        private UserRepository      $userRepository
     )
     {}
 
