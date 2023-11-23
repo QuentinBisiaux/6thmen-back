@@ -35,7 +35,7 @@ class StartingFiveController extends ApiController
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
         $teams          =  $this->entityManager->getRepository(Team::class)->findTeamsByNameOrdered();
-        $startingFive   =  $this->entityManager->getRepository(StartingFive::class)->findStartingFiveForUser($user);
+        $startingFive   =  $user->getStartingFive();
         $data = [
             'teams'         => $teams,
             'startingFives'  => $startingFive
