@@ -25,7 +25,7 @@ class UserProfile
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
-    #[ORM\Column(length: 255, unique: true, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Groups('read:user')]
     private ?string $name = null;
 
@@ -49,6 +49,9 @@ class UserProfile
 
     #[ORM\Column(type: 'json', nullable : false)]
     private array $rawData;
+
+    #[ORM\OneToOne(inversedBy: 'userProfile', targetEntity: Top100::class)]
+    private ?Top100 $top100;
 
     #[Context(
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
@@ -171,7 +174,7 @@ class UserProfile
                 $decryptedData[$key] = $securedData;
                 continue;
             }
-            $decryptedData[$key] = $securedData !== null ? $this->encryptionService->decrypt($securedData) : null;
+            $decryptedData[$key] = $securedData !== null ? $encryptionService->decrypt($securedData) : null;
         }
         return $decryptedData;
     }
@@ -189,6 +192,18 @@ class UserProfile
         $this->rawData = $securedData;
 
         return $this;
+    }
+
+    public function setTop100(Top100 $top100): self
+    {
+        $this->top100 = $top100;
+
+        return $this;
+    }
+
+    public function getTop100(): ?Top100
+    {
+        return $this->top100;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable

@@ -53,6 +53,9 @@ class Player
     #[ORM\OneToMany(mappedBy: 'player', targetEntity: PlayerTeam::class)]
     private Collection $playerTeams;
 
+    #[ORM\OneToMany(mappedBy: 'players', targetEntity: Top100Player::class)]
+    private Collection $top100;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -62,6 +65,7 @@ class Player
     public function __construct()
     {
         $this->playerTeams = new ArrayCollection();
+        $this->top100 = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -122,30 +126,6 @@ class Player
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, PlayerTeam>
      */
@@ -172,6 +152,57 @@ class Player
                 $playerTeam->setPlayer(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTop100(): Collection
+    {
+        return $this->top100;
+    }
+
+    public function addToTop100(Top100Player $top100Player): self
+    {
+        if (!$this->top100->contains($top100Player)) {
+            $this->top100->add($top100Player);
+            $top100Player->setPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFromTop100(Top100Player $top100Player): self
+    {
+        if ($this->top100->removeElement($top100Player)) {
+            // set the owning side to null (unless already changed)
+            if ($top100Player->getPlayer() === $this) {
+                $top100Player->setPlayer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

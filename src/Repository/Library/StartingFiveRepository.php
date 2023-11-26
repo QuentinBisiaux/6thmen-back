@@ -52,13 +52,45 @@ class StartingFiveRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function findStartingFiveForUser(User $user): array
+    public function countPlayerPositions(): array
     {
-        return $this->createQueryBuilder('sf')
-            ->where('sf.user = :user')
-            ->setParameter('user', $user)
+        $qb = $this->createQueryBuilder('sf');
+
+        // Example for one position
+        $pointGuardCount = $qb->select('IDENTITY(sf.pointGuard) as player_id, COUNT(sf.pointGuard) as count')
+            ->where('sf.valid = true')
+            ->groupBy('sf.pointGuard')
             ->getQuery()
             ->getResult();
+
+        $guardCount = $qb->select('IDENTITY(sf.guard) as player_id, COUNT(sf.guard) as count')
+            ->groupBy('sf.guard')
+            ->getQuery()
+            ->getResult();
+
+        $forwardCount = $qb->select('IDENTITY(sf.forward) as player_id, COUNT(sf.forward) as count')
+            ->groupBy('sf.forward')
+            ->getQuery()
+            ->getResult();
+
+        $smallForwardCount = $qb->select('IDENTITY(sf.smallForward) as player_id, COUNT(sf.smallForward) as count')
+            ->groupBy('sf.smallForward')
+            ->getQuery()
+            ->getResult();
+
+        $centerCount = $qb->select('IDENTITY(sf.center) as player_id, COUNT(sf.center) as count')
+            ->groupBy('sf.center')
+            ->getQuery()
+            ->getResult();
+
+        return [
+            '1' => $pointGuardCount,
+            '2' => $guardCount,
+            '3' => $forwardCount,
+            '4' => $smallForwardCount,
+            '5' => $centerCount
+        ];
+
     }
 
 //    /**
