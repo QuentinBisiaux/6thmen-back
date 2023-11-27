@@ -2,11 +2,13 @@
 
 namespace App\Entity\Library;
 
+use App\Repository\Library\Top100PlayerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
+#[ORM\Entity(repositoryClass: Top100PlayerRepository::class)]
 class Top100Player
 {
 
