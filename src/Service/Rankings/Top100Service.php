@@ -60,7 +60,6 @@ readonly class Top100Service
                     continue 2;
                 }
             }
-            dump($player);
             $players[] = $player;
         }
         return $players;

@@ -77,7 +77,6 @@ class SecurityController extends AbstractController
         try {
             return $connection->oauth('oauth/access_token', ["oauth_token" => $oauthToken, "oauth_verifier" => $oauthVerifier]);
         } catch (\Exception $exception) {
-            dump($exception);
         }
         return [];
     }
