@@ -56,7 +56,7 @@ readonly class StartingFiveService
                         $players[$player->getId()]['position'][] = $positionPlayed;
                     }
                 } else {
-                    $players[$player->getId()]['name'] = $player->getFullName();
+                    $players[$player->getId()]['name'] = $player->getName();
                     $players[$player->getId()]['played'] = 1;
                     $players[$player->getId()]['position'] = [$positionPlayed];
                 }
