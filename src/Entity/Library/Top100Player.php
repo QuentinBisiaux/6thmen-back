@@ -15,17 +15,20 @@ class Top100Player
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('read:top-100')]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'players')]
+    #[ORM\ManyToOne(inversedBy: 'ranking')]
     #[ORM\JoinColumn(nullable: false)]
     private Top100 $top100;
 
     #[ORM\Column(nullable: false)]
+    #[Groups('read:top-100')]
     private int $rank;
 
     #[ORM\ManyToOne(inversedBy: 'top100')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups('read:top-100')]
     private ?Player $player;
 
     #[Context(
@@ -33,7 +36,6 @@ class Top100Player
         denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
     )]
     #[ORM\Column]
-    #[Groups('read:top-100')]
     private ?\DateTimeImmutable $createdAt;
 
     #[Context(
@@ -53,9 +55,10 @@ class Top100Player
         return $this->top100;
     }
 
-    public function setTop100(Top100 $top100): void
+    public function setTop100(Top100 $top100): self
     {
         $this->top100 = $top100;
+        return $this;
     }
 
     public function getRank(): int
@@ -63,9 +66,10 @@ class Top100Player
         return $this->rank;
     }
 
-    public function setRank(int $rank): void
+    public function setRank(int $rank): self
     {
         $this->rank = $rank;
+        return $this;
     }
 
     public function getPlayer(): ?Player
@@ -73,9 +77,10 @@ class Top100Player
         return $this->player;
     }
 
-    public function setPlayer(?Player $player): void
+    public function setPlayer(?Player $player): self
     {
         $this->player = $player;
+        return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
@@ -83,9 +88,10 @@ class Top100Player
         return $this->createdAt;
     }
 
-    public function setCreatedAt(?\DateTimeImmutable $createdAt): void
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
+        return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeImmutable
@@ -93,9 +99,10 @@ class Top100Player
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): void
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+        return $this;
     }
 
 }

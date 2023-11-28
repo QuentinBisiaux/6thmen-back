@@ -23,8 +23,10 @@ class Top100
     #[ORM\JoinColumn(nullable: false)]
     private UserProfile $userProfile;
 
-    #[ORM\OneToMany(mappedBy: 'top100', targetEntity: Top100Player::class)]
-    private Collection $players;
+    #[ORM\OneToMany(mappedBy: 'top100', targetEntity: Top100Player::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OrderBy(['rank' => 'ASC'])]
+    #[Groups('read:top-100')]
+    private Collection $ranking;
 
     private bool $valid = false;
 
@@ -45,7 +47,7 @@ class Top100
 
     public function __construct()
     {
-        $this->players = new ArrayCollection();
+        $this->ranking = new ArrayCollection();
     }
 
 
@@ -62,19 +64,20 @@ class Top100
     public function setUserProfile(UserProfile $userProfile): self
     {
         $this->userProfile = $userProfile;
+        $this->userProfile->setTop100($this);
 
         return $this;
     }
 
-    public function getPlayers(): Collection
+    public function getRanking(): Collection
     {
-        return $this->players;
+        return $this->ranking;
     }
 
-    public function addPlayer(Top100Player $top100Player): self
+    public function addRanking(Top100Player $top100Player): self
     {
-        if (!$this->players->contains($top100Player)) {
-            $this->players->add($top100Player);
+        if (!$this->ranking->contains($top100Player)) {
+            $this->ranking->add($top100Player);
             $top100Player->setTop100($this);
         }
 
@@ -98,9 +101,11 @@ class Top100
         return $this->createdAt;
     }
 
-    public function setCreatedAt(?\DateTimeImmutable $createdAt): void
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeImmutable
@@ -108,9 +113,11 @@ class Top100
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): void
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 
 }

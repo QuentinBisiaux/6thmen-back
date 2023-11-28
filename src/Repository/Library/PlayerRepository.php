@@ -64,6 +64,17 @@ class PlayerRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findPlayersByNameAndWithoutSomeId(string $name, array $excludedIds): array
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb ->where($qb->expr()->like('CONCAT(LOWER(p.firstname), \' \', LOWER(p.lastname))', ':name'))
+            ->andWhere($qb->expr()->notIn('p.id', ':excludedIds'))
+            ->setParameter('excludedIds', $excludedIds)
+            ->setParameter('name', '%' . strtolower($name) . '%');
+         return $qb->setMaxResults(35)->getQuery()->getResult();
+
+    }
+
 
 //    /**
 //     * @return Player[] Returns an array of Player objects

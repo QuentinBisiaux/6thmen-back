@@ -22,21 +22,20 @@ class Player
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups([
-        'read:player',
-    ])]
     private ?string $firstname = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $lastname = null;
+
     #[Groups([
         'read:player',
     ])]
-    private ?string $lastname = null;
+    private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'players')]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups([
-        'read:player',
+        'read:player:details',
     ])]
     private ?Country $birthPlace = null;
 
@@ -46,7 +45,7 @@ class Player
         denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
     )]
     #[Groups([
-        'read:player',
+        'read:player:details',
     ])]
     private ?\DateTimeImmutable $birthday = null;
 
@@ -97,7 +96,12 @@ class Player
         return $this;
     }
 
-    public function getFullName(): string
+    public function getName(): string
+    {
+        return $this->firstname . ' ' . $this->lastname;
+    }
+
+    public function setName(): string
     {
         return $this->firstname . ' ' . $this->lastname;
     }
