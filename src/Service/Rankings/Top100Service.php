@@ -20,7 +20,7 @@ readonly class Top100Service
 
     public function getTop100Data(UserProfile $userProfile): array
     {
-        $data = [];
+        $data               = [];
         $data['top100']     = $this->findOrCreateTop100($userProfile);
         $data['players']    = $this->processPlayers($data['top100']);
         return $data;
@@ -31,7 +31,6 @@ readonly class Top100Service
         $top100 = $userProfile->getTop100();
         if(!is_null($top100)) {
             return $top100;
-
         }
 
         $top100 = new Top100();
@@ -54,7 +53,7 @@ readonly class Top100Service
             if($player === null) continue;
             foreach ($players as $playerAlreadySelected) {
                 if($playerAlreadySelected instanceof Player) {
-                    continue 2;
+                    continue;
                 }
                 if($playerAlreadySelected['id'] === $player->getId()) {
                     continue 2;
