@@ -48,6 +48,9 @@ readonly class StartingFiveService
                 $startingFivePlayer->setPosition($position);
                 $startingFivePlayer->setCreatedAt(new \DateTimeImmutable());
                 $this->entityManager->persist($startingFivePlayer);
+                $startingFive->addRanking($startingFivePlayer);
+                $this->entityManager->persist($startingFive);
+
             }
             $this->entityManager->flush();
 
