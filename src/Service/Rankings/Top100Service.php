@@ -72,6 +72,8 @@ readonly class Top100Service
             $top100Player->setRank($x);
             $top100Player->setCreatedAt(new \DateTimeImmutable());
             $this->entityManager->persist($top100Player);
+            $top100->addRanking($top100Player);
+            $this->entityManager->persist($top100);
         }
         $this->entityManager->flush();
     }
