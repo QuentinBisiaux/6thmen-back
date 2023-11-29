@@ -29,7 +29,7 @@ class Top100Player
     #[ORM\ManyToOne(inversedBy: 'top100')]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups('read:top-100')]
-    private ?Player $player;
+    private ?Player $player = null;
 
     #[Context(
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
