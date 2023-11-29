@@ -5,9 +5,6 @@ namespace App\Command;
 use App\Entity\Admin\HypeScore;
 use App\Entity\Admin\StartingFiveAggregator;
 use App\Entity\Admin\Top100Aggregator;
-use App\Entity\Library\Player;
-use App\Entity\Library\StartingFive;
-use App\Entity\Library\Top100Player;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -19,7 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'aggregate:players:hype-score',
     description: 'cron launched',
 )]
-class aggregatePlayerHypeScore extends Command
+class AggregatePlayerHypeScore extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

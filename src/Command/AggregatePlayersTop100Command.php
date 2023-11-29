@@ -2,10 +2,7 @@
 
 namespace App\Command;
 
-use App\Entity\Admin\StartingFiveAggregator;
 use App\Entity\Admin\Top100Aggregator;
-use App\Entity\Library\Player;
-use App\Entity\Library\StartingFive;
 use App\Entity\Library\Top100Player;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
