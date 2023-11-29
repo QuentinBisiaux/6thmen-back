@@ -2,6 +2,7 @@
 
 namespace App\Entity\Library;
 
+use App\Entity\Admin\HypeScore;
 use App\Repository\Library\PlayerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -38,6 +39,9 @@ class Player
         'read:player:details',
     ])]
     private ?Country $birthPlace = null;
+
+    #[ORM\OneToOne(inversedBy: 'player', targetEntity: HypeScore::class)]
+    private ?HypeScore $hypeScore = null;
 
     #[ORM\Column(nullable: true)]
     #[Context(
@@ -128,6 +132,16 @@ class Player
         $this->birthday = $birthDay;
 
         return $this;
+    }
+
+    public function getHypeScore(): ?HypeScore
+    {
+        return $this->hypeScore;
+    }
+
+    public function setHypeScore(?HypeScore $hypeScore): void
+    {
+        $this->hypeScore = $hypeScore;
     }
 
     /**

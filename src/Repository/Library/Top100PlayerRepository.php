@@ -21,4 +21,12 @@ class Top100PlayerRepository extends ServiceEntityRepository
         parent::__construct($registry, Top100Player::class);
     }
 
+    public function getAllWithPlayerSelected()
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.player IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
 }
