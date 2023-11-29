@@ -3,6 +3,8 @@
 namespace App\Entity\Library;
 
 use App\Repository\Library\StartingFiveRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -17,40 +19,19 @@ class StartingFive
     #[Groups('api:read:starting-five')]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'startingFives')]
+    #[ORM\ManyToOne(targetEntity: UserProfile::class, inversedBy: 'startingFives')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups('api:read:starting-five')]
-    private User $user;
+    private UserProfile $user;
 
     #[ORM\ManyToOne(targetEntity: Team::class, inversedBy: 'startingFives')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups('api:read:starting-five')]
     private Team $team;
 
-    #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimePointGuard')]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\OneToMany(mappedBy: 'startingFive', targetEntity: StartingFivePlayer::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OrderBy(['position' => 'ASC'])]
     #[Groups('api:read:starting-five')]
-    private ?Player $pointGuard = null;
-
-    #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimeGuard')]
-    #[ORM\JoinColumn(nullable: true)]
-    #[Groups('api:read:starting-five')]
-    private ?Player $guard = null;
-
-    #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimeForward')]
-    #[ORM\JoinColumn(nullable: true)]
-    #[Groups('api:read:starting-five')]
-    private ?Player $forward = null;
-
-    #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimeSmallForward')]
-    #[ORM\JoinColumn(nullable: true)]
-    #[Groups('api:read:starting-five')]
-    private ?Player $smallForward = null;
-
-    #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'allTimeCenter')]
-    #[ORM\JoinColumn(nullable: true)]
-    #[Groups('api:read:starting-five')]
-    private ?Player $center = null;
+    private Collection $ranking;
 
     #[ORM\Column]
     #[Groups('api:read:starting-five')]
@@ -70,17 +51,22 @@ class StartingFive
     )]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    public function __construct()
+    {
+        $this->ranking = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUser(): User
+    public function getUser(): UserProfile
     {
         return $this->user;
     }
 
-    public function setUser(User $user): self
+    public function setUser(UserProfile $user): self
     {
         $this->user = $user;
         return $this;
@@ -97,58 +83,18 @@ class StartingFive
         return $this;
     }
 
-    public function getPointGuard(): ?Player
+    public function getRanking(): Collection
     {
-        return $this->pointGuard;
+        return $this->ranking;
     }
 
-    public function setPointGuard(?Player $pointGuard): self
+    public function addRanking(StartingFivePlayer $startingFivePlayer): self
     {
-        $this->pointGuard = $pointGuard;
-        return $this;
-    }
+        if (!$this->ranking->contains($startingFivePlayer)) {
+            $this->ranking->add($startingFivePlayer);
+            $startingFivePlayer->setStartingFive($this);
+        }
 
-    public function getGuard(): ?Player
-    {
-        return $this->guard;
-    }
-
-    public function setGuard(?Player $guard): self
-    {
-        $this->guard = $guard;
-        return $this;
-    }
-
-    public function getForward(): ?Player
-    {
-        return $this->forward;
-    }
-
-    public function setForward(?Player $forward): self
-    {
-        $this->forward = $forward;
-        return $this;
-    }
-
-    public function getSmallForward(): ?Player
-    {
-        return $this->smallForward;
-    }
-
-    public function setSmallForward(?Player $smallForward): self
-    {
-        $this->smallForward = $smallForward;
-        return $this;
-    }
-
-    public function getCenter(): ?Player
-    {
-        return $this->center;
-    }
-
-    public function setCenter(?Player $center): self
-    {
-        $this->center = $center;
         return $this;
     }
 
@@ -157,15 +103,9 @@ class StartingFive
         return $this->valid;
     }
 
-    public function setValid(): self
+    public function setValid(bool $valid): self
     {
-        $this->valid = (
-            !is_null($this->getPointGuard()) &&
-            !is_null($this->getGuard()) &&
-            !is_null($this->getForward()) &&
-            !is_null($this->getSmallForward()) &&
-            !is_null($this->getCenter())
-        );
+        $this->valid = $valid;
         return $this;
     }
 

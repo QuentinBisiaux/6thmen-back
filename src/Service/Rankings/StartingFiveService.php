@@ -5,8 +5,10 @@ namespace App\Service\Rankings;
 use App\Entity\Library\Player;
 use App\Entity\Library\Position;
 use App\Entity\Library\StartingFive;
+use App\Entity\Library\StartingFivePlayer;
 use App\Entity\Library\Team;
 use App\Entity\Library\User;
+use App\Entity\Library\UserProfile;
 use Doctrine\ORM\EntityManagerInterface;
 
 readonly class StartingFiveService
@@ -18,7 +20,7 @@ readonly class StartingFiveService
     )
     {}
 
-    public function getStartingFiveData(User $user, Team $team): array
+    public function getStartingFiveData(UserProfile $user, Team $team): array
     {
         $data = [];
         $data['team']           = $team;
@@ -29,7 +31,7 @@ readonly class StartingFiveService
         return $data;
     }
 
-    private function findOrCreateStartingFive(User $user, Team $team): StartingFive
+    private function findOrCreateStartingFive(UserProfile $user, Team $team): StartingFive
     {
         $startingFive = $this->entityManager->getRepository(StartingFive::class)->findStartingFiveForUserAndTeam($user, $team);
         if (is_null($startingFive)) {
@@ -39,6 +41,16 @@ readonly class StartingFiveService
             $startingFive->setCreatedAt(new \DateTimeImmutable());
             $this->entityManager->persist($startingFive);
             $this->entityManager->flush();
+
+            foreach (Position::BASE_POSITION_BY_NUMBER as $index => $position) {
+                $startingFivePlayer = new StartingFivePlayer();
+                $startingFivePlayer->setStartingFive($startingFive);
+                $startingFivePlayer->setPosition($position);
+                $startingFivePlayer->setCreatedAt(new \DateTimeImmutable());
+                $this->entityManager->persist($startingFivePlayer);
+            }
+            $this->entityManager->flush();
+
         }
         return $startingFive;
     }
@@ -85,37 +97,57 @@ readonly class StartingFiveService
         return $playersByPosition;
     }
 
-    public function updateStartingFive(StartingFive $startingFive, array $data): bool
+    public function updateStartingFive(UserProfile $userProfile, Team $team, mixed $data): bool
     {
-        foreach ($data as $position => $playerId) {
-            $player = null;
-            if(!is_null($playerId)) {
-                $player = $this->entityManager->getRepository(Player::class)->findOneById($playerId);
-            }
+        $startingFive   = $this->findOrCreateStartingFive($userProfile, $team);
+        $newPosition    = $data['newPosition'];
 
-            switch ($position) {
-                case 'Meneur':
-                    $startingFive->setPointGuard($player);
-                    break;
-                case 'Arriere':
-                    $startingFive->setGuard($player);
-                    break;
-                case 'Ailier':
-                    $startingFive->setForward($player);
-                    break;
-                case 'AilierFort':
-                    $startingFive->setSmallForward($player);
-                    break;
-                case 'Pivot':
-                    $startingFive->setCenter($player);
-                    break;
+        if(isset($data['duplicatePosition'])) {
+            $duplicatedPosition = $data['duplicatePosition'];
+            $duplicateEntity    = $this->entityManager->getRepository(StartingFivePlayer::class)->findOneBy(
+                [
+                    'startingFive'  => $startingFive,
+                    'position'      => Position::NUMBER_POSITION_BY_POSITION[$duplicatedPosition['position']]
+                ]
+            );
+            $duplicateEntity->setPlayer(null);
+            $duplicateEntity->setUpdatedAt(new \DateTimeImmutable());
+            $this->entityManager->persist($duplicateEntity);
+        }
+        $newEntity = $this->entityManager->getRepository(StartingFivePlayer::class)->findOneBy(
+            [
+                'startingFive'  => $startingFive,
+                'position'      => Position::NUMBER_POSITION_BY_POSITION[$newPosition['position']]
+            ]
+        );
+        $newPlayer = $this->entityManager->getRepository(Player::class)->findOneBy(['id' => $newPosition['player']['id']]);
+        if(is_null($newPlayer) || trim($newPosition['player']['name']) !== $newPlayer->getName()) {
+            throw new \Exception();
+        }
+        $newEntity->setPlayer($newPlayer);
+        $newEntity->setUpdatedAt(new \DateTimeImmutable());
+
+        $this->entityManager->persist($newEntity);
+
+        $this->entityManager->flush();
+
+        return $this->isRankingCompleted($startingFive);
+    }
+
+    private function isRankingCompleted(StartingFive $startingFive): bool
+    {
+        foreach ($startingFive->getRanking() as $rank) {
+            if ($rank->getPlayer() === null) {
+                $startingFive->setValid(false);
+                $this->entityManager->persist($startingFive);
+                $this->entityManager->flush();
+                return false;
             }
         }
-        $startingFive->setValid();
-        $startingFive->setUpdatedAt(new \DateTimeImmutable());
-        $this->entityManager->getRepository(StartingFive::class)->save($startingFive);
+        $startingFive->setValid(true);
+        $this->entityManager->persist($startingFive);
         $this->entityManager->flush();
-        return $startingFive->isValid();
+        return true;
     }
 
 }

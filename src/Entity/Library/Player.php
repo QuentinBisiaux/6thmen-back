@@ -59,6 +59,9 @@ class Player
     #[ORM\OneToMany(mappedBy: 'players', targetEntity: Top100Player::class)]
     private Collection $top100;
 
+    #[ORM\OneToMany(mappedBy: 'players', targetEntity: StartingFivePlayer::class)]
+    private Collection $startingFives;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -69,6 +72,7 @@ class Player
     {
         $this->playerTeams = new ArrayCollection();
         $this->top100 = new ArrayCollection();
+        $this->startingFives = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -195,6 +199,33 @@ class Player
             // set the owning side to null (unless already changed)
             if ($top100Player->getPlayer() === $this) {
                 $top100Player->setPlayer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getStartingFives(): Collection
+    {
+        return $this->startingFives;
+    }
+
+    public function addToStartingFive(StartingFivePlayer $startingFivePlayer): self
+    {
+        if (!$this->startingFives->contains($startingFivePlayer)) {
+            $this->startingFives->add($startingFivePlayer);
+            $startingFivePlayer->setPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFromStartingFive(StartingFivePlayer $startingFivePlayer): self
+    {
+        if ($this->top100->removeElement($startingFivePlayer)) {
+            // set the owning side to null (unless already changed)
+            if ($startingFivePlayer->getPlayer() === $this) {
+                $startingFivePlayer->setPlayer(null);
             }
         }
 

@@ -4,7 +4,8 @@ namespace App\Command;
 
 use App\Entity\Admin\StartingFiveAggregator;
 use App\Entity\Library\Player;
-use App\Entity\Library\StartingFive;
+use App\Entity\Library\Position;
+use App\Entity\Library\StartingFivePlayer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -32,23 +33,34 @@ class AggregatePlayersStartingFiveCommand extends Command
         $deleted = $this->entityManager->getRepository(StartingFiveAggregator::class)->deleteAll();
 
         $io->success('Nombre de lignes supprimées : ' . $deleted);
-        $results = $this->entityManager->getRepository(StartingFive::class)->countPlayerPositions();
+        $results = $this->entityManager->getRepository(StartingFivePlayer::class)->getAllWithPlayerSelected();
+        $cleanedData = $this->prepareInsertion($results);
 
-        foreach ($results as $position => $details) {
-            foreach ($details as $playerIdAndCount) {
+        foreach ($cleanedData as $details) {
+            foreach ($details['position'] as $position => $count) {
                 $startingFiveAggregation = new StartingFiveAggregator();
-                $startingFiveAggregation->setPosition($position);
-                $player = $this->entityManager->getRepository(Player::class)->findOneById($playerIdAndCount['player_id']);
-                $startingFiveAggregation->setPlayer($player);
-                $startingFiveAggregation->setCount((int) $playerIdAndCount['count']);
+                $startingFiveAggregation->setPosition(Position::NUMBER_POSITION_BY_POSITION[$position]);
+                $startingFiveAggregation->setPlayer($details['player']);
+                $startingFiveAggregation->setCount($count);
                 $this->entityManager->persist($startingFiveAggregation);
             }
         }
         $this->entityManager->flush();
-
-//        $io->success('Nombre de lignes supprimées : ' . $deleted);
-
-
         return Command::SUCCESS;
     }
+
+    private function prepareInsertion(array $rawResults): array {
+        $cleanedData = [];
+        foreach ($rawResults as $startingFivePlayer) {
+            $player = $startingFivePlayer->getPlayer();
+            if(!array_key_exists($player->getId(), $cleanedData)) {
+                $cleanedData[$player->getId()]['player']                                        = $player;
+                $cleanedData[$player->getId()]['position'][$startingFivePlayer->getPosition()]  = 1;
+            } else {
+                $cleanedData[$player->getId()]['position'][$startingFivePlayer->getPosition()]  += 1;
+            }
+        }
+        return $cleanedData;
+    }
+
 }

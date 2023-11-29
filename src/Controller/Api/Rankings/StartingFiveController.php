@@ -35,10 +35,10 @@ class StartingFiveController extends ApiController
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
         $teams          =  $this->entityManager->getRepository(Team::class)->findTeamsByNameOrdered();
-        $startingFive   =  $user->getStartingFive();
+        $startingFive   =  $user->getProfile()->getStartingFive();
         $data = [
             'teams'         => $teams,
-            'startingFives'  => $startingFive
+            'startingFives' => $startingFive
         ];
         return $this->json($data, 200, [], ['groups' => ['read:team', 'api:read:starting-five']]);
 
@@ -52,7 +52,7 @@ class StartingFiveController extends ApiController
         } catch (\Exception $ex) {
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
-        $data = $this->startingFiveService->getStartingFiveData($user, $team);
+        $data = $this->startingFiveService->getStartingFiveData($user->getProfile(), $team);
         return $this->json($data, 200, [], ['groups' => ['read:player', 'read:team', 'api:read:starting-five']]);
 
     }
@@ -65,12 +65,58 @@ class StartingFiveController extends ApiController
         } catch (\Exception $ex) {
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
-        $startingFive   =  $this->entityManager->getRepository(StartingFive::class)->findStartingFiveForUserAndTeam($user, $team);
+
         $data = json_decode($request->getContent(), true);
-        $completed = $this->startingFiveService->updateStartingFive($startingFive, $data);
+        if (!$this->validateRankData($data['newPosition']) || !$this->validateDuplicateRank($data)) {
+            return $this->json(['error' => 'Il y a eu une erreur dans les données envoyées'], 400);
+        }
 
-        return $this->json(['isCompleted' => $completed]);
+        try {
+            $completed = $this->startingFiveService->updateStartingFive($user->getProfile(), $team, $data);
+            return $this->json(['isCompleted' => $completed], 200);
+        } catch (\Exception $ex) {
+            dd($ex);
+            return $this->json(['error' => 'Erreur lors de l\'enregistrement des données'], 500);
+        }
+    }
 
+    private function validateDuplicateRank(?array $data): bool
+    {
+        if(!isset($data['duplicatePosition']))return true;
+
+        $positionData = $data['duplicatePosition'];
+
+        if (!isset($positionData['id'], $positionData['position'])) {
+            return false;
+        }
+
+        if (!is_string($positionData['position']) || $positionData['position'] === '') {
+            return false;
+        }
+
+        if (is_array($positionData['player']) || isset($positionData['player']['id'])) {
+            return false;
+        }
+
+        return true;
+
+    }
+
+    private function validateRankData(array $positionData): bool
+    {
+        if (!isset($positionData['id'], $positionData['position'], $positionData['player'])) {
+            return false;
+        }
+
+        if (!is_string($positionData['position']) || $positionData['position'] === '') {
+            return false;
+        }
+
+        if (!is_array($positionData['player']) || !isset($positionData['player']['id'])) {
+            return false;
+        }
+
+        return true;
     }
 
 }

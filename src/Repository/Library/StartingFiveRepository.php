@@ -5,6 +5,7 @@ namespace App\Repository\Library;
 use App\Entity\Library\StartingFive;
 use App\Entity\Library\Team;
 use App\Entity\Library\User;
+use App\Entity\Library\UserProfile;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -41,7 +42,7 @@ class StartingFiveRepository extends ServiceEntityRepository
         }
     }
 
-    public function findStartingFiveForUserAndTeam(User $user, Team $team): ?StartingFive
+    public function findStartingFiveForUserAndTeam(UserProfile $user, Team $team): ?StartingFive
     {
         return $this->createQueryBuilder('sf')
             ->where('sf.user = :user')

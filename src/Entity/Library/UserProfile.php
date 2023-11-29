@@ -53,6 +53,10 @@ class UserProfile
     #[ORM\OneToOne(inversedBy: 'userProfile', targetEntity: Top100::class)]
     private ?Top100 $top100;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: StartingFive::class, orphanRemoval: true)]
+    #[Groups('read:user')]
+    private Collection $startingFive;
+
     #[Context(
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
         denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
@@ -70,6 +74,7 @@ class UserProfile
     public function __construct()
     {
         $this->favoriteTeams = new ArrayCollection();
+        $this->startingFive = new ArrayCollection();
     }
 
     public function getId(): int
@@ -204,6 +209,21 @@ class UserProfile
     public function getTop100(): ?Top100
     {
         return $this->top100;
+    }
+
+    public function getStartingFive(): Collection
+    {
+        return $this->startingFive;
+    }
+
+    public function addStartingFive(StartingFive $startingFive): self
+    {
+        if (!$this->startingFive->contains($startingFive)) {
+            $this->startingFive->add($startingFive);
+            $startingFive->setUser($this);
+        }
+
+        return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable

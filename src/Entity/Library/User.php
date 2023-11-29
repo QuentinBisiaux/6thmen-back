@@ -58,14 +58,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups('read:user')]
     private Collection $forecastRegularSeason;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: StartingFive::class, orphanRemoval: true)]
-    #[Groups('read:user')]
-    private Collection $startingFive;
 
     public function __construct()
     {
         $this->forecastRegularSeason = new ArrayCollection();
-        $this->startingFive = new ArrayCollection();
     }
     public function getId(): ?int
     {
@@ -200,18 +196,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getStartingFive(): Collection
-    {
-        return $this->startingFive;
-    }
-
-    public function addStartingFive(StartingFive $startingFive): self
-    {
-        if (!$this->startingFive->contains($startingFive)) {
-            $this->startingFive->add($startingFive);
-            $startingFive->setUser($this);
-        }
-
-        return $this;
-    }
 }
