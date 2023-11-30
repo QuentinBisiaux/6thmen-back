@@ -2,11 +2,13 @@
 
 namespace App\Service\Rankings;
 
+use App\Entity\Admin\HypeScore;
 use App\Entity\Admin\StartingFiveAggregator;
 use App\Entity\Library\Player;
 use App\Entity\Library\Top100;
 use App\Entity\Library\Top100Player;
 use App\Entity\Library\UserProfile;
+use App\Repository\Admin\HypeScoreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 readonly class Top100Service
@@ -46,7 +48,7 @@ readonly class Top100Service
 
     private function processPlayers(Top100 $top100): array
     {
-        $players = $this->entityManager->getRepository(StartingFiveAggregator::class)->findAllForTop100();
+        $players = $this->entityManager->getRepository(HypeScore::class)->findAllForTop100();
         $ranking = $top100->getRanking();
         foreach ($ranking as $rank) {
             $player = $rank->getPlayer();
