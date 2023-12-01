@@ -2,8 +2,8 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Library\User;
-use App\Entity\Library\UserProfile;
+use App\Domain\Auth\Entity\User;
+use App\Domain\Auth\Entity\UserProfile;
 use App\Service\EncryptionService;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;

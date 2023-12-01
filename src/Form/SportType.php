@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Library\Sport;
+use App\Domain\League\Entity\Sport;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

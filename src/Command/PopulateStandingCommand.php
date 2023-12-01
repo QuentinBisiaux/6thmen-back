@@ -2,10 +2,10 @@
 
 namespace App\Command;
 
-use App\Entity\Library\Standing;
-use App\Repository\Library\LeagueRepository;
-use App\Repository\Library\SeasonRepository;
-use App\Repository\Library\TeamRepository;
+use App\Domain\League\Repository\LeagueRepository;
+use App\Domain\League\Repository\SeasonRepository;
+use App\Domain\Standing\Entity\Standing;
+use App\Domain\Team\TeamRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

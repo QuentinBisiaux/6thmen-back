@@ -2,11 +2,11 @@
 
 namespace App\Command;
 
+use App\Domain\League\Entity\Season;
+use App\Domain\Player\Entity\Player;
+use App\Domain\Player\Entity\PlayerTeam;
+use App\Domain\Team\Team;
 use App\Entity\Library\Country;
-use App\Entity\Library\Player;
-use App\Entity\Library\PlayerTeam;
-use App\Entity\Library\Season;
-use App\Entity\Library\Team;
 use App\Service\FileManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;

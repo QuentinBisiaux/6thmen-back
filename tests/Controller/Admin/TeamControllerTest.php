@@ -2,9 +2,9 @@
 
 namespace App\Tests\Controller\Admin;
 
-use App\Entity\Library\Team;
-use App\Repository\Library\TeamRepository;
-use App\Repository\Library\UserRepository;
+use App\Domain\Auth\Repository\UserRepository;
+use App\Domain\Team\Team;
+use App\Domain\Team\TeamRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

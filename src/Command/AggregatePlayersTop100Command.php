@@ -2,8 +2,8 @@
 
 namespace App\Command;
 
-use App\Entity\Admin\Top100Aggregator;
-use App\Entity\Library\Top100Player;
+use App\Domain\Ranking\Top100\Entity\Top100Aggregator;
+use App\Domain\Ranking\Top100\Entity\Top100Player;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

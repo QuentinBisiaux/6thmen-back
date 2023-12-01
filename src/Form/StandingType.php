@@ -2,10 +2,10 @@
 
 namespace App\Form;
 
-use App\Entity\Library\League;
-use App\Entity\Library\Season;
-use App\Entity\Library\Standing;
-use App\Entity\Library\Team;
+use App\Domain\League\Entity\League;
+use App\Domain\League\Entity\Season;
+use App\Domain\Standing\Entity\Standing;
+use App\Domain\Team\Team;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

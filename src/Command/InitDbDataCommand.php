@@ -2,10 +2,10 @@
 
 namespace App\Command;
 
+use App\Domain\League\Entity\League;
+use App\Domain\League\Entity\Season;
+use App\Domain\League\Entity\Sport;
 use App\Entity\Library\Country;
-use App\Entity\Library\League;
-use App\Entity\Library\Season;
-use App\Entity\Library\Sport;
 use App\Service\FileManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;

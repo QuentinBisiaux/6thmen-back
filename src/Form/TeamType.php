@@ -2,9 +2,9 @@
 
 namespace App\Form;
 
-use App\Entity\Library\League;
-use App\Entity\Library\Team;
-use App\Repository\Library\TeamRepository;
+use App\Domain\League\Entity\League;
+use App\Domain\Team\Team;
+use App\Domain\Team\TeamRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

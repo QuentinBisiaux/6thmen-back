@@ -2,10 +2,9 @@
 
 namespace App\Command;
 
-use App\Entity\Admin\StartingFiveAggregator;
-use App\Entity\Library\Player;
-use App\Entity\Library\Position;
-use App\Entity\Library\StartingFivePlayer;
+use App\Domain\Player\Entity\Position;
+use App\Domain\Ranking\StratingFive\Entity\StartingFiveAggregator;
+use App\Domain\Ranking\StratingFive\Entity\StartingFivePlayer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

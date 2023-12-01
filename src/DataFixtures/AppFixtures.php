@@ -2,10 +2,10 @@
 
 namespace App\DataFixtures;
 
+use App\Domain\League\Entity\League;
+use App\Domain\League\Entity\Season;
+use App\Domain\League\Entity\Sport;
 use App\Entity\Library\Country;
-use App\Entity\Library\League;
-use App\Entity\Library\Season;
-use App\Entity\Library\Sport;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 

@@ -2,8 +2,8 @@
 
 namespace App\Command;
 
-use App\Entity\Library\League;
-use App\Entity\Library\Team;
+use App\Domain\League\Entity\League;
+use App\Domain\Team\Team;
 use App\Service\FileManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;

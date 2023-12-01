@@ -2,9 +2,9 @@
 
 namespace App\Command;
 
-use App\Entity\Admin\HypeScore;
-use App\Entity\Admin\StartingFiveAggregator;
-use App\Entity\Admin\Top100Aggregator;
+use App\Domain\Player\Entity\HypeScore;
+use App\Domain\Ranking\StratingFive\Entity\StartingFiveAggregator;
+use App\Domain\Ranking\Top100\Entity\Top100Aggregator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

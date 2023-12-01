@@ -2,18 +2,17 @@
 
 namespace App\Command;
 
-use App\Entity\Api\Odds;
-use App\Entity\Library\StandingDraft;
-use App\Repository\Library\LeagueRepository;
-use App\Repository\Library\SeasonRepository;
-use App\Repository\Library\TeamRepository;
+use App\Domain\Draft\Lottery\Entity\Odds;
+use App\Domain\League\Repository\LeagueRepository;
+use App\Domain\League\Repository\SeasonRepository;
+use App\Domain\Standing\Entity\StandingDraft;
+use App\Domain\Team\TeamRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use function Symfony\Component\String\s;
 
 #[AsCommand(
     name: 'populate:standing:draft',

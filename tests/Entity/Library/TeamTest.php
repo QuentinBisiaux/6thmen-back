@@ -2,7 +2,7 @@
 
 namespace App\Tests\Entity\Library;
 
-use App\Entity\Library\Team;
+use App\Domain\Team\Team;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Validator\ConstraintViolation;
