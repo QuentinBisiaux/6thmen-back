@@ -48,7 +48,7 @@ readonly class Top100Service
 
     private function processPlayers(Top100 $top100): array
     {
-        $players = $this->entityManager->getRepository(HypeScore::class)->findAllForTop100();
+        $players = $this->entityManager->getRepository(Player::class)->findAllForTop100();
         $ranking = $top100->getRanking();
         foreach ($ranking as $rank) {
             $player = $rank->getPlayer();
