@@ -77,12 +77,14 @@ class PlayerRepository extends ServiceEntityRepository
 
     public function findAllForTop100()
     {
-        return $this->createQueryBuilder('p')
+        $qb =  $this->createQueryBuilder('p')
             ->join('p.hypeScore', 'hype')
+            ->where('hype.score IS NOT NULL')
             ->groupBy('p.id', 'hype.score')
             ->orderBy('hype.score', 'DESC')
-            ->setMaxResults(150)
-            ->getQuery()
+            ->setMaxResults(135);
+        dd($qb->getQuery()->getSQL());
+        return$qb->getQuery()
             ->getResult();
     }
 
