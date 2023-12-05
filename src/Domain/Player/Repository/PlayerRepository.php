@@ -71,8 +71,21 @@ class PlayerRepository extends ServiceEntityRepository
             ->andWhere($qb->expr()->notIn('p.id', ':excludedIds'))
             ->setParameter('excludedIds', $excludedIds)
             ->setParameter('name', '%' . strtolower($name) . '%');
-         return $qb->setMaxResults(35)->getQuery()->getResult();
+         return $qb->setMaxResults(25)->getQuery()->getResult();
 
+    }
+
+    public function findAllForTop100()
+    {
+        $qb =  $this->createQueryBuilder('p')
+            ->join('p.hypeScore', 'hype')
+            ->where('hype.score IS NOT NULL')
+            ->groupBy('p.id', 'hype.score')
+            ->orderBy('hype.score', 'DESC')
+            ->setMaxResults(135);
+        dd($qb->getQuery()->getSQL());
+        return$qb->getQuery()
+            ->getResult();
     }
 
 

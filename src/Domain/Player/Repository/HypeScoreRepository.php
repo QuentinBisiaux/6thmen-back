@@ -30,11 +30,12 @@ class HypeScoreRepository extends ServiceEntityRepository
 
     public function findAllForTop100()
     {
-        return $this->createQueryBuilder('h')
-            ->select('player.id AS id, CONCAT(player.firstname, \' \', player.lastname) AS name, h.score')
-            ->join('h.player', 'player')
-            ->groupBy('id', 'h.score')
+        return  $this->createQueryBuilder('h')
+            ->join('h.player', 'p')
+            ->where('h.score IS NOT NULL')
+            ->groupBy('h.id', 'h.score')
             ->orderBy('h.score', 'DESC')
+            ->setMaxResults(135)
             ->getQuery()
             ->getResult();
     }

@@ -46,20 +46,22 @@ readonly class Top100Service
 
     private function processPlayers(Top100 $top100): array
     {
-        $players = $this->entityManager->getRepository(HypeScore::class)->findAllForTop100();
+        $players = [];
+        $hypeScores = $this->entityManager->getRepository(HypeScore::class)->findAllForTop100();
+        foreach ($hypeScores as $hypeScore) {
+            $players[] = $hypeScore->getPlayer();
+        }
         $ranking = $top100->getRanking();
         foreach ($ranking as $rank) {
-            $player = $rank->getPlayer();
-            if($player === null) continue;
-            foreach ($players as $playerAlreadySelected) {
-                if($playerAlreadySelected instanceof Player) {
-                    continue;
-                }
-                if($playerAlreadySelected['id'] === $player->getId()) {
+            $rankingPlayer = $rank->getPlayer();
+            if($rankingPlayer === null) continue;
+            foreach ($hypeScores as $hypeScore) {
+                $hyperPlayer = $hypeScore->getPlayer();
+                if($rankingPlayer->getId() === $hyperPlayer->getId()){
                     continue 2;
                 }
             }
-            $players[] = $player;
+            $players[] = $rankingPlayer;
         }
         return $players;
     }
@@ -100,6 +102,25 @@ readonly class Top100Service
 
         $this->entityManager->persist($newEntity);
         $this->entityManager->flush();
+    }
+
+    public function updateUserTop100Full(UserProfile $userProfile, array $data)
+    {
+        $top100         = $this->findOrCreateTop100($userProfile);
+        $newTop100        = $data['top100'];
+        foreach ($top100->getRanking() as $top100Player) {
+            $newTop100Rank = $newTop100['ranking'][$top100Player->getRank() - 1];
+            if(null === $newTop100Rank['player'] || $newTop100Rank['player']['id'] === $top100Player->getPlayer()?->getId()) continue;
+            $newPlayer = $this->entityManager->getRepository(Player::class)->findOneBy(['id' => $newTop100Rank['player']['id']]);
+            if(is_null($newPlayer) || trim($newTop100Rank['player']['name']) !== $newPlayer->getName()) {
+                throw new \Exception();
+            }
+            $top100Player->setPlayer($newPlayer);
+            $top100Player->setUpdatedAt(new \DateTimeImmutable());
+            $this->entityManager->persist($top100Player);
+        }
+        $this->entityManager->flush();
+
     }
 
 }

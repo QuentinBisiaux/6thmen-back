@@ -44,8 +44,20 @@ class Top100Controller extends ApiController
         } catch (\Exception $ex) {
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
-
         $data = json_decode($request->getContent(), true);
+        if(isset($data['top100'])) {
+            if (!$this->validateTop100($data['top100'])) {
+                return $this->json(['error' => 'Il y a eu une erreur dans les données envoyées'], 400);
+            } else {
+                try {
+                    $this->top100Service->updateUserTop100Full($user->getProfile(), $data);
+                    return $this->json(['message' => 'Top 100 updated successfully'], 200);
+                } catch (\Exception $ex) {
+                    dd($ex);
+                    return $this->json(['error' => 'Erreur lors de l\'enregistrement des données'], 500);
+                }
+            }
+        }
 
         if (!$this->validateRankData($data['newRank']) || !$this->validateDuplicateRank($data)) {
             return $this->json(['error' => 'Il y a eu une erreur dans les données envoyées'], 400);
@@ -92,6 +104,11 @@ class Top100Controller extends ApiController
         }
 
         // Add additional checks as necessary
+        return true;
+    }
+
+    private function validateTop100(array $top100Array) {
+        if(count($top100Array['ranking']) !== 100) return false;
         return true;
     }
 
