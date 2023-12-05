@@ -53,7 +53,6 @@ class Top100Controller extends ApiController
                     $this->top100Service->updateUserTop100Full($user->getProfile(), $data);
                     return $this->json(['message' => 'Top 100 updated successfully'], 200);
                 } catch (\Exception $ex) {
-                    dd($ex);
                     return $this->json(['error' => 'Erreur lors de l\'enregistrement des données'], 500);
                 }
             }
