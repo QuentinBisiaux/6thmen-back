@@ -7,7 +7,7 @@ security:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
-                class: App\Entity\Library\User
+                class: App\Domain\Auth\Entity\User
                 property: email
     firewalls:
         admin:
@@ -19,7 +19,7 @@ security:
                 check_path: admin_login
             logout:
                 path: app_logout
-            access_denied_handler: App\Security\Admin\AdminAccessDeniedHandler
+            access_denied_handler: App\Domain\Auth\Exception\AdminAccessDeniedHandler
 
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/

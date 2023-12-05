@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/user-profile')]
+#[Route(path: '/user-profile', name: 'user_profile_')]
 class UserProfileController extends ApiController
 {
 
@@ -23,7 +23,7 @@ class UserProfileController extends ApiController
     }
 
 
-    #[Route('/data', name: 'api_user_data', methods: ['POST'])]
+    #[Route(path: '/data', name: 'data', methods: ['POST'])]
     public function getUserData(Request $request): JsonResponse
     {
         try {
@@ -34,7 +34,7 @@ class UserProfileController extends ApiController
         return $this->json(['user' => $user], 200, [], ['groups' => 'read:user']);
     }
 
-    #[Route('/favorite-team', name: 'api_user_favorite_team', methods: ['POST'])]
+    #[Route(path: '/favorite-team', name: 'favorite_team', methods: ['POST'])]
     public function manageUserFavoriteTeams(Request $request): JsonResponse
     {
         try {
@@ -56,7 +56,7 @@ class UserProfileController extends ApiController
         return $this->json(['user' => $user], 200, [], ['groups' => 'read:user']);
     }
 
-    #[Route('/delete', name: 'api_user_delete', methods: ['DELETE'])]
+    #[Route(path: '/delete', name: 'delete', methods: ['DELETE'])]
     public function deleteUser(Request $request): JsonResponse
     {
         try {

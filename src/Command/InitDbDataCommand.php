@@ -5,14 +5,11 @@ namespace App\Command;
 use App\Domain\League\Entity\League;
 use App\Domain\League\Entity\Season;
 use App\Domain\League\Entity\Sport;
-use App\Entity\Library\Country;
-use App\Service\FileManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 #[AsCommand(
     name: 'init:db:data',
@@ -29,7 +26,6 @@ class InitDbDataCommand extends Command
     const CONST_PATH_COUNTRIES = __DIR__ . '/../../var/data/countries.csv';
 
     public function __construct(
-        private FileManager $fileManager,
         private EntityManagerInterface $manager,
     )
     {
@@ -50,25 +46,6 @@ class InitDbDataCommand extends Command
                 $leagueToInsert->setSport($sportToInsert);
                 $this->manager->persist($leagueToInsert);
             }
-        }
-        $fileContent = file(__DIR__ . '/../../var/data/countries.csv');
-        try {
-            $fileContent = $this->fileManager->getFileContent(self::CONST_PATH_COUNTRIES);
-        } catch (FileException $ex) {
-            $output->error($ex->getMessage());
-            return self::FAILURE;
-        }
-        array_shift($fileContent);
-        foreach ($fileContent as $countryData) {
-            $countryDataArray = explode(',', $countryData);
-            $newCountry = new Country();
-            $newCountry->setName($countryDataArray[0]);
-            $newCountry->setAlpha2($countryDataArray[1]);
-            $newCountry->setAlpha3($countryDataArray[2]);
-            $newCountry->setCode($countryDataArray[3]);
-            $newCountry->setRegion($countryDataArray[5]);
-            $newCountry->setCreatedAt(new \DateTimeImmutable());
-            $this->manager->persist($newCountry);
         }
         for ($startingYear = 1850; $startingYear <= 2150; $startingYear++) {
             $season = new Season();

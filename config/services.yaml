@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    admin_prefix:     '%env(resolve:ADMIN_PREFIX)%'
 
 services:
     # default configuration for services in *this* file
@@ -15,19 +16,31 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
-        exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
-            - '../src/Kernel.php'
-    App\Controller\Api\SecurityController:
+        exclude: '../src/{DependencyInjection,Entity,Infrastructure/Migrations,Tests,Kernel.php}'
+
+    App\Http\Controller\:
+        resource: '../src/Http/Controller'
+        tags: ['controller.service_arguments']
+
+    App\Http\Admin\Controller\:
+        resource: '../src/Http/Admin/Controller'
+        tags: [ 'controller.service_arguments' ]
+
+    App\Http\Api\Controller\:
+        resource: '../src/Http/Api/Controller'
+        tags: [ 'controller.service_arguments' ]
+
+    App\Http\Api\Controller\SecurityController:
         tags: [ 'controller.service_arguments' ]
         arguments:
             $consumerKey: '%env(TWITTER_CONSUMER_KEY)%'
             $consumerSecret: '%env(TWITTER_CONSUMER_SECRET)%'
+
     App\Service\EncryptionService:
         arguments:
             $encryptionKey: '%env(ENCRYPTION_KEY)%'
             $deterministicKey: '%env(DETERMINISTIC_KEY)%'
+
     Doctrine\ORM\Mapping\Driver\AttributeDriver:
         arguments:
             $reportFieldsWhereDeclared: true

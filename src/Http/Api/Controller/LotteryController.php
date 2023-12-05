@@ -11,10 +11,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/api/lottery')]
+#[Route(path: '/lottery', name: 'lottery_')]
 class LotteryController extends AbstractController
 {
-    #[Route('/{year}', name: 'app_lottery', requirements: ['year' => '\d{4}-\d{2}'], methods: ['GET'])]
+    #[Route(path: '/{year}', name: 'index', requirements: ['year' => '\d{4}-\d{2}'], methods: ['GET'])]
     #[IsGranted('PUBLIC_ACCESS')]
     public function index(Season $season): JsonResponse
     {
@@ -22,7 +22,7 @@ class LotteryController extends AbstractController
         return $this->json($standingsDraft, 200, [], ['groups' => 'read:lottery']);
     }
 
-    #[Route('/{year}/launch', name: 'app_lottery_launch', requirements: ['year' => '\d{4}-\d{2}'], methods: ['POST'])]
+    #[Route(path: '/{year}/launch', name: 'launch', requirements: ['year' => '\d{4}-\d{2}'], methods: ['POST'])]
     public function launch(Season $season): JsonResponse
     {
         $standingsDraft = $this->getUpdatedStandingsDraft($season);

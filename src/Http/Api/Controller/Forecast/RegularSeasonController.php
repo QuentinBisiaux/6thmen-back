@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/forecast/regular-season')]
+#[Route(path: '/forecast/regular-season', name: 'forecast_regular_season_')]
 class RegularSeasonController extends ApiController
 {
 
@@ -24,7 +24,7 @@ class RegularSeasonController extends ApiController
     {
         parent::__construct($this->JWTAuth);
     }
-    #[Route('/{year}', name: 'api_forecast_regular_season_show', methods: ['GET'])]
+    #[Route(path: '/{year}', name: 'show', methods: ['GET'])]
     public function show(Request $request, Season $season): JsonResponse
     {
         try {
@@ -48,7 +48,7 @@ class RegularSeasonController extends ApiController
 
     }
 
-    #[Route('/{year}/update', name: 'api_forecast_regular_season_update', methods: ['POST'])]
+    #[Route(path: '/{year}/update', name: 'update', methods: ['POST'])]
     public function update(Request $request, Season $season): JsonResponse
     {
         try {

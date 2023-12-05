@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/rankings/starting-five')]
+#[Route(path: '/api/rankings/starting-five', name: 'starting_five_')]
 class StartingFiveController extends ApiController
 {
 
@@ -25,7 +25,7 @@ class StartingFiveController extends ApiController
         parent::__construct($this->JWTAuth);
     }
 
-    #[Route('/', name: 'api_starting_five_index', methods: ['GET'])]
+    #[Route(path: '/', name: 'index', methods: ['GET'])]
     public function index(Request $request): JsonResponse
     {
         try {
@@ -43,7 +43,7 @@ class StartingFiveController extends ApiController
 
     }
 
-    #[Route('/{slug}', name: 'api_starting_five_show', methods: ['GET'])]
+    #[Route(path: '/{slug}', name: 'show', methods: ['GET'])]
     public function show(Request $request, Team $team): JsonResponse
     {
         try {
@@ -56,7 +56,7 @@ class StartingFiveController extends ApiController
 
     }
 
-    #[Route('/{slug}/update', name: 'api_starting_five_update', methods: ['POST'])]
+    #[Route(path: '/{slug}/update', name: 'update', methods: ['POST'])]
     public function update(Request $request, Team $team): JsonResponse
     {
         try {
@@ -74,7 +74,6 @@ class StartingFiveController extends ApiController
             $completed = $this->startingFiveService->updateStartingFive($user->getProfile(), $team, $data);
             return $this->json(['isCompleted' => $completed], 200);
         } catch (\Exception $ex) {
-            dd($ex);
             return $this->json(['error' => 'Erreur lors de l\'enregistrement des données'], 500);
         }
     }

@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/player/')]
+#[Route(path: '/player', name: 'player_')]
 class PlayerController extends AbstractController
 {
     public function __construct(
@@ -16,7 +16,7 @@ class PlayerController extends AbstractController
     )
     {}
 
-    #[Route('name', name: 'api_player_name', methods: ['POST'])]
+    #[Route(path: '/name', name: 'name', methods: ['POST'])]
     public function getByName(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);

@@ -6,7 +6,6 @@ use App\Domain\League\Entity\Season;
 use App\Domain\Player\Entity\Player;
 use App\Domain\Player\Entity\PlayerTeam;
 use App\Domain\Team\Team;
-use App\Entity\Library\Country;
 use App\Service\FileManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,6 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Intl\Countries;
 
 #[AsCommand(
     name: 'create:player:team',
@@ -78,7 +78,7 @@ class CreatePlayerTeamCommand extends Command
                 continue;
             }
             if (is_null($this->rawPlayer['birthplace'])) {
-                //$io->error('Error Birthplace ' . $playerTeamsData);
+                $io->error('Error Birthplace ' . $playerTeamsData);
                 $birthplace++;
                 $totalError++;
                 continue;
@@ -174,19 +174,14 @@ class CreatePlayerTeamCommand extends Command
             ]);
     }
 
-    private function initCountry(string $country): ?Country
+    private function initCountry(string $country): string
     {
-        if(!array_key_exists($country, $this->cache)) {
-            $countryRepo = $this->manager->getRepository(Country::class);
-            if (($countryAlpha = $countryRepo->findOneBy(['alpha2' => $country])) instanceof Country) {
-                $this->cache[$country] = $countryAlpha;
-            } elseif(($countryName = $countryRepo->findOneBy(['name' => $country])) instanceof Country) {
-                $this->cache[$country] = $countryName;
-            } else {
-                $this->cache[$country] = null;
+        if(Countries::exists($country)) {
+            return Countries::getName($country);
+        } elseif (Countries::alpha3CodeExists($country)) {
+            return Countries::getAlpha3Name($country);
             }
-        }
-        return $this->cache[$country];
+        return '';
     }
 
     private function isPlayerTeamExist(): bool {

@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/api/login')]
+#[Route(path: '/login', name: 'login_')]
 class SecurityController extends AbstractController
 {
 
@@ -28,7 +28,7 @@ class SecurityController extends AbstractController
     )
     {}
 
-    #[Route('/twitter', name: 'login_twitter', methods: ['GET'])]
+    #[Route(path: '/twitter', name: 'twitter', methods: ['GET'])]
     #[IsGranted('PUBLIC_ACCESS')]
     public function twitterLogin(): JsonResponse
     {
@@ -41,7 +41,7 @@ class SecurityController extends AbstractController
     }
 
 
-    #[Route('/twitter/callback', name: 'login_twitter_callback', methods: ['POST'])]
+    #[Route(path: '/twitter/callback', name: 'twitter_callback', methods: ['POST'])]
     #[IsGranted('PUBLIC_ACCESS')]
     public function twitterCallback(Request $request, AuthenticationSuccessHandler $authenticationSuccessHandler): Response
     {

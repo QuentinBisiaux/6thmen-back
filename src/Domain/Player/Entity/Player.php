@@ -5,7 +5,6 @@ namespace App\Domain\Player\Entity;
 use App\Domain\Player\Repository\PlayerRepository;
 use App\Domain\Ranking\StratingFive\Entity\StartingFivePlayer;
 use App\Domain\Ranking\Top100\Entity\Top100Player;
-use App\Entity\Library\Country;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -35,12 +34,11 @@ class Player
     ])]
     private ?string $name = null;
 
-    #[ORM\ManyToOne(inversedBy: 'players')]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups([
         'read:player:details',
     ])]
-    private ?Country $birthPlace = null;
+    private string $birthPlace = '';
 
     #[ORM\OneToOne(inversedBy: 'player', targetEntity: HypeScore::class)]
     private ?HypeScore $hypeScore = null;
@@ -116,12 +114,12 @@ class Player
         return $this->firstname . ' ' . $this->lastname;
     }
 
-    public function getBirthPlace(): ?Country
+    public function getBirthPlace(): string
     {
         return $this->birthPlace;
     }
 
-    public function setBirthPlace(?Country $birthPlace): self
+    public function setBirthPlace(string $birthPlace): self
     {
         $this->birthPlace = $birthPlace;
 

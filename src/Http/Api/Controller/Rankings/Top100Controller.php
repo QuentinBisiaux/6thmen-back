@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/rankings/top-100')]
+#[Route(path: '/rankings/top-100', name: 'top_100_')]
 class Top100Controller extends ApiController
 {
 
@@ -22,7 +22,7 @@ class Top100Controller extends ApiController
         parent::__construct($this->JWTAuth);
     }
 
-    #[Route('/', name: 'api_top_100_index', methods: ['GET'])]
+    #[Route(path: '/', name: 'index', methods: ['GET'])]
     public function index(Request $request): JsonResponse
     {
         try {
@@ -36,7 +36,7 @@ class Top100Controller extends ApiController
 
     }
 
-    #[Route('/update', name: 'api_top_100_update', methods: ['POST'])]
+    #[Route(path: '/update', name: 'update', methods: ['POST'])]
     public function update(Request $request): JsonResponse
     {
         try {

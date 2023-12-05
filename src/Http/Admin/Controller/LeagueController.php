@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Admin;
+namespace App\Http\Admin\Controller;
 
 use App\Domain\League\Entity\League;
 use App\Domain\League\Repository\LeagueRepository;

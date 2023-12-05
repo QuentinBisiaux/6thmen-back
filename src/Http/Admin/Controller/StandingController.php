@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Admin;
+namespace App\Http\Admin\Controller;
 
 use App\Domain\Standing\Entity\Standing;
 use App\Domain\Standing\Repository\StandingRepository;

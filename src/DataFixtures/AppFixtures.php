@@ -5,7 +5,6 @@ namespace App\DataFixtures;
 use App\Domain\League\Entity\League;
 use App\Domain\League\Entity\Season;
 use App\Domain\League\Entity\Sport;
-use App\Entity\Library\Country;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -32,19 +31,6 @@ class AppFixtures extends Fixture
                 $leagueToInsert->setSport($sportToInsert);
                 $manager->persist($leagueToInsert);
             }
-        }
-        $fileContent = file(__DIR__ . '/../../var/data/countries.csv');
-        array_shift($fileContent);
-        foreach ($fileContent as $countryData) {
-            $countryDataArray = explode(',', $countryData);
-            $newCountry = new Country();
-            $newCountry->setName($countryDataArray[0]);
-            $newCountry->setAlpha2($countryDataArray[1]);
-            $newCountry->setAlpha3($countryDataArray[2]);
-            $newCountry->setCode($countryDataArray[3]);
-            $newCountry->setRegion($countryDataArray[5]);
-            $newCountry->setCreatedAt(new \DateTimeImmutable());
-            $manager->persist($newCountry);
         }
         for ($startingYear = 1850; $startingYear <= 2150; $startingYear++) {
             $season = new Season();

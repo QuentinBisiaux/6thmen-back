@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/team')]
+#[Route(path: '/team', name: 'team_')]
 class TeamController extends AbstractController
 {
     public function __construct(
@@ -15,19 +15,19 @@ class TeamController extends AbstractController
     )
     {}
 
-    #[Route('/all', name: 'api_team_all', methods: ['GET'])]
+    #[Route(path: '/all', name: 'all', methods: ['GET'])]
     public function allTeams(): JsonResponse
     {
         return $this->json($this->teamRepository->findAll(), 200, [], ['groups' => 'read:team']);
     }
 
-    #[Route('/actual', name: 'api_team_all_current', methods: ['GET'])]
+    #[Route(path: '/actual', name: 'all_current', methods: ['GET'])]
     public function actualTeams(): JsonResponse
     {
         return $this->json($this->teamRepository->actualTeams(), 200, [], ['groups' => 'read:team']);
     }
 
-    #[Route('/actual/conference', name: 'api_team_all_current_by_conf', methods: ['GET'])]
+    #[Route(path: '/actual/conference', name: 'all_current_by_conf', methods: ['GET'])]
     public function actualTeamsByConference(): JsonResponse
     {
         $teams = $this->teamRepository->actualTeamsByConference();
@@ -46,7 +46,7 @@ class TeamController extends AbstractController
         return $this->json($teamsByConference, 200, [], ['groups' => 'read:team']);
     }
 
-    #[Route('/name', name: 'api_team_name', methods: ['GET'])]
+    #[Route(path: '/name', name: 'name', methods: ['GET'])]
     public function teamsByOrderedByName(): JsonResponse
     {
         $teams = $this->teamRepository->findTeamsByNameOrdered();
