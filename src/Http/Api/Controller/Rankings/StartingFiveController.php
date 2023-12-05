@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/api/rankings/starting-five', name: 'starting_five_')]
+#[Route(path: '/rankings/starting-five', name: 'starting_five_')]
 class StartingFiveController extends ApiController
 {
 
