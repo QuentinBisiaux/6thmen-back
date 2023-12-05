@@ -24,7 +24,7 @@ class HypeScoreRepository extends ServiceEntityRepository
     public function deleteAll()
     {
         $entityManager = $this->getEntityManager();
-        $query = $entityManager->createQuery('DELETE FROM App\Entity\Admin\HypeScore');
+        $query = $entityManager->createQuery('DELETE FROM ' . HypeScore::class);
         return $query->execute();
     }
 

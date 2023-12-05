@@ -24,7 +24,7 @@ class StartingFiveAggregatorRepository extends ServiceEntityRepository
     public function deleteAll()
     {
         $entityManager = $this->getEntityManager();
-        $query = $entityManager->createQuery('DELETE FROM App\Entity\Admin\StartingFiveAggregator');
+        $query = $entityManager->createQuery('DELETE FROM ' . StartingFiveAggregator::class);
         return $query->execute();
     }
 

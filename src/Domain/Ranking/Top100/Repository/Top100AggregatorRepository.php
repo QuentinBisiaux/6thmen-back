@@ -24,7 +24,7 @@ class Top100AggregatorRepository extends ServiceEntityRepository
     public function deleteAll()
     {
         $entityManager = $this->getEntityManager();
-        $query = $entityManager->createQuery('DELETE FROM App\Entity\Admin\Top100Aggregator');
+        $query = $entityManager->createQuery('DELETE FROM ' . Top100Aggregator::class);
         return $query->execute();
     }
 
