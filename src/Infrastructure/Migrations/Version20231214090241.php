@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20231205115216 extends AbstractMigration
+final class Version20231214090241 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -36,6 +36,8 @@ final class Version20231205115216 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE top100_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE top100_aggregator_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE top100_player_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE trophy_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE trophy_forecast_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE "user_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE "user_data_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE forecast_regular_season (id INT NOT NULL, user_id INT NOT NULL, season_id INT NOT NULL, valid BOOLEAN NOT NULL, data JSON NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
@@ -54,7 +56,7 @@ final class Version20231205115216 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN player.birthday IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN player.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN player.updated_at IS \'(DC2Type:datetime_immutable)\'');
-        $this->addSql('CREATE TABLE player_team (id INT NOT NULL, season_id INT NOT NULL, player_id INT NOT NULL, team_id INT NOT NULL, position VARCHAR(50) DEFAULT NULL, jersey_number VARCHAR(50) DEFAULT NULL, rookie_year BOOLEAN NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE player_team (id INT NOT NULL, season_id INT NOT NULL, player_id INT NOT NULL, team_id INT NOT NULL, position VARCHAR(50) DEFAULT NULL, jersey_number VARCHAR(50) DEFAULT NULL, experience INT DEFAULT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_66FAF62C4EC001D1 ON player_team (season_id)');
         $this->addSql('CREATE INDEX IDX_66FAF62C99E6F5DF ON player_team (player_id)');
         $this->addSql('CREATE INDEX IDX_66FAF62C296CD8AE ON player_team (team_id)');
@@ -106,6 +108,15 @@ final class Version20231205115216 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_156C92B99E6F5DF ON top100_player (player_id)');
         $this->addSql('COMMENT ON COLUMN top100_player.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN top100_player.updated_at IS \'(DC2Type:datetime_immutable)\'');
+        $this->addSql('CREATE TABLE trophy (id INT NOT NULL, league_id INT NOT NULL, name VARCHAR(255) NOT NULL, abbreviation VARCHAR(255) DEFAULT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_112AFAE958AFC4DE ON trophy (league_id)');
+        $this->addSql('COMMENT ON COLUMN trophy.created_at IS \'(DC2Type:datetime_immutable)\'');
+        $this->addSql('CREATE TABLE trophy_forecast (id INT NOT NULL, user_profile_id INT NOT NULL, trophy_id INT NOT NULL, player_id INT DEFAULT NULL, rank INT NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_5F25B5FA6B9DD454 ON trophy_forecast (user_profile_id)');
+        $this->addSql('CREATE INDEX IDX_5F25B5FAF59AEEEF ON trophy_forecast (trophy_id)');
+        $this->addSql('CREATE INDEX IDX_5F25B5FA99E6F5DF ON trophy_forecast (player_id)');
+        $this->addSql('COMMENT ON COLUMN trophy_forecast.created_at IS \'(DC2Type:datetime_immutable)\'');
+        $this->addSql('COMMENT ON COLUMN trophy_forecast.updated_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE "user" (id INT NOT NULL, profile_id INT DEFAULT NULL, email VARCHAR(255) DEFAULT NULL, password VARCHAR(255) DEFAULT NULL, twitter_id VARCHAR(255) DEFAULT NULL, roles JSON NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649E7927C74 ON "user" (email)');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649C63E6FFF ON "user" (twitter_id)');
@@ -163,6 +174,10 @@ final class Version20231205115216 extends AbstractMigration
         $this->addSql('ALTER TABLE top100_aggregator ADD CONSTRAINT FK_F9B296BE99E6F5DF FOREIGN KEY (player_id) REFERENCES player (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE top100_player ADD CONSTRAINT FK_156C92BA9C96C46 FOREIGN KEY (top100_id) REFERENCES top100 (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE top100_player ADD CONSTRAINT FK_156C92B99E6F5DF FOREIGN KEY (player_id) REFERENCES player (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE trophy ADD CONSTRAINT FK_112AFAE958AFC4DE FOREIGN KEY (league_id) REFERENCES league (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE trophy_forecast ADD CONSTRAINT FK_5F25B5FA6B9DD454 FOREIGN KEY (user_profile_id) REFERENCES "user_data" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE trophy_forecast ADD CONSTRAINT FK_5F25B5FAF59AEEEF FOREIGN KEY (trophy_id) REFERENCES trophy (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE trophy_forecast ADD CONSTRAINT FK_5F25B5FA99E6F5DF FOREIGN KEY (player_id) REFERENCES player (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE "user" ADD CONSTRAINT FK_8D93D649CCFA12B8 FOREIGN KEY (profile_id) REFERENCES "user_data" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE "user_data" ADD CONSTRAINT FK_D772BFAAA76ED395 FOREIGN KEY (user_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE "user_data" ADD CONSTRAINT FK_D772BFAAA9C96C46 FOREIGN KEY (top100_id) REFERENCES top100 (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
@@ -190,6 +205,8 @@ final class Version20231205115216 extends AbstractMigration
         $this->addSql('DROP SEQUENCE top100_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE top100_aggregator_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE top100_player_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE trophy_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE trophy_forecast_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE "user_id_seq" CASCADE');
         $this->addSql('DROP SEQUENCE "user_data_id_seq" CASCADE');
         $this->addSql('ALTER TABLE forecast_regular_season DROP CONSTRAINT FK_D9CD7FB9A76ED395');
@@ -217,6 +234,10 @@ final class Version20231205115216 extends AbstractMigration
         $this->addSql('ALTER TABLE top100_aggregator DROP CONSTRAINT FK_F9B296BE99E6F5DF');
         $this->addSql('ALTER TABLE top100_player DROP CONSTRAINT FK_156C92BA9C96C46');
         $this->addSql('ALTER TABLE top100_player DROP CONSTRAINT FK_156C92B99E6F5DF');
+        $this->addSql('ALTER TABLE trophy DROP CONSTRAINT FK_112AFAE958AFC4DE');
+        $this->addSql('ALTER TABLE trophy_forecast DROP CONSTRAINT FK_5F25B5FA6B9DD454');
+        $this->addSql('ALTER TABLE trophy_forecast DROP CONSTRAINT FK_5F25B5FAF59AEEEF');
+        $this->addSql('ALTER TABLE trophy_forecast DROP CONSTRAINT FK_5F25B5FA99E6F5DF');
         $this->addSql('ALTER TABLE "user" DROP CONSTRAINT FK_8D93D649CCFA12B8');
         $this->addSql('ALTER TABLE "user_data" DROP CONSTRAINT FK_D772BFAAA76ED395');
         $this->addSql('ALTER TABLE "user_data" DROP CONSTRAINT FK_D772BFAAA9C96C46');
@@ -240,6 +261,8 @@ final class Version20231205115216 extends AbstractMigration
         $this->addSql('DROP TABLE top100');
         $this->addSql('DROP TABLE top100_aggregator');
         $this->addSql('DROP TABLE top100_player');
+        $this->addSql('DROP TABLE trophy');
+        $this->addSql('DROP TABLE trophy_forecast');
         $this->addSql('DROP TABLE "user"');
         $this->addSql('DROP TABLE "user_data"');
         $this->addSql('DROP TABLE user_favorite_teams');
