@@ -2,6 +2,7 @@
 
 namespace App\Domain\Player\Repository;
 
+use App\Domain\League\Entity\Season;
 use App\Domain\Player\Entity\Player;
 use App\Domain\Team\Team;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -75,6 +76,46 @@ class PlayerRepository extends ServiceEntityRepository
         }
          return $qb->setMaxResults(25)->getQuery()->getResult();
 
+    }
+
+    public function getCurrentPlayers(Season $season): array
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.playerTeams', 'pt')
+            ->where('pt.season = :season')
+            ->setParameter('season', $season)
+            ->groupBy('p.id')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function getCurrentRookies(Season $season): array
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.playerTeams', 'pt')
+            ->where('pt.season = :season')
+            ->setParameter('season', $season)
+            ->andWhere('pt.experience = :experience')
+            ->setParameter('experience', 0)
+            ->groupBy('p.id')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function getCurrentPlayersWithMoreThan2Seasons(Season $season): array
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.playerTeams', 'pt')
+            ->groupBy('p.id')
+            ->where('pt.season = :season')
+            ->setParameter('season', $season)
+            ->andWhere('pt.experience >= :experience')
+            ->setParameter('experience', 2)
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
 //    /**

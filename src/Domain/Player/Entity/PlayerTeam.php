@@ -46,11 +46,11 @@ class PlayerTeam
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $jerseyNumber = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     #[Groups([
         'read:player',
     ])]
-    private ?bool $rookieYear = null;
+    private ?int $experience = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -123,14 +123,14 @@ class PlayerTeam
         return $this;
     }
 
-    public function isRookieYear(): ?bool
+    public function getExperience(): ?int
     {
-        return $this->rookieYear;
+        return $this->experience;
     }
 
-    public function setRookieYear(bool $rookieYear): self
+    public function setExperience(int $experience): self
     {
-        $this->rookieYear = $rookieYear;
+        $this->experience = $experience;
 
         return $this;
     }

@@ -20,6 +20,7 @@ class Player
     #[ORM\Column]
     #[Groups([
         'read:player',
+        'api:read:forecast-trophies'
     ])]
     private ?int $id = null;
 
@@ -31,6 +32,7 @@ class Player
 
     #[Groups([
         'read:player',
+        'api:read:forecast-trophies'
     ])]
     private ?string $name = null;
 

@@ -24,6 +24,7 @@ class RegularSeasonController extends ApiController
     {
         parent::__construct($this->JWTAuth);
     }
+
     #[Route(path: '/{year}', name: 'show', methods: ['GET'])]
     public function show(Request $request, Season $season): JsonResponse
     {

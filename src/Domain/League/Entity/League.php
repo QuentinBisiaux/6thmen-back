@@ -2,6 +2,7 @@
 
 namespace App\Domain\League\Entity;
 
+use App\Domain\Forecast\Trophy\Entity\Trophy;
 use App\Domain\League\Repository\LeagueRepository;
 use App\Domain\Standing\Entity\Standing;
 use App\Domain\Team\Team;
@@ -36,6 +37,13 @@ class League
     ])]
     private Collection $teams;
 
+    #[ORM\OneToMany(mappedBy: 'league', targetEntity: Trophy::class)]
+    #[Groups([
+        'read:league'
+    ])]
+    #[ORM\OrderBy(['id' => 'ASC'])]
+    private Collection $trophies;
+
     #[Context(
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
         denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
@@ -57,6 +65,7 @@ class League
     {
         $this->teams = new ArrayCollection();
         $this->standings = new ArrayCollection();
+        $this->trophies = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -88,9 +97,6 @@ class League
         return $this;
     }
 
-    /**
-     * @return Collection<int, Team>
-     */
     public function getTeams(): Collection
     {
         return $this->teams;
@@ -113,6 +119,21 @@ class League
             if ($team->getLeague() === $this) {
                 $team->setLeague(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function getTrophies(): Collection
+    {
+        return $this->trophies;
+    }
+
+    public function addTrophy(Trophy $trophy): self
+    {
+        if (!$this->trophies->contains($trophy)) {
+            $this->trophies->add($trophy);
+            $trophy->setLeague($this);
         }
 
         return $this;

@@ -3,6 +3,7 @@
 namespace App\Domain\Auth\Entity;
 
 use App\Domain\Auth\Repository\UserProfileRepository;
+use App\Domain\Forecast\Trophy\Entity\TrophyForecast;
 use App\Domain\Ranking\StratingFive\Entity\StartingFive;
 use App\Domain\Ranking\Top100\Entity\Top100;
 use App\Domain\Team\Team;
@@ -36,7 +37,6 @@ class UserProfile
     #[Groups('read:user')]
     private ?string $username = null;
 
-    /** @var Collection <int, Team>  */
     #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'fans')]
     #[JoinTable(name: 'user_favorite_teams')]
     #[Groups('read:user')]
@@ -55,6 +55,11 @@ class UserProfile
 
     #[ORM\OneToOne(inversedBy: 'userProfile', targetEntity: Top100::class)]
     private ?Top100 $top100;
+
+    #[ORM\OneToMany(mappedBy: 'userProfile', targetEntity: TrophyForecast::class, orphanRemoval: true)]
+    #[Groups('read:user')]
+    #[ORM\OrderBy(['id' => 'ASC'])]
+    private Collection $trophiesForecast;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: StartingFive::class, orphanRemoval: true)]
     #[Groups('read:user')]
@@ -77,6 +82,7 @@ class UserProfile
     public function __construct()
     {
         $this->favoriteTeams = new ArrayCollection();
+        $this->trophiesForecast = new ArrayCollection();
         $this->startingFive = new ArrayCollection();
     }
 
@@ -212,6 +218,21 @@ class UserProfile
     public function getTop100(): ?Top100
     {
         return $this->top100;
+    }
+
+    public function getTrophiesForecast(): Collection
+    {
+        return $this->trophiesForecast;
+    }
+
+    public function addTrophyForecast(TrophyForecast $trophyForecast): self
+    {
+        if (!$this->trophiesForecast->contains($trophyForecast)) {
+            $this->trophiesForecast->add($trophyForecast);
+            $trophyForecast->setUserProfile($this);
+        }
+
+        return $this;
     }
 
     public function getStartingFive(): Collection

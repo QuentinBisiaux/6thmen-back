@@ -97,7 +97,19 @@ class CreatePlayerTeamCommand extends Command
                 $playerCreated++;
             }
 
-            if($this->isPlayerTeamExist()) {
+            if(($playerTeam = $this->isPlayerTeamExist()) !== null) {
+                $playerTeam->setSeason($this->rawPlayer['season']);
+                $playerTeam->setTeam($this->rawPlayer['team']);
+                $playerTeam->setPlayer($this->rawPlayer['player']);
+                $playerTeam->setPosition($this->rawPlayer['position']);
+                $playerTeam->setJerseyNumber($this->rawPlayer['jerseyNumber']);
+                if ($this->rawPlayer['rookie'] === 'R') {
+                    $playerTeam->setExperience(0);
+                } else {
+                    $playerTeam->setExperience($this->rawPlayer['rookie']);
+                }
+                $playerTeam->setUpdatedAt(new \DateTimeImmutable());
+                $this->manager->persist($playerTeam);
                 continue;
             }
 
@@ -107,9 +119,10 @@ class CreatePlayerTeamCommand extends Command
             $newPlayerTeam->setPlayer($this->rawPlayer['player']);
             $newPlayerTeam->setPosition($this->rawPlayer['position']);
             $newPlayerTeam->setJerseyNumber($this->rawPlayer['jerseyNumber']);
-            $newPlayerTeam->setRookieYear(false);
             if ($this->rawPlayer['rookie'] === 'R') {
-                $newPlayerTeam->setRookieYear(true);
+                $newPlayerTeam->setExperience(0);
+            } else {
+                $newPlayerTeam->setExperience($this->rawPlayer['rookie']);
             }
             $newPlayerTeam->setCreatedAt(new \DateTimeImmutable());
             if($this->playerTeams->contains($newPlayerTeam)) {
@@ -184,7 +197,7 @@ class CreatePlayerTeamCommand extends Command
         return '';
     }
 
-    private function isPlayerTeamExist(): bool {
+    private function isPlayerTeamExist(): ?PlayerTeam {
         $playerRepo = $this->manager->getRepository(PlayerTeam::class);
         return $playerRepo->findOneBy(
             [
@@ -192,6 +205,6 @@ class CreatePlayerTeamCommand extends Command
                 'player' => $this->rawPlayer['player'],
                 'team'   => $this->rawPlayer['team']
             ]
-        ) instanceof PlayerTeam;
+        );
     }
 }
