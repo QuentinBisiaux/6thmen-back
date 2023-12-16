@@ -50,13 +50,11 @@ class TrophyForecastController extends ApiController
         }
 
         try {
-            $completed = $this->trophyForecastService->updateForecastTrophy($user->getProfile(), $trophy, $data);
-            return $this->json(['isCompleted' => $completed], 200);
+            $this->trophyForecastService->updateForecastTrophy($user->getProfile(), $trophy, $data);
+            return $this->json([]);
         } catch (\Exception $ex) {
             return $this->json(['error' => 'Erreur lors de l\'enregistrement des données'], 500);
         }
-        //$data = $this->trophyForecastService->getTrophyForecastData($user->getProfile());
-        return $this->json($data, 201, [], ['groups' => 'api:read:forecast-trophies']);
     }
 
     #[Route(path: '/players', name: 'players', methods: ['GET'])]
@@ -78,7 +76,7 @@ class TrophyForecastController extends ApiController
 
         $positionData = $data['duplicatePosition'];
 
-        if (!isset($positionData['trophy'], $positionData['ranking']) || isset($positionData['player'])) {
+        if (!isset($positionData['trophy'], $positionData['rank']) || isset($positionData['player'])) {
             return false;
         }
 
@@ -86,7 +84,7 @@ class TrophyForecastController extends ApiController
             return false;
         }
 
-        if (!is_int($positionData['ranking'])) {
+        if (!is_int($positionData['rank'])) {
             return false;
         }
 
@@ -100,7 +98,7 @@ class TrophyForecastController extends ApiController
 
     private function validateRankData(array $data): bool
     {
-        if (!isset($data['trophy'], $data['ranking'], $data['player'])) {
+        if (!isset($data['trophy'], $data['rank'], $data['player'])) {
             return false;
         }
 
@@ -108,7 +106,7 @@ class TrophyForecastController extends ApiController
             return false;
         }
 
-        if (!is_int($data['ranking'])) {
+        if (!is_int($data['rank'])) {
             return false;
         }
 

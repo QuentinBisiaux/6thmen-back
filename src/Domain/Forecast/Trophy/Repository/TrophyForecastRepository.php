@@ -41,7 +41,7 @@ class TrophyForecastRepository extends ServiceEntityRepository
         }
     }
 
-    public function findUserTrophyForecast(UserProfile $userProfile, Trophy $trophy)
+    public function findUserTrophyForecast(UserProfile $userProfile, Trophy $trophy): array
     {
         return $this->createQueryBuilder('tf')
             ->where('tf.userProfile = :user_profile')

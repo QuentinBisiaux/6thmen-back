@@ -90,12 +90,12 @@ class TrophyForecastService
     {
         $forecastsTrophy = $this->entityManager->getRepository(TrophyForecast::class)->findUserTrophyForecast($userProfile, $trophy);
         foreach ($forecastsTrophy as $forecastTrophy) {
-            if(isset($data["duplicatePosition"]) && $data["duplicatePosition"]['ranking'] === $forecastTrophy->getRanking()) {
+            if(isset($data["duplicatePosition"]) && $data["duplicatePosition"]['rank'] === $forecastTrophy->getRank()) {
                 $forecastTrophy->setPlayer(null);
                 $this->entityManager->persist($forecastTrophy);
                 continue;
             }
-            if($data["newPosition"]['ranking'] === $forecastTrophy->getRanking()) {
+            if($data["newPosition"]['rank'] === $forecastTrophy->getRank()) {
                 $newPlayer = $this->entityManager->getRepository(Player::class)->findOneBy(['id' => $data['newPosition']['player']['id']]);
                 $forecastTrophy->setPlayer($newPlayer);
                 $this->entityManager->persist($forecastTrophy);
