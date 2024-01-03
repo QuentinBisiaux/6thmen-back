@@ -39,6 +39,30 @@ class SeasonRepository extends ServiceEntityRepository
         }
     }
 
+    public function getCurrentSeason(): Season
+    {
+        $currentDate = (new \DateTimeImmutable())->format('Y');
+        return $this->createQueryBuilder('s')
+            ->where('s.year = :year')
+            ->setParameter('year', $currentDate)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function getMultiYearSeasonByYear(?string $date): Season
+    {
+        if(is_null($date)) {
+            $currentDate = (new \DateTimeImmutable())->format('Y');
+            $date = $currentDate . '-' . substr( (string) ((int) $currentDate + 1), -2);
+        }
+
+        return $this->createQueryBuilder('s')
+            ->where('s.year = :year')
+            ->setParameter('year', $date)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 //    /**
 //     * @return Season[] Returns an array of Season objects
 //     */

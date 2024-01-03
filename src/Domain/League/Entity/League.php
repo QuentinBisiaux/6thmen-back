@@ -61,11 +61,15 @@ class League
     #[ORM\OneToMany(mappedBy: 'League', targetEntity: Standing::class, orphanRemoval: true)]
     private Collection $standings;
 
+    #[ORM\OneToMany(mappedBy: 'league', targetEntity: Tournament::class, orphanRemoval: true)]
+    private Collection $competitions;
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
         $this->standings = new ArrayCollection();
         $this->trophies = new ArrayCollection();
+        $this->competitions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -188,6 +192,21 @@ class League
             if ($standing->getLeague() === $this) {
                 $standing->setLeague(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function getCompetitions(): Collection
+    {
+        return $this->competitions;
+    }
+
+    public function addCompetition(Competition $competition): static
+    {
+        if (!$this->competitions->contains($competition)) {
+            $this->competitions->add($competition);
+            $competition->setLeague($this);
         }
 
         return $this;

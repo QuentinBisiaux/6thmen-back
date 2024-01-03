@@ -56,12 +56,16 @@ class Season
     #[ORM\OneToMany(mappedBy: 'season', targetEntity: ForecastRegularSeason::class)]
     private Collection $forecastRegularSeason;
 
+    #[ORM\OneToMany(mappedBy: 'season', targetEntity: Competition::class, orphanRemoval: true)]
+    private Collection $competitions;
+
     public function __construct()
     {
         $this->playerTeams = new ArrayCollection();
         $this->standings = new ArrayCollection();
         $this->standingsDraft = new ArrayCollection();
         $this->forecastRegularSeason = new ArrayCollection();
+        $this->competitions = new ArrayCollection();
 
     }
 
@@ -206,6 +210,21 @@ class Season
         if (!$this->forecastRegularSeason->contains($forecastRegularSeason)) {
             $this->forecastRegularSeason->add($forecastRegularSeason);
             $forecastRegularSeason->setSeason($this);
+        }
+
+        return $this;
+    }
+
+    public function getCompetitions(): Collection
+    {
+        return $this->competitions;
+    }
+
+    public function addCompetition(Competition $competition): static
+    {
+        if (!$this->competitions->contains($competition)) {
+            $this->competitions->add($competition);
+            $competition->setSeason($this);
         }
 
         return $this;
