@@ -7,6 +7,7 @@ use App\Domain\Forecast\RegularSeason\Entity\ForecastRegularSeason;
 use App\Domain\League\Entity\Season;
 use App\Domain\Team\Team;
 use App\Http\Api\Controller\ApiController;
+use App\Infrastructure\Context\Context;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,7 +27,7 @@ class RegularSeasonController extends ApiController
     }
 
     #[Route(path: '/{year}', name: 'show', methods: ['GET'])]
-    public function show(Request $request, Season $season): JsonResponse
+    public function show(Request $request, Season $season, Context $context): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -34,9 +35,18 @@ class RegularSeasonController extends ApiController
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
 
+        $this->initContext($this->entityManager, $context, 'NBA', $season);
+
         $forecastRegularSeasonRepo = $this->entityManager->getRepository(ForecastRegularSeason::class);
-        $forecastRegularSeason = $forecastRegularSeasonRepo->findUserForecastRegularSeason($user, $season);
-        if(!empty($forecastRegularSeason))  return $this->json($forecastRegularSeason, 200, [], ['groups' => 'api:read:forecast-regular-season']);
+        $forecastRegularSeason = $forecastRegularSeasonRepo->findUserForecastRegularSeason($user, $season, $this->context->getDates());
+        if(!empty($forecastRegularSeason))  return $this->json([
+            'forecast' => $forecastRegularSeason,
+            'context' => $this->context->getDates()
+        ],
+            201,
+            [],
+            ['groups' => 'api:read:forecast-regular-season']
+        );
 
         $forecastRegularSeason = new ForecastRegularSeason();
         $forecastRegularSeason->setUser($user)->setSeason($season)->setCreatedAt(new \DateTimeImmutable());
@@ -45,12 +55,20 @@ class RegularSeasonController extends ApiController
         $this->entityManager->persist($forecastCompleted);
         $this->entityManager->flush();
 
-        return $this->json($forecastCompleted, 201, [], ['groups' => 'api:read:forecast-regular-season']);
+        return $this->json(
+            [
+                'forecast' => $forecastCompleted,
+                'context' => $this->context->getDates()
+            ],
+            201,
+            [],
+            ['groups' => 'api:read:forecast-regular-season']
+        );
 
     }
 
     #[Route(path: '/{year}/update', name: 'update', methods: ['POST'])]
-    public function update(Request $request, Season $season): JsonResponse
+    public function update(Request $request, Season $season, Context $context): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -58,12 +76,14 @@ class RegularSeasonController extends ApiController
             return $this->json(['error' => $ex->getMessage()], $ex->getCode());
         }
 
+        $this->initContext($this->entityManager, $context, 'NBA', $season);
+
         $content = $request->getContent();
         $data = json_decode($content, true);
 
         $forecastRegularSeasonRepo = $this->entityManager->getRepository(ForecastRegularSeason::class);
         /** @var ForecastRegularSeason $forecastRegularSeason */
-        $forecastRegularSeason = $forecastRegularSeasonRepo->findUserForecastRegularSeason($user, $season);
+        $forecastRegularSeason = $forecastRegularSeasonRepo->findUserForecastRegularSeason($user, $season, $this->context->getDates());
         if(empty($forecastRegularSeason)) return $this->json($forecastRegularSeason, 200, [], ['groups' => 'api:read:forecast-regular-season']);
 
         $forecastRegularSeason->setValid($this->isTotalVictoriesOk($data));
@@ -88,7 +108,7 @@ class RegularSeasonController extends ApiController
                 'slug'          => $team->getSlug(),
                 'conference'    => $conference,
                 'victories'     => 0,
-                'defeats'       => 0,
+                'defeats'       => 82,
             ];
             $teamsByConference[lcfirst($conference)][] = $teamData;
         }

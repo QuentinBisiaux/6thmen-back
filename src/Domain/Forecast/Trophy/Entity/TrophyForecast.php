@@ -4,6 +4,7 @@ namespace App\Domain\Forecast\Trophy\Entity;
 
 use App\Domain\Auth\Entity\UserProfile;
 use App\Domain\Forecast\Trophy\Repository\TrophyForecastRepository;
+use App\Domain\League\Entity\Season;
 use App\Domain\Player\Entity\Player;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Context;
@@ -26,6 +27,11 @@ class TrophyForecast
     #[ORM\JoinColumn(nullable: false)]
     #[Groups('api:read:forecast-trophies')]
     private Trophy $trophy;
+
+    #[ORM\ManyToOne(inversedBy: 'trophiesForecast')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups('api:read:forecast-trophies')]
+    private Season $season;
 
     #[ORM\Column(type: 'integer', nullable: false)]
     #[Groups('api:read:forecast-trophies')]
@@ -60,9 +66,11 @@ class TrophyForecast
         return $this->userProfile;
     }
 
-    public function setUserProfile(UserProfile $userProfile): void
+    public function setUserProfile(UserProfile $userProfile): self
     {
         $this->userProfile = $userProfile;
+
+        return $this;
     }
 
     public function getTrophy(): Trophy
@@ -70,9 +78,23 @@ class TrophyForecast
         return $this->trophy;
     }
 
-    public function setTrophy(Trophy $trophy): void
+    public function setTrophy(Trophy $trophy): self
     {
         $this->trophy = $trophy;
+
+        return $this;
+    }
+
+    public function getSeason(): Season
+    {
+        return $this->season;
+    }
+
+    public function setSeason(Season $season): self
+    {
+        $this->season = $season;
+
+        return $this;
     }
 
     public function getRank(): int
@@ -80,9 +102,11 @@ class TrophyForecast
         return $this->rank;
     }
 
-    public function setRank(int $rank): void
+    public function setRank(int $rank): self
     {
         $this->rank = $rank;
+
+        return $this;
     }
 
     public function getPlayer(): ?Player
@@ -90,9 +114,11 @@ class TrophyForecast
         return $this->player;
     }
 
-    public function setPlayer(?Player $player): void
+    public function setPlayer(?Player $player): self
     {
         $this->player = $player;
+
+        return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
@@ -100,9 +126,11 @@ class TrophyForecast
         return $this->createdAt;
     }
 
-    public function setCreatedAt(?\DateTimeImmutable $createdAt): void
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeImmutable
@@ -110,9 +138,11 @@ class TrophyForecast
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): void
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 
 }

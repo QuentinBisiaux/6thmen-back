@@ -108,19 +108,19 @@ class Competition
         return $this->startAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $startAt): self
+    public function setStartAt(\DateTimeImmutable $startAt): self
     {
         $this->startAt = $startAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getEndAt(): ?\DateTimeImmutable
     {
         return $this->endAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $endAt): self
+    public function setEndAt(?\DateTimeImmutable $endAt): self
     {
         $this->endAt = $endAt;
 

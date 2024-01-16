@@ -6,6 +6,10 @@ use App\Domain\Auth\Entity\User;
 use App\Domain\Auth\Exception\NoBearerException;
 use App\Domain\Auth\Exception\UserDoesNotExistException;
 use App\Domain\Auth\JWTAuth;
+use App\Domain\League\Entity\League;
+use App\Domain\League\Entity\Season;
+use App\Infrastructure\Context\Context;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +17,9 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ApiController extends AbstractController
 {
+
+    protected Context $context;
+
     public function __construct
     (
         private JWTAuth $JWTAuth,
@@ -30,5 +37,12 @@ class ApiController extends AbstractController
             throw new AccessDeniedException($e->getMessage());
         }
     }
+    public function initContext(EntityManagerInterface $entityManager, Context $context, string $leagueName, Season $season): void
+    {
+        $league = $entityManager->getRepository(League::class)->findOneBy(['name' => $leagueName]);
+        $context->initContext($league, $season);
+        $this->context = $context;
+    }
+
 
 }

@@ -3,6 +3,7 @@
 namespace App\Domain\League\Entity;
 
 use App\Domain\Forecast\RegularSeason\Entity\ForecastRegularSeason;
+use App\Domain\Forecast\Trophy\Entity\TrophyForecast;
 use App\Domain\League\Repository\SeasonRepository;
 use App\Domain\Player\Entity\PlayerTeam;
 use App\Domain\Standing\Entity\Standing;
@@ -56,6 +57,9 @@ class Season
     #[ORM\OneToMany(mappedBy: 'season', targetEntity: ForecastRegularSeason::class)]
     private Collection $forecastRegularSeason;
 
+    #[ORM\OneToMany(mappedBy: 'season', targetEntity: TrophyForecast::class, orphanRemoval: true)]
+    private Collection $trophiesForecast;
+
     #[ORM\OneToMany(mappedBy: 'season', targetEntity: Competition::class, orphanRemoval: true)]
     private Collection $competitions;
 
@@ -66,7 +70,6 @@ class Season
         $this->standingsDraft = new ArrayCollection();
         $this->forecastRegularSeason = new ArrayCollection();
         $this->competitions = new ArrayCollection();
-
     }
 
     public function getId(): ?int

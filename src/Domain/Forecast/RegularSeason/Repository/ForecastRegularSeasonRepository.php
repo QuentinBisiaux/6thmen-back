@@ -5,6 +5,7 @@ namespace App\Domain\Forecast\RegularSeason\Repository;
 use App\Domain\Auth\Entity\User;
 use App\Domain\Forecast\RegularSeason\Entity\ForecastRegularSeason;
 use App\Domain\League\Entity\Season;
+use App\Infrastructure\Context\Context;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -41,16 +42,22 @@ class ForecastRegularSeasonRepository extends ServiceEntityRepository
         }
     }
 
-    public function findUserForecastRegularSeason(User $user, Season $season): ?ForecastRegularSeason
+    public function findUserForecastRegularSeason(User $user, Season $season, array $dates): ?ForecastRegularSeason
     {
-        $userForecast = $this->createQueryBuilder('ps')
-            ->where('ps.user = :userId')
-            ->setParameter('userId', $user->getId())
-            ->andWhere('ps.season = :seasonId')
-            ->setParameter('seasonId', $season->getId())
+        return $this->createQueryBuilder('ps')
+            ->where('ps.user = :user')
+            ->andWhere('ps.season = :season')
+            ->andWhere('ps.createdAt >= :startAt')
+            ->andWhere('ps.createdAt <= :endAt')
+            ->setParameters([
+                'user'      => $user,
+                'season'    => $season,
+                'startAt'   => $dates['startAt'],
+                'endAt'     => $dates['endAt']
+
+            ])
             ->getQuery()
-            ->getResult()
-            ;
-        return $userForecast[0] ?? null;
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
     }
 }

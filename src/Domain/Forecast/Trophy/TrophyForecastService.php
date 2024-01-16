@@ -8,6 +8,7 @@ use App\Domain\Forecast\Trophy\Entity\TrophyForecast;
 use App\Domain\League\Entity\League;
 use App\Domain\League\Entity\Season;
 use App\Domain\Player\Entity\Player;
+use App\Infrastructure\Context\Context;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -19,16 +20,16 @@ class TrophyForecastService
     )
     {}
 
-    public function getTrophyForecastData(UserProfile $userProfile): array
+    public function getTrophyForecastData(UserProfile $userProfile, Context $context): array
     {
         $data                       = [];
-        $data['trophiesForecast']   = $this->organiseDataForForecast($userProfile);
+        $data['trophiesForecast']   = $this->organiseDataForForecast($userProfile, $context);
         return $data;
     }
 
-    private function organiseDataForForecast(UserProfile $userProfile): array
+    private function organiseDataForForecast(UserProfile $userProfile, Context $context): array
     {
-        $trophiesForecast = $this->findOrCreateTrophyForecast($userProfile);
+        $trophiesForecast = $this->findOrCreateTrophyForecast($userProfile, $context);
         $organisedData = [];
         foreach ($trophiesForecast as $trophyForecast) {
             if(!array_key_exists($trophyForecast->getTrophy()->getKey(), $organisedData)) $organisedData[$trophyForecast->getTrophy()->getKey()] = [];
@@ -37,21 +38,25 @@ class TrophyForecastService
         return $organisedData;
     }
 
-    private function findOrCreateTrophyForecast(UserProfile $userProfile): Collection
+    private function findOrCreateTrophyForecast(UserProfile $userProfile, Context $context): Collection
     {
         $trophiesForecast = $userProfile->getTrophiesForecast();
         if($trophiesForecast->count() !== 0) {
             return $trophiesForecast;
         }
-        $league = $this->entityManager->getRepository(League::class)->findOneByName('NBA');
-        $trophies = $league->getTrophies();
+        $trophies = $context->getLeague()->getTrophies();
         foreach($trophies as $trophy) {
+            $trophyForecasts = $this->entityManager->getRepository(TrophyForecast::class)->findUserTrophyForecast($userProfile, $trophy, $context->getDates());
+            if(empty($trophyForecasts)) {
+
+            }
             for($x = 1; $x <= 5; $x++) {
                 $trophyForecast = new TrophyForecast();
-                $trophyForecast->setUserProfile($userProfile);
-                $trophyForecast->setRank($x);
-                $trophyForecast->setTrophy($trophy);
-                $trophyForecast->setCreatedAt(new \DateTimeImmutable());
+                $trophyForecast ->setUserProfile($userProfile)
+                                ->setRank($x)
+                                ->setTrophy($trophy)
+                                ->setSeason($context->getSeason())
+                                ->setCreatedAt(new \DateTimeImmutable());
                 $this->entityManager->persist($trophyForecast);
                 $userProfile->addTrophyForecast($trophyForecast);
             }

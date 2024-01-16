@@ -33,7 +33,8 @@ class InitDbDataCommand extends Command
                     'Play-In'       => [],
                     'Playoff'       => [],
                     'Finals'        => []
-                ]
+                ],
+                'Off-Season'        => []
             ],
             'NBL' => [],
             'NCAA' => [],
@@ -43,7 +44,9 @@ class InitDbDataCommand extends Command
             'FIFA' => [],
             'UEFA' => []
         ],
-        'Football' => ['NFL' => []]
+        'Football' => [
+            'NFL' => []
+        ]
     ];
 
     private array $competitions = [

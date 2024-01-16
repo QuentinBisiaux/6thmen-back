@@ -41,13 +41,19 @@ class TrophyForecastRepository extends ServiceEntityRepository
         }
     }
 
-    public function findUserTrophyForecast(UserProfile $userProfile, Trophy $trophy): array
+    public function findUserTrophyForecast(UserProfile $userProfile, Trophy $trophy, array $date): array
     {
         return $this->createQueryBuilder('tf')
             ->where('tf.userProfile = :user_profile')
             ->andWhere('tf.trophy = :trophy')
-            ->setParameter('user_profile', $userProfile)
-            ->setParameter('trophy', $trophy)
+            ->andWhere('tf.createdAt >= :startAt')
+            ->andWhere('tf.createdAt <= :endAt')
+            ->setParameters([
+                'user_profile' => $userProfile,
+                'trophy' => $trophy,
+                'startAt' => $date['startAt'],
+                'endAt' => $date['endAt']
+            ])
             ->getQuery()
             ->getResult();
 

@@ -3,6 +3,8 @@
 namespace App\Domain\League\Repository;
 
 use App\Domain\League\Entity\Competition;
+use App\Domain\League\Entity\League;
+use App\Domain\League\Entity\Season;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -37,6 +39,42 @@ class CompetitionRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findPlayingCompetition(League $league, Season $season): ?Competition
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.season = :season')
+            ->andWhere('c.league = :league')
+            ->andWhere('c.startAt <= :startAt')
+            ->andWhere('c.endAt >= :endAt')
+            ->setParameters([
+                'season' => $season,
+                'league' => $league,
+                'startAt' => new \DateTimeImmutable(),
+                'endAt' => new \DateTimeImmutable()
+            ])
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findLastCompetition(Season $season, League $league, string $competitionName): ?Competition
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.season = :season')
+            ->andWhere('c.league <= :league')
+            ->andWhere('c.name = :name')
+            ->andWhere('c.endAt <= :endAt')
+            ->setParameters([
+                'season' => $season,
+                'league' => $league,
+                'name' => $competitionName,
+                'endAt' => new \DateTimeImmutable()
+            ])
+            ->orderBy('c.endAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
 //    /**

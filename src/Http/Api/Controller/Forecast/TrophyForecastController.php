@@ -5,7 +5,10 @@ namespace App\Http\Api\Controller\Forecast;
 use App\Domain\Auth\JWTAuth;
 use App\Domain\Forecast\Trophy\Entity\Trophy;
 use App\Domain\Forecast\Trophy\TrophyForecastService;
+use App\Domain\League\Entity\Season;
 use App\Http\Api\Controller\ApiController;
+use App\Infrastructure\Context\Context;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,22 +19,24 @@ class TrophyForecastController extends ApiController
     public function __construct
     (
         private readonly JWTAuth                $JWTAuth,
-        private readonly TrophyForecastService $trophyForecastService
+        private readonly TrophyForecastService $trophyForecastService,
+        private readonly EntityManagerInterface $entityManager
     )
     {
         parent::__construct($this->JWTAuth);
     }
 
-    #[Route(path: '/', name: 'show', methods: ['GET'])]
-    public function index(Request $request): JsonResponse
+    #[Route(path: '/{year}', name: 'show', requirements: ['year' => '\d{4}-\d{2}'], methods: ['GET'])]
+    public function index(Request $request, Season $season, Context $context): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
         } catch (\Exception $ex) {
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
+        $this->initContext($this->entityManager, $context, 'NBA', $season);
 
-        $data = $this->trophyForecastService->getTrophyForecastData($user->getProfile());
+        $data = $this->trophyForecastService->getTrophyForecastData($user->getProfile(), $this->context);
         return $this->json($data, 201, [], ['groups' => 'api:read:forecast-trophies']);
     }
 
