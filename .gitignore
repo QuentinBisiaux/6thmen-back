@@ -11,3 +11,6 @@
 /phpunit.xml
 .phpunit.result.cache
 /config/jwt/*.pem
+*.sql
+.pnpm-store
+.phpunit
