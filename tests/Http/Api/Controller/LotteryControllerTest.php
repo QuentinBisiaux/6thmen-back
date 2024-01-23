@@ -30,11 +30,10 @@ class LotteryControllerTest extends ApiTestCase
             ->willReturn($expectedTeams);*/
         $data = $this->loadFixtures(['lottery']);
         /** @var Season $season */
-        $season = $data['season2022'];
+        $season = $data['season_2022_23'];
 
         // Create a client and make a request
         $crawler = $this->client->request('GET', '/api/lottery/' . $season->getYear());
-        $this->assertResponseFormatSame(200);
 
         // Assert the response is 200 OK
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());

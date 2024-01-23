@@ -6,3 +6,5 @@ include:
 
 App\Domain\League\Entity\Season:
   season{1900..2050} (extends season):
+  season_2022_23 (extends season):
+    year: '2022-23'
