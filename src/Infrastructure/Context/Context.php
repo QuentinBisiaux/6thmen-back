@@ -11,7 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class Context
 {
 
-    private ?League $league;
+    private League $league;
 
     private ?Season $season;
 
@@ -44,7 +44,7 @@ class Context
         return $this->season;
     }
 
-    public function getLeague(): ?League
+    public function getLeague(): League
     {
         return $this->league;
     }

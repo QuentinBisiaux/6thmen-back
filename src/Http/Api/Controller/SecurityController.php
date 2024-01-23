@@ -96,9 +96,7 @@ class SecurityController extends AbstractController
     {
         $user = $this->createOrFindUser($userData->id_str);
         $userProfile = $user->getProfile();
-        if (is_null($userProfile)) {
-            $userProfile = new UserProfile();
-        }
+
         $userProfile->setUsername($this->encryptionService->deterministicEncrypt($userData->screen_name));
         $userProfile->setName($userData->name);
         $userProfile->setLocation($userData->location);
@@ -110,21 +108,20 @@ class SecurityController extends AbstractController
         $this->entityManager->persist($userProfile);
 
         $user->setProfile($userProfile);
-        $this->entityManager->persist($user);
         $this->entityManager->flush();
 
         return $user;
     }
 
-    private function createOrFindUser(string $idStr): ?User
+    private function createOrFindUser(string $idStr): User
     {
         $user = $this->entityManager->getRepository(User::class)->findOneByTwitterId($this->encryptionService->deterministicEncrypt($idStr));
         if ($user instanceof User) return $user;
         $newUser = new User();
         $newUser->setTwitterId($this->encryptionService->deterministicEncrypt($idStr));
-        $newUser->setCreatedAt(new \DateTimeImmutable());
+        $newUser->setProfile(new UserProfile());
+        $newUser->setCreatedAt(new \DateTime());
         $this->entityManager->persist($newUser);
-        $this->entityManager->flush();
         return $newUser;
     }
 /* FOR FUTURE DEVELOPMENT

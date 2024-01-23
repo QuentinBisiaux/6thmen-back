@@ -106,7 +106,8 @@ class Top100Controller extends ApiController
         return true;
     }
 
-    private function validateTop100(array $top100Array) {
+    private function validateTop100(array $top100Array): bool
+    {
         if(count($top100Array['ranking']) !== 100) return false;
         return true;
     }

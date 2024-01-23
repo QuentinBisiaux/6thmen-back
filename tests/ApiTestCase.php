@@ -4,8 +4,9 @@ namespace App\Tests;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class ApiTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
+class ApiTestCase extends WebTestCase
 {
     final public const DEFAULT_OPTIONS = [
         'auth_basic' => null,
@@ -26,7 +27,7 @@ class ApiTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
     {
         parent::setUp();
 
-        $server['HTTP_HOST'] = 'localhost:803';
+        $server['HTTP_HOST'] = 'localhost';
 
         $this->client = self::createClient(self::DEFAULT_OPTIONS, $server);
         /** @var EntityManagerInterface $em */

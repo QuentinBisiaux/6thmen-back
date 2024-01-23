@@ -82,9 +82,9 @@ class RegularSeasonController extends ApiController
         $data = json_decode($content, true);
 
         $forecastRegularSeasonRepo = $this->entityManager->getRepository(ForecastRegularSeason::class);
-        /** @var ForecastRegularSeason $forecastRegularSeason */
+        /** @var ?ForecastRegularSeason $forecastRegularSeason */
         $forecastRegularSeason = $forecastRegularSeasonRepo->findUserForecastRegularSeason($user, $season, $this->context->getDates());
-        if(empty($forecastRegularSeason)) return $this->json($forecastRegularSeason, 200, [], ['groups' => 'api:read:forecast-regular-season']);
+        if(is_null($forecastRegularSeason)) return $this->json($forecastRegularSeason, 200, [], ['groups' => 'api:read:forecast-regular-season']);
 
         $forecastRegularSeason->setValid($this->isTotalVictoriesOk($data));
         $forecastRegularSeason->setData($data);
@@ -116,7 +116,7 @@ class RegularSeasonController extends ApiController
         return $forecast->setData($teamsByConference);
     }
 
-    private function isTotalVictoriesOk($data): bool
+    private function isTotalVictoriesOk(array $data): bool
     {
         $totalVictories = 0;
         $expectedVictories = 82 * 30 / 2;

@@ -9,7 +9,7 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<UserProfile>
  *
- * @method |null find($id, $lockMode = null, $lockVersion = null)
+ * @method UserProfile|null find($id, $lockMode = null, $lockVersion = null)
  * @method UserProfile|null findOneBy(array $criteria, array $orderBy = null)
  * @method UserProfile[]    findAll()
  * @method UserProfile[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)

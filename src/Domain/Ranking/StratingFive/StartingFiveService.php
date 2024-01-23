@@ -4,6 +4,7 @@ namespace App\Domain\Ranking\StratingFive;
 
 use App\Domain\Auth\Entity\UserProfile;
 use App\Domain\Player\Entity\Player;
+use App\Domain\Player\Entity\PlayerTeam;
 use App\Domain\Player\Entity\Position;
 use App\Domain\Ranking\StratingFive\Entity\StartingFive;
 use App\Domain\Ranking\StratingFive\Entity\StartingFivePlayer;
@@ -57,10 +58,12 @@ readonly class StartingFiveService
         return $startingFive;
     }
 
-    private function processPlayers($teams): array
+    /** @param Team[] $teams */
+    private function processPlayers(array $teams): array
     {
         $players = [];
         foreach ($teams as $team) {
+            /** @var PlayerTeam $value */
             foreach ($team->getPlayerTeams() as $value) {
                 $player = $value->getPlayer();
                 $positionPlayed = Position::getPositionByAbbreviation($value->getPosition());

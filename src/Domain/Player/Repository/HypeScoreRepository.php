@@ -35,7 +35,7 @@ class HypeScoreRepository extends ServiceEntityRepository
             ->where('h.score IS NOT NULL')
             ->groupBy('h.id', 'h.score')
             ->orderBy('h.score', 'DESC')
-            ->setMaxResults(135)
+            ->setMaxResults(200)
             ->getQuery()
             ->getResult();
     }

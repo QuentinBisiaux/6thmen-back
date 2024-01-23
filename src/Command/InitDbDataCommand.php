@@ -49,13 +49,8 @@ class InitDbDataCommand extends Command
         ]
     ];
 
-    private array $competitions = [
-        'Regular Season'    => ['FirstThird', 'Allstar', 'LastThird'],
-        'Post Season'       => ['Play-In', 'Playoff', 'Finals']
-    ];
-
     public function __construct(
-        private EntityManagerInterface $manager,
+        private readonly EntityManagerInterface $manager,
     )
     {
         parent::__construct();
@@ -67,12 +62,12 @@ class InitDbDataCommand extends Command
             $season = $this->manager->getRepository(Season::class)->findOneBy(['year' => $startingYear]);
             if(!$season) {
                 $season = new Season();
-                $season->setYear($startingYear);
+                $season->setYear((string) $startingYear);
                 $season->setCreatedAt(new \DateTimeImmutable());
                 $this->manager->persist($season);
             }
 
-            $yearMult = $startingYear . '-' . substr($startingYear + 1, -2);
+            $yearMult = $startingYear . '-' . substr((string) ($startingYear + 1), -2);
             $seasonMult = $this->manager->getRepository(Season::class)->findOneBy(['year' => $yearMult]);
             if(!$seasonMult) {
                 $seasonMult = new Season();

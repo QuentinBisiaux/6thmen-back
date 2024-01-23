@@ -30,8 +30,7 @@ class CreateTeamCommand extends Command
         private FileManager $fileManager,
         private SluggerInterface $slugger,
         private EntityManagerInterface $manager,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -68,7 +67,7 @@ class CreateTeamCommand extends Command
             $this->populateRawTeam(explode(',', $teamData));
 
             if (($message = $this->checkIfTeamExist()) !== null) {
-                $io->note($message . ' line ' . $index + 2);
+                $io->note($message . ' line ' . ($index + 2));
                 continue;
             }
 
@@ -88,7 +87,12 @@ class CreateTeamCommand extends Command
 
             $this->manager->persist($this->newTeam);
             $this->manager->flush();
-            $io->success('New team created ' . $this->newTeam->getName() . ' from ' . $this->newTeam->getCreatedIn()->format('Y'));
+            $io->success(
+                'New team created ' .
+                $this->newTeam->getName() .
+                ' from ' .
+                $this->newTeam->getCreatedIn()->format('Y')
+            );
         }
         return Command::SUCCESS;
     }
@@ -97,7 +101,14 @@ class CreateTeamCommand extends Command
     {
         $this->rawTeam['name']      = trim($teamData[0]);
         $this->rawTeam['tricode']   = trim($teamData[1]);
-        $this->rawTeam['slug']      = $this->slugger->slug(strtolower(trim($teamData[0])) .' ' . explode('-', $teamData[3])[0]);
+        $this->rawTeam['slug']      = $this->slugger->slug(
+            strtolower(trim($teamData[0]))
+            .' ' .
+            explode(
+                '-',
+                $teamData[3]
+            )[0]
+        );
         $this->rawTeam['league']    = trim($teamData[2]);
         $this->rawTeam['createdIn'] = trim($teamData[3]);
         $this->rawTeam['endedIn']   = trim($teamData[4]);
@@ -110,13 +121,12 @@ class CreateTeamCommand extends Command
         $teamRepo = $this->manager->getRepository(Team::class);
         $teamExist = $teamRepo->findOneBy([
             'name'      => $this->rawTeam['name'],
-            'createdIn' => new \DateTimeImmutable(explode('-', $this->rawTeam['createdIn'])[0] . '/01/01')
+            'createdIn' => new \DateTime(explode('-', $this->rawTeam['createdIn'])[0] . '/01/01')
         ]);
         if ($teamExist === null) {
             return null;
         }
         return $this->rawTeam['name'] . ' from ' . $this->rawTeam['createdIn'] . ' already exists';
-
     }
 
     private function setLeagues(): ?string

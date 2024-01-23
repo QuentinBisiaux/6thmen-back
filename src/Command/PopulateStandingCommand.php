@@ -174,12 +174,11 @@ class PopulateStandingCommand extends Command
     ];
 
     public function __construct(
-        private TeamRepository $teamRepository,
-        private EntityManagerInterface $manager,
-        private LeagueRepository $leagueRepository,
-        private SeasonRepository $seasonRepository
-    )
-    {
+        private readonly TeamRepository         $teamRepository,
+        private readonly EntityManagerInterface $manager,
+        private readonly LeagueRepository       $leagueRepository,
+        private readonly SeasonRepository       $seasonRepository
+    ) {
         parent::__construct();
     }
 
@@ -210,7 +209,7 @@ class PopulateStandingCommand extends Command
                 ->setLoses(82 - $rawStanding['victory'])
                 ->setCreatedAt(new \DateTimeImmutable());
             $this->manager->persist($standing);
-            $io->success('will Insert ' . $season->getYear() . ' - ' . $league->getName() . ' ' . $team->getName() );
+            $io->success('will Insert ' . $season->getYear() . ' - ' . $league->getName() . ' ' . $team->getName());
         }
         $this->manager->flush();
 

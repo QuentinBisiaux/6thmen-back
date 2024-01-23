@@ -20,7 +20,7 @@ readonly class JWTAuth
     )
     {}
 
-    public function getUserFromRequest(Request $request): ?User
+    public function getUserFromRequest(Request $request): User
     {
         $authHeader = $request->headers->get('authorization');
         if(is_null($authHeader)) throw new NoBearerException('Il faut se connecter avec Twitter pour accéder a cette fonctionnalité.');

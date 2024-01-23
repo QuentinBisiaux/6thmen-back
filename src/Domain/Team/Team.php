@@ -24,7 +24,7 @@ class Team
     #[Groups([
         'read:team'
     ])]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(length: 255)]
     #[Groups([
@@ -33,7 +33,7 @@ class Team
         'read:player',
         'read:user'
     ])]
-    private ?string $name = null;
+    private string $name;
 
     #[ORM\Column(length: 255)]
     #[Groups([
@@ -71,12 +71,8 @@ class Team
     ])]
     private string $conference;
 
-    #[Context(
-        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'Y'],
-        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
-    )]
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $createdIn = null;
+    #[ORM\Column(type: 'datetime')]
+    private \DateTimeInterface $createdIn;
 
     #[Context(
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'Y'],
@@ -113,12 +109,12 @@ class Team
         $this->fans         = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -152,7 +148,7 @@ class Team
         $this->slug = $slug;
     }
 
-    public function getCreatedIn(): ?\DateTimeInterface
+    public function getCreatedIn(): \DateTimeInterface
     {
         return $this->createdIn;
     }

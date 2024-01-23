@@ -24,8 +24,8 @@ class PlayerTeam
     private ?Season $season = null;
 
     #[ORM\ManyToOne(inversedBy: 'playerTeams')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Player $player = null;
+    #[ORM\JoinColumn]
+    private Player $player;
 
     #[ORM\ManyToOne(inversedBy: 'playerTeams')]
     #[ORM\JoinColumn(nullable: false)]
@@ -75,12 +75,12 @@ class PlayerTeam
         return $this;
     }
 
-    public function getPlayer(): ?Player
+    public function getPlayer(): Player
     {
         return $this->player;
     }
 
-    public function setPlayer(?Player $player): self
+    public function setPlayer(Player $player): self
     {
         $this->player = $player;
 
@@ -99,12 +99,12 @@ class PlayerTeam
         return $this;
     }
 
-    public function getPosition(): ?string
+    public function getPosition(): string
     {
         return $this->position;
     }
 
-    public function setPosition(?string $position): self
+    public function setPosition(string $position): self
     {
         $this->position = $position;
 

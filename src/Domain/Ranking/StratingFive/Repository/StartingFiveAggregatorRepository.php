@@ -21,22 +21,11 @@ class StartingFiveAggregatorRepository extends ServiceEntityRepository
         parent::__construct($registry, StartingFiveAggregator::class);
     }
 
-    public function deleteAll()
+    public function deleteAll(): mixed
     {
         $entityManager = $this->getEntityManager();
         $query = $entityManager->createQuery('DELETE FROM ' . StartingFiveAggregator::class);
         return $query->execute();
-    }
-
-    public function findAllForTop100()
-    {
-        return $this->createQueryBuilder('sfa')
-            ->select('player.id AS id, CONCAT(player.firstname, \' \', player.lastname) AS name, SUM(sfa.count) AS total')
-            ->join('sfa.player', 'player')
-            ->groupBy('id')
-            ->orderBy('total', 'DESC')
-            ->getQuery()
-            ->getResult();
     }
 
 }

@@ -22,7 +22,7 @@ class League
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private string $name = '';
 
     #[ORM\ManyToOne(inversedBy: 'leagues')]
     #[ORM\JoinColumn(nullable: false)]
@@ -77,7 +77,7 @@ class League
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }

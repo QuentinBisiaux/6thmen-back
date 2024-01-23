@@ -28,7 +28,7 @@ class Season
     #[Groups([
         'read:player',
     ])]
-    private ?string $year = null;
+    private string $year;
 
     #[ORM\Column(type: 'datetime')]
     private \DateTimeInterface $createdAt;

@@ -23,7 +23,7 @@ class UserProfile
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\OneToOne(inversedBy: 'profile', targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]

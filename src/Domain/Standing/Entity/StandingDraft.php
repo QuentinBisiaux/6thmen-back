@@ -50,7 +50,7 @@ class StandingDraft
     #[Groups([
         'read:lottery'
     ])]
-    private ?Team $team = null;
+    private Team $team;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -129,12 +129,12 @@ class StandingDraft
         return $this;
     }
 
-    public function getTeam(): ?Team
+    public function getTeam(): Team
     {
         return $this->team;
     }
 
-    public function setTeam(?Team $team): static
+    public function setTeam(Team $team): static
     {
         $this->team = $team;
 
