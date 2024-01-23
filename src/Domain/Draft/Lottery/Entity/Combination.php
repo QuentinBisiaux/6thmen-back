@@ -18,6 +18,33 @@ class Combination
 
     public function __construct()
     {
+        $this->createAllCombinations();
+    }
+
+    public function getRawCombinations(): array
+    {
+        return $this->rawCombinations;
+    }
+
+    public function setCombinationsToTeams(Collection $standings): void
+    {
+        foreach ($standings as $standing) {
+            $combinationsCount = (int) ((self::MAX_COMBINATION - 1) * $standing->getOdds() / 100);
+            $keys = (array) array_rand($this->rawCombinations, $combinationsCount);
+            foreach ($keys as $key) {
+                $this->combinationsTeam[$this->rawCombinations[$key]] = $standing;
+                unset($this->rawCombinations[$key]);
+            }
+        }
+    }
+
+    public function getCombinationTeam(): array
+    {
+        return $this->combinationsTeam;
+    }
+
+    private function createAllCombinations(): void
+    {
         $count = 0;
         $size = count(self::PING_PONG_BALLS);
 
@@ -38,18 +65,6 @@ class Combination
                         }
                     }
                 }
-            }
-        }
-    }
-
-    public function setCombinationsToTeams(Collection $standings): void
-    {
-        foreach ($standings as $standing) {
-            $combinationsCount = (int) ((self::MAX_COMBINATION - 1) * $standing->getOdds() / 100);
-            $keys = (array) array_rand($this->rawCombinations, $combinationsCount);
-            foreach ($keys as $key) {
-                $this->combinationsTeam[$this->rawCombinations[$key]] = $standing;
-                unset($this->rawCombinations[$key]);
             }
         }
     }

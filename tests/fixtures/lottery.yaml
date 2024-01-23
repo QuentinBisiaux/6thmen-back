@@ -1,0 +1,8 @@
+include:
+  - ../../fixtures/templates.yaml
+
+#App\Domain\League\Entity\Sport:
+#  sport{1..2} (extends sport);
+
+App\Domain\League\Entity\Season:
+  season{1900..2050} (extends season):

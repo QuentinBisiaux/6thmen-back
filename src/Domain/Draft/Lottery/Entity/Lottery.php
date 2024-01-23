@@ -2,24 +2,19 @@
 
 namespace App\Domain\Draft\Lottery\Entity;
 
-
+use App\Domain\Standing\Entity\StandingDraft;
 use App\Domain\Team\Team;
 use Doctrine\Common\Collections\Collection;
 
 class Lottery
 {
-    private Combination $combination;
     private array $results = [];
     private array $drawnTeams = [];
 
-    public function __construct
-    (
-        private Collection $standings,
-    )
-    {
-        $this->combination = new Combination();
-        $this->combination->setCombinationsToTeams($standings);
-        $this->setResults();
+    public function __construct(
+        private readonly Collection $standings,
+        private readonly Combination $combination,
+    ) {
     }
 
     public function getResults(): array
@@ -27,19 +22,30 @@ class Lottery
         return $this->results;
     }
 
-    private function setResults(): void
+    public function launchDraw(): self
     {
-        while(count($this->results) < 4) {
+        $this->drawWinners();
+        $this->completeResults();
+        return $this;
+    }
+
+    private function drawWinners(): void
+    {
+        while (count($this->results) < 4) {
             $result = $this->combination->draw();
-            if($this->isAlreadyDrawn($result->getTeam())) {
+            if ($this->isAlreadyDrawn($result->getTeam())) {
                 continue;
             }
             $this->results[] = $result;
             $this->drawnTeams[$result->getTeam()->getId()] = true;
         }
+    }
+
+    private function completeResults(): void
+    {
         $standings = $this->standings;
         foreach ($standings as $standing) {
-            if($this->isAlreadyDrawn($standing->getTeam())) {
+            if ($this->isAlreadyDrawn($standing->getTeam())) {
                 continue;
             }
             $this->results[] = $standing;
@@ -50,4 +56,5 @@ class Lottery
     {
         return isset($this->drawnTeams[$team->getId()]);
     }
+
 }

@@ -44,6 +44,5 @@ class AppFixtures extends Fixture
             $manager->persist($seasonMult);
         }
         $manager->flush();
-
     }
 }

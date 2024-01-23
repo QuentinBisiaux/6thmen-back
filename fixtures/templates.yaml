@@ -1,0 +1,19 @@
+#App\Domain\League\Entity\Sport:
+#  sport (template):
+#    name: <word()>
+#    created_at: <dateTimeThisYear()>
+#    updated_at: <dateTimeThisYear()>
+
+#App\Domain\League\Entity\League:
+#  league (template):
+#    name: <word()>
+#    sport: '@sport1'
+#    created_at: <dateTimeThisYear()>
+#    updated_at: <dateTimeThisYear()>
+
+App\Domain\League\Entity\Season:
+  season (template):
+    year: <current()>
+    created_at: <dateTimeThisYear()>
+    updated_at: <dateTimeThisYear()>
+
