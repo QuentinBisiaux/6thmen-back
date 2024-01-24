@@ -23,8 +23,9 @@ when@test:
 
     doctrine:
         dbal:
-            logging: false
-            url: '%env(resolve:DATABASE_URL)%'
+            connections:
+                default:
+                    use_savepoints: true
 
 when@prod:
     doctrine:
