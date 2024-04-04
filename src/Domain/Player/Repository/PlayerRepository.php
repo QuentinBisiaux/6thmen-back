@@ -4,7 +4,7 @@ namespace App\Domain\Player\Repository;
 
 use App\Domain\League\Entity\Season;
 use App\Domain\Player\Entity\Player;
-use App\Domain\Team\Team;
+use Doctrine\ORM\Query\Expr;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -44,14 +44,14 @@ class PlayerRepository extends ServiceEntityRepository
     public function findPlayersByNameAndWithoutSomeId(string $name, array $excludedIds): array
     {
         $qb = $this->createQueryBuilder('p');
-        $qb ->where($qb->expr()->like('CONCAT(LOWER(p.firstname), \' \', LOWER(p.lastname))', ':name'))
+        $qb ->where($qb->expr()->like('LOWER(p.name)', ':name'))
             ->setParameter('name', '%' . strtolower($name) . '%');
-        if(!empty($excludedIds)) {
+        //dd($qb->setMaxResults(25)->getQuery()->getSQL());
+        if (!empty($excludedIds)) {
             $qb->andWhere($qb->expr()->notIn('p.id', ':excludedIds'))
                 ->setParameter('excludedIds', $excludedIds);
         }
          return $qb->setMaxResults(25)->getQuery()->getResult();
-
     }
 
     public function getCurrentPlayers(Season $season): array

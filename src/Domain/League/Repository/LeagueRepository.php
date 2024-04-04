@@ -5,6 +5,7 @@ namespace App\Domain\League\Repository;
 use App\Domain\League\Entity\League;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use phpDocumentor\Reflection\Types\Collection;
 
 /**
  * @extends ServiceEntityRepository<League>
@@ -37,6 +38,16 @@ class LeagueRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /** @return League[] */
+    public function findLeaguesFromArrayOfNames(array $names): array
+    {
+        return $this->createQueryBuilder('l')
+            ->where('l.name IN (:names)')
+            ->setParameter('names', $names)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

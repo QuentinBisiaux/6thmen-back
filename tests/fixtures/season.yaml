@@ -1,0 +1,8 @@
+include:
+  - ../../fixtures/templates.yaml
+
+App\Domain\League\Entity\Season:
+  season_2022 (extends season):
+    year: '2022'
+  season_2022_23 (extends season):
+    year: '2022-23'

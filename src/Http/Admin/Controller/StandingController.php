@@ -2,8 +2,8 @@
 
 namespace App\Http\Admin\Controller;
 
-use App\Domain\Standing\Entity\Standing;
-use App\Domain\Standing\Repository\StandingRepository;
+use App\Domain\Standing\Standing;
+use App\Domain\Standing\StandingRepository;
 use App\Form\StandingType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

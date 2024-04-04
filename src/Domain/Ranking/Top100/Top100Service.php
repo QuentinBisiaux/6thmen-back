@@ -3,7 +3,6 @@
 namespace App\Domain\Ranking\Top100;
 
 use App\Domain\Auth\Entity\UserProfile;
-use App\Domain\Player\Entity\HypeScore;
 use App\Domain\Player\Entity\Player;
 use App\Domain\Ranking\Top100\Entity\Top100;
 use App\Domain\Ranking\Top100\Entity\Top100Player;
@@ -46,22 +45,12 @@ readonly class Top100Service
 
     private function processPlayers(Top100 $top100): array
     {
-        $players = [];
-        $hypeScores = $this->entityManager->getRepository(HypeScore::class)->findAllForTop100();
-        foreach ($hypeScores as $hypeScore) {
-            $players[] = $hypeScore->getPlayer();
-        }
+        $players = $this->entityManager->getRepository(Player::class)->findBy([], ['hypeScore' => 'DESC'], 250);
         $ranking = $top100->getRanking();
         foreach ($ranking as $rank) {
             $rankingPlayer = $rank->getPlayer();
             if($rankingPlayer === null) continue;
-            foreach ($hypeScores as $hypeScore) {
-                $hyperPlayer = $hypeScore->getPlayer();
-                if($rankingPlayer->getId() === $hyperPlayer->getId()){
-                    continue 2;
-                }
-            }
-            $players[] = $rankingPlayer;
+            if(!in_array($rankingPlayer, $players)) $players[] = $rankingPlayer;
         }
         return $players;
     }

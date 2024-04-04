@@ -1,10 +1,18 @@
 include:
-  - ../../fixtures/templates.yaml
+  - ./base_nba.yaml
 
-#App\Domain\League\Entity\Sport:
-#  sport{1..2} (extends sport);
+App\Domain\League\Entity\Competition:
+  competition_1 (extends competition):
+    name: 'Draft'
+    league: "@nba"
+    season: "@season_1"
 
-App\Domain\League\Entity\Season:
-  season{1900..2050} (extends season):
-  season_2022_23 (extends season):
-    year: '2022-23'
+App\Domain\Team\Team:
+  team_{15..30} (extends team):
+    franchise: "@franchise_<current()>"
+
+App\Domain\Standing\Standing:
+  standing_{15..29} (extends standing):
+    team: "@team_<current()>"
+    competition: "@competition_1"
+    rank: <current()>

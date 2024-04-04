@@ -5,70 +5,75 @@ namespace App\Domain\Player\Entity;
 use App\Domain\League\Entity\Season;
 use App\Domain\Player\Repository\PlayerTeamsRepository;
 use App\Domain\Team\Team;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PlayerTeamsRepository::class)]
 class PlayerTeam
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'SEQUENCE')]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'playerTeams')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups([
-        'read:player',
-    ])]
-    private ?Season $season = null;
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[Groups(['read:player'])]
+    private Season $season;
 
     #[ORM\ManyToOne(inversedBy: 'playerTeams')]
-    #[ORM\JoinColumn]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private Player $player;
 
     #[ORM\ManyToOne(inversedBy: 'playerTeams')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups([
-        'read:player',
-    ])]
-    private ?Team $team = null;
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[Groups(['read:player'])]
+    private Team $team;
 
-    #[Groups([
-        'read:player',
-    ])]
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $position = null;
+    #[ORM\Column(type: 'simple_array', nullable: true)]
+    #[Groups(['read:player'])]
+    private ?array $position;
 
-    #[Groups([
-        'read:player',
-    ])]
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(length: 25)]
+    #[Groups(['read:player'])]
     private ?string $jerseyNumber = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups([
-        'read:player',
-    ])]
+    #[Groups(['read:player'])]
     private ?int $experience = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    #[ORM\Column(type: 'datetime')]
+    #[Assert\LessThan('today')]
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
+    )]
+    private \DateTimeInterface $createdAt;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Assert\GreaterThan(propertyPath: 'createdAt')]
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
+    )]
+    private ?\DateTimeInterface $updatedAt = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getSeason(): ?Season
+    public function getSeason(): Season
     {
         return $this->season;
     }
 
-    public function setSeason(?Season $season): self
+    public function setSeason(Season $season): self
     {
         $this->season = $season;
 
@@ -87,24 +92,24 @@ class PlayerTeam
         return $this;
     }
 
-    public function getTeam(): ?Team
+    public function getTeam(): Team
     {
         return $this->team;
     }
 
-    public function setTeam(?Team $team): self
+    public function setTeam(Team $team): self
     {
         $this->team = $team;
 
         return $this;
     }
 
-    public function getPosition(): string
+    public function getPosition(): ?array
     {
         return $this->position;
     }
 
-    public function setPosition(string $position): self
+    public function setPosition(?array $position): self
     {
         $this->position = $position;
 
@@ -135,7 +140,7 @@ class PlayerTeam
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
     }
@@ -147,12 +152,12 @@ class PlayerTeam
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 

@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Context;
 
 use App\Domain\League\Entity\Competition;
+use App\Domain\League\Entity\CompetitionType;
 use App\Domain\League\Entity\League;
 use App\Domain\League\Entity\Season;
 use App\Domain\League\Entity\Tournament;
@@ -13,9 +14,9 @@ class Context
 
     private League $league;
 
-    private ?Season $season;
+    private Season $season;
 
-    private ?Competition $competition;
+    private ?Competition $competition = null;
 
     private array $dates = [];
 
@@ -25,23 +26,14 @@ class Context
     {
     }
 
-    public function initContext(League $league, Season $season): void
+    public function initContext(League $league, Season $season, string $name): void
     {
         $this->league = $league;
         $this->season = $season;
-        $this->competition = $this->entityManager->getRepository(Competition::class)->findPlayingCompetition($this->league, $this->season);
+        $competitionRepository = $this->entityManager->getRepository(Competition::class);
+        $this->competition = $competitionRepository->findPreciseCompetition($league, $season, $name);
         $this->setUpDate();
 
-    }
-
-    public function getDates(): array
-    {
-        return $this->dates;
-    }
-
-    public function getSeason(): ?Season
-    {
-        return $this->season;
     }
 
     public function getLeague(): League
@@ -49,13 +41,35 @@ class Context
         return $this->league;
     }
 
+    public function getDates(): array
+    {
+        return $this->dates;
+    }
+
+    public function getSeason(): Season
+    {
+        return $this->season;
+    }
+
+
+    public function getCompetition(): ?Competition
+    {
+        return $this->competition;
+    }
+
     private function setUpDate(): void
     {
 
         if (!$this->competition) {
-            $this->competition = $this->entityManager->getRepository(Competition::class)->findLastCompetition($this->getLastSeason($this->season), $this->league, 'Regular Season');
-            $this->dates['startAt'] = $this->competition->getEndAt();
-            $this->dates['endAt'] = new \DateTimeImmutable();
+            throw new \InvalidArgumentException(
+                'There is no competition for this league : '
+                . $this->league->getName() . ' and this season : '
+                . $this->season->getYear());
+        }
+
+        if($this->competition->getTournaments()->isEmpty()) {
+            $this->dates['startAt'] = $this->competition->getStartAt();
+            $this->dates['endAt'] = $this->competition->getEndAt();
             return;
         }
 

@@ -2,7 +2,7 @@
 
 namespace App\Domain\Draft\Lottery\Entity;
 
-use App\Domain\Standing\Entity\StandingDraft;
+use App\Domain\Standing\Standing;
 use Doctrine\Common\Collections\Collection;
 
 class Combination
@@ -29,18 +29,13 @@ class Combination
     public function setCombinationsToTeams(Collection $standings): void
     {
         foreach ($standings as $standing) {
-            $combinationsCount = (int) ((self::MAX_COMBINATION - 1) * $standing->getOdds() / 100);
+            $combinationsCount = (int) ((self::MAX_COMBINATION - 1) * $standing->getOdd() / 100);
             $keys = (array) array_rand($this->rawCombinations, $combinationsCount);
             foreach ($keys as $key) {
                 $this->combinationsTeam[$this->rawCombinations[$key]] = $standing;
                 unset($this->rawCombinations[$key]);
             }
         }
-    }
-
-    public function getCombinationTeam(): array
-    {
-        return $this->combinationsTeam;
     }
 
     private function createAllCombinations(): void
@@ -69,7 +64,7 @@ class Combination
         }
     }
 
-    public function draw(): StandingDraft
+    public function draw(): Standing
     {
         return $this->combinationsTeam[array_rand($this->combinationsTeam)];
     }

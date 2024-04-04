@@ -1,0 +1,10 @@
+include:
+  - ../../fixtures/templates.yaml
+
+App\Domain\Team\Franchise:
+  valid_franchise (extends franchise):
+    name: Minnesota Timberwolves
+    tricode: MIN
+    slug: minnesota-timberwolves-1990
+    created_in: <datetime("01/01/1990")>
+    created_at: <datetime()>

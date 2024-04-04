@@ -1,0 +1,10 @@
+include:
+  - ./season.yaml
+  - ./team.yaml
+  - ./player.yaml
+
+App\Domain\Player\Entity\PlayerTeam:
+  player_team_{1..5} (extends player_team):
+    player: "@player_1"
+    team: "@valid_team"
+    season: "@season_2022_23"

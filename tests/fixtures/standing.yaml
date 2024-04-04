@@ -1,0 +1,8 @@
+include:
+  - ./competition.yaml
+  - ./team.yaml
+
+App\Domain\Standing\Standing:
+  standing_{1..5} (extends standing):
+    team: "@valid_team"
+    competition: "@competition_1"

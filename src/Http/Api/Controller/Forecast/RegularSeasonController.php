@@ -2,13 +2,13 @@
 
 namespace App\Http\Api\Controller\Forecast;
 
-use App\Domain\Auth\JWTAuth;
 use App\Domain\Forecast\RegularSeason\Entity\ForecastRegularSeason;
+use App\Domain\League\Entity\CompetitionType;
+use App\Domain\League\Entity\League;
 use App\Domain\League\Entity\Season;
 use App\Domain\Team\Team;
 use App\Http\Api\Controller\ApiController;
 use App\Infrastructure\Context\Context;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,17 +17,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegularSeasonController extends ApiController
 {
 
-    public function __construct
-    (
-        private readonly JWTAuth                $JWTAuth,
-        private readonly EntityManagerInterface $entityManager
-    )
-    {
-        parent::__construct($this->JWTAuth);
-    }
 
-    #[Route(path: '/{year}', name: 'show', methods: ['GET'])]
-    public function show(Request $request, Season $season, Context $context): JsonResponse
+    #[Route(path: '/{name}/{year}', name: 'show', methods: ['GET'])]
+    public function show(Request $request, League $league, Season $season): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -35,7 +27,7 @@ class RegularSeasonController extends ApiController
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
 
-        $this->initContext($this->entityManager, $context, 'NBA', $season);
+        $this->context->initContext($league, $season, CompetitionType::COMPETITION_REGULAR_SEASON);
 
         $forecastRegularSeasonRepo = $this->entityManager->getRepository(ForecastRegularSeason::class);
         $forecastRegularSeason = $forecastRegularSeasonRepo->findUserForecastRegularSeason($user, $season, $this->context->getDates());
@@ -67,8 +59,8 @@ class RegularSeasonController extends ApiController
 
     }
 
-    #[Route(path: '/{year}/update', name: 'update', methods: ['POST'])]
-    public function update(Request $request, Season $season, Context $context): JsonResponse
+    #[Route(path: '/{name}/{year}/update', name: 'update', methods: ['POST'])]
+    public function update(Request $request, League $league, Season $season): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -76,7 +68,7 @@ class RegularSeasonController extends ApiController
             return $this->json(['error' => $ex->getMessage()], $ex->getCode());
         }
 
-        $this->initContext($this->entityManager, $context, 'NBA', $season);
+        $this->context->initContext($league, $season, CompetitionType::COMPETITION_REGULAR_SEASON);
 
         $content = $request->getContent();
         $data = json_decode($content, true);

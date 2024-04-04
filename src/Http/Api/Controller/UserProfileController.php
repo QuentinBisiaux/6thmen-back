@@ -13,16 +13,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserProfileController extends ApiController
 {
 
-    public function __construct
-    (
-        private JWTAuth $JWTAuth,
-        private EntityManagerInterface $entityManager
-    )
-    {
-        parent::__construct($this->JWTAuth);
-    }
-
-
     #[Route(path: '/data', name: 'data', methods: ['POST'])]
     public function getUserData(Request $request): JsonResponse
     {

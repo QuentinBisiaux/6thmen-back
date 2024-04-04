@@ -5,6 +5,7 @@ namespace App\Command;
 use App\Domain\League\Entity\Season;
 use App\Domain\Player\Entity\Player;
 use App\Domain\Player\Entity\PlayerTeam;
+use App\Domain\Player\Entity\Position;
 use App\Domain\Team\Team;
 use App\Service\FileManager;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,15 +31,11 @@ class CreatePlayerTeamCommand extends Command
 
     private array $cache = [];
 
-    private ArrayCollection $playerTeams;
-
     public function __construct(
         private readonly FileManager            $fileManager,
         private readonly EntityManagerInterface $manager,
-    )
-    {
+    ) {
         parent::__construct();
-        $this->playerTeams = new ArrayCollection();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -62,6 +59,7 @@ class CreatePlayerTeamCommand extends Command
         $playerCreated  = 0;
         $totalError     = 0;
         $totalInsert    = 0;
+        $totalUpdated   = 0;
         foreach ($fileContent as $playerTeamsData) {
             $explodedData = explode(';', $playerTeamsData);
             $this->populateRawPlayer($explodedData);
@@ -77,7 +75,7 @@ class CreatePlayerTeamCommand extends Command
                 $totalError++;
                 continue;
             }
-            if (is_null($this->rawPlayer['birthplace'])) {
+            if (empty($this->rawPlayer['birthplace'])) {
                 $io->error('Error Birthplace ' . $playerTeamsData);
                 $birthplace++;
                 $totalError++;
@@ -86,8 +84,7 @@ class CreatePlayerTeamCommand extends Command
 
             if (is_null($this->rawPlayer['player'])) {
                 $newPlayer = new Player();
-                $newPlayer->setFirstname($this->rawPlayer['playerFirstname']);
-                $newPlayer->setLastname($this->rawPlayer['playerLastname']);
+                $newPlayer->setName($this->rawPlayer['playerName']);
                 $newPlayer->setBirthday($this->rawPlayer['birthday']);
                 $newPlayer->setBirthPlace($this->rawPlayer['birthplace']);
                 $newPlayer->setCreatedAt(new \DateTimeImmutable());
@@ -97,40 +94,31 @@ class CreatePlayerTeamCommand extends Command
                 $playerCreated++;
             }
 
-            if(($playerTeam = $this->isPlayerTeamExist()) !== null) {
-                $playerTeam->setSeason($this->rawPlayer['season']);
-                $playerTeam->setTeam($this->rawPlayer['team']);
-                $playerTeam->setPlayer($this->rawPlayer['player']);
-                $playerTeam->setPosition($this->rawPlayer['position']);
-                $playerTeam->setJerseyNumber($this->rawPlayer['jerseyNumber']);
-                if ($this->rawPlayer['rookie'] === 'R') {
-                    $playerTeam->setExperience(0);
-                } else {
-                    $playerTeam->setExperience($this->rawPlayer['rookie']);
-                }
-                $playerTeam->setUpdatedAt(new \DateTimeImmutable());
-                $this->manager->persist($playerTeam);
-                continue;
+
+            $playerTeam = $this->isPlayerTeamExist();
+            $update = $playerTeam !== null;
+            if (!$update) {
+                $playerTeam = new PlayerTeam();
             }
 
-            $newPlayerTeam = new PlayerTeam();
-            $newPlayerTeam->setSeason($this->rawPlayer['season']);
-            $newPlayerTeam->setTeam($this->rawPlayer['team']);
-            $newPlayerTeam->setPlayer($this->rawPlayer['player']);
-            $newPlayerTeam->setPosition($this->rawPlayer['position']);
-            $newPlayerTeam->setJerseyNumber($this->rawPlayer['jerseyNumber']);
+            $playerTeam->setSeason($this->rawPlayer['season']);
+            $playerTeam->setTeam($this->rawPlayer['team']);
+            $playerTeam->setPlayer($this->rawPlayer['player']);
+            $playerTeam->setPosition(Position::POSITION_NUMBER_MATRIX[$this->rawPlayer['position']]);
+            $playerTeam->setJerseyNumber($this->rawPlayer['jerseyNumber']);
             if ($this->rawPlayer['rookie'] === 'R') {
-                $newPlayerTeam->setExperience(0);
+                $playerTeam->setExperience(0);
             } else {
-                $newPlayerTeam->setExperience($this->rawPlayer['rookie']);
+                $playerTeam->setExperience($this->rawPlayer['rookie']);
             }
-            $newPlayerTeam->setCreatedAt(new \DateTimeImmutable());
-            if($this->playerTeams->contains($newPlayerTeam)) {
-                continue;
+            if (!$update) {
+                $playerTeam->setCreatedAt(new \DateTimeImmutable());
+                $totalInsert++;
+            } else {
+                $playerTeam->setUpdatedAt(new \DateTimeImmutable());
+                $totalUpdated++;
             }
-            $this->playerTeams->add($newPlayerTeam);
-            $this->manager->persist($newPlayerTeam);
-            $totalInsert++;
+            $this->manager->persist($playerTeam);
         }
         $this->manager->flush();
         $io->comment('Season errors : '     . $seasonError);
@@ -139,6 +127,7 @@ class CreatePlayerTeamCommand extends Command
         $io->comment('Total errors : '      . $totalError);
         $io->comment('Player created : '    . $playerCreated);
         $io->comment('Inserted : '          . $totalInsert);
+        $io->comment('Updated : '           . $totalUpdated);
         $endTime = microtime(true);
         $duration = $endTime - $startTime;
         $io->comment("Execution time: " . $duration . " seconds.");
@@ -148,14 +137,11 @@ class CreatePlayerTeamCommand extends Command
 
     private function populateRawPlayer(array $playerData): void
     {
-        $names        = explode(' ', trim($playerData[3]));
-        $firstname    = array_shift($names);
-        $lastname     = str_replace(' (TW)', "", implode(' ', $names));
+
         $this->rawPlayer['season']          = $this->initSeason(trim($playerData[0]));
         $this->rawPlayer['team']            = $this->initTeam(trim($playerData[1]), trim($playerData[0]));
         $this->rawPlayer['jerseyNumber']    = trim($playerData[2]);
-        $this->rawPlayer['playerFirstname'] = $firstname;
-        $this->rawPlayer['playerLastname']  = $lastname;
+        $this->rawPlayer['playerName']      = str_replace(' (TW)', "", trim($playerData[3]));
         $this->rawPlayer['birthday']        = new \DateTimeImmutable(trim($playerData[7]));
         $this->rawPlayer['birthplace']      = $this->initCountry(strtoupper(trim($playerData[8])));
         $this->rawPlayer['player']          = $this->initPlayer();
@@ -165,7 +151,7 @@ class CreatePlayerTeamCommand extends Command
 
     private function initSeason(string $year): ?Season
     {
-        if(!array_key_exists($year, $this->cache)) {
+        if (!array_key_exists($year, $this->cache)) {
             $this->cache[$year] = $this->manager->getRepository(Season::class)->findOneBy(['year' => $year]);
         }
         return $this->cache[$year];
@@ -181,25 +167,25 @@ class CreatePlayerTeamCommand extends Command
     {
         return $this->manager->getRepository(Player::class)->findOneBy(
             [
-                'firstname' =>  $this->rawPlayer['playerFirstname'],
-                'lastname' =>  $this->rawPlayer['playerLastname'],
+                'name' =>  $this->rawPlayer['playerName'],
                 'birthday' => $this->rawPlayer['birthday']
-            ]);
+            ]
+        );
     }
 
     private function initCountry(string $country): string
     {
-        if(Countries::exists($country)) {
+        if (Countries::exists($country)) {
             return Countries::getName($country);
         } elseif (Countries::alpha3CodeExists($country)) {
             return Countries::getAlpha3Name($country);
-            }
+        }
         return '';
     }
 
-    private function isPlayerTeamExist(): ?PlayerTeam {
-        $playerRepo = $this->manager->getRepository(PlayerTeam::class);
-        return $playerRepo->findOneBy(
+    private function isPlayerTeamExist(): ?PlayerTeam
+    {
+        return $this->manager->getRepository(PlayerTeam::class)->findOneBy(
             [
                 'season' => $this->rawPlayer['season'],
                 'player' => $this->rawPlayer['player'],

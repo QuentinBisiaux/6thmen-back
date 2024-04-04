@@ -2,8 +2,9 @@
 
 namespace App\Domain\Player\Entity;
 
+use App\Domain\Forecast\Trophy\Entity\TrophyForecast;
 use App\Domain\Player\Repository\PlayerRepository;
-use App\Domain\Ranking\StratingFive\Entity\StartingFivePlayer;
+use App\Domain\Ranking\StartingFive\Entity\StartingFivePlayer;
 use App\Domain\Ranking\Top100\Entity\Top100Player;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,12 +12,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
 class Player
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'SEQUENCE')]
     #[ORM\Column]
     #[Groups([
         'read:player',
@@ -25,35 +27,46 @@ class Player
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $firstname = null;
-
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $lastname = null;
-
+    #[Assert\NotBlank]
     #[Groups([
         'read:player',
         'api:read:forecast-trophies'
     ])]
-    private ?string $name = null;
+    private string $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups([
-        'read:player:details',
-    ])]
-    private string $birthPlace = '';
+    #[Assert\NotBlank]
+    #[Groups(['read:player:details'])]
+    private ?string $birthPlace = null;
 
-    #[ORM\OneToOne(inversedBy: 'player', targetEntity: HypeScore::class)]
-    private ?HypeScore $hypeScore = null;
+    #[ORM\Column]
+    #[Assert\PositiveOrZero]
+    private int $hypeScore = 0;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: 'date', nullable: true)]
+    #[Assert\LessThan('today')]
     #[Context(
         normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y'],
-        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
     )]
-    #[Groups([
-        'read:player:details',
-    ])]
-    private ?\DateTimeImmutable $birthday = null;
+    #[Groups(['read:player:details'])]
+    private ?\DateTimeInterface $birthday = null;
+
+    #[ORM\Column(type: 'datetime')]
+    #[Assert\LessThan('today')]
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
+    )]
+    private \DateTimeInterface $createdAt;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Assert\GreaterThan(propertyPath: 'createdAt')]
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
+    )]
+    private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'player', targetEntity: PlayerTeam::class)]
     private Collection $playerTeams;
@@ -64,17 +77,15 @@ class Player
     #[ORM\OneToMany(mappedBy: 'players', targetEntity: StartingFivePlayer::class)]
     private Collection $startingFives;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    #[ORM\OneToMany(mappedBy: 'players', targetEntity: TrophyForecast::class)]
+    private Collection $trophiesForecast;
 
     public function __construct()
     {
         $this->playerTeams = new ArrayCollection();
         $this->top100 = new ArrayCollection();
         $this->startingFives = new ArrayCollection();
+        $this->trophiesForecast = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -82,38 +93,16 @@ class Player
         return $this->id;
     }
 
-    public function getFirstname(): ?string
-    {
-        return $this->firstname;
-    }
-
-    public function setFirstname(string $firstname): self
-    {
-        $this->firstname = $firstname;
-
-        return $this;
-    }
-
-    public function getLastname(): ?string
-    {
-        return $this->lastname;
-    }
-
-    public function setLastname(?string $lastname): self
-    {
-        $this->lastname = $lastname;
-
-        return $this;
-    }
-
     public function getName(): string
     {
-        return $this->firstname . ' ' . $this->lastname;
+        return $this->name;
     }
 
-    public function setName(): string
+    public function setName(string $name): self
     {
-        return $this->firstname . ' ' . $this->lastname;
+        $this->name = $name;
+
+        return $this;
     }
 
     public function getBirthPlace(): string
@@ -128,32 +117,56 @@ class Player
         return $this;
     }
 
-    public function getBirthday(): ?\DateTimeImmutable
+    public function getBirthday(): ?\DateTimeInterface
     {
         return $this->birthday;
     }
 
-    public function setBirthday(?\DateTimeImmutable $birthDay): self
+    public function setBirthday(\DateTimeInterface $birthDay): self
     {
         $this->birthday = $birthDay;
 
         return $this;
     }
 
-    public function getHypeScore(): ?HypeScore
+    public function getHypeScore(): int
     {
         return $this->hypeScore;
     }
 
-    public function setHypeScore(?HypeScore $hypeScore): void
+    public function setHypeScore(int $hypeScore): self
     {
         $this->hypeScore = $hypeScore;
+
+        return $this;
     }
 
-    /**
-     * @return Collection<int, PlayerTeam>
-     */
-    public function getPlayerTeams(): Collection
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /** @return Collection<int, PlayerTeam> */
+    public function getTeams(): Collection
     {
         return $this->playerTeams;
     }
@@ -163,18 +176,6 @@ class Player
         if (!$this->playerTeams->contains($playerTeam)) {
             $this->playerTeams->add($playerTeam);
             $playerTeam->setPlayer($this);
-        }
-
-        return $this;
-    }
-
-    public function removePlayerTeam(PlayerTeam $playerTeam): self
-    {
-        if ($this->playerTeams->removeElement($playerTeam)) {
-            // set the owning side to null (unless already changed)
-            if ($playerTeam->getPlayer() === $this) {
-                $playerTeam->setPlayer(null);
-            }
         }
 
         return $this;
@@ -225,7 +226,6 @@ class Player
     public function removeFromStartingFive(StartingFivePlayer $startingFivePlayer): self
     {
         if ($this->top100->removeElement($startingFivePlayer)) {
-            // set the owning side to null (unless already changed)
             if ($startingFivePlayer->getPlayer() === $this) {
                 $startingFivePlayer->setPlayer(null);
             }
@@ -234,27 +234,19 @@ class Player
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getTrophiesForecast(): Collection
     {
-        return $this->createdAt;
+        return $this->trophiesForecast;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function addToTrophyForecast(TrophyForecast $trophyForecast): self
     {
-        $this->createdAt = $createdAt;
+        if (!$this->trophiesForecast->contains($trophyForecast)) {
+            $this->trophiesForecast->add($trophyForecast);
+            $trophyForecast->setPlayer($this);
+        }
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
 }

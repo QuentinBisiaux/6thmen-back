@@ -2,7 +2,7 @@
 
 namespace App\Http\Api\Controller;
 
-use App\Domain\Team\TeamRepository;
+use App\Domain\Team\Repository\TeamRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;

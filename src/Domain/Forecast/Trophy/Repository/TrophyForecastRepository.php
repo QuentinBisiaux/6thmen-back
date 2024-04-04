@@ -3,8 +3,8 @@
 namespace App\Domain\Forecast\Trophy\Repository;
 
 use App\Domain\Auth\Entity\UserProfile;
-use App\Domain\Forecast\Trophy\Entity\Trophy;
 use App\Domain\Forecast\Trophy\Entity\TrophyForecast;
+use App\Domain\League\Entity\Trophy;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -49,14 +49,13 @@ class TrophyForecastRepository extends ServiceEntityRepository
             ->andWhere('tf.createdAt >= :startAt')
             ->andWhere('tf.createdAt <= :endAt')
             ->setParameters([
-                'user_profile' => $userProfile,
-                'trophy' => $trophy,
-                'startAt' => $date['startAt'],
-                'endAt' => $date['endAt']
+                'user_profile'  => $userProfile,
+                'trophy'        => $trophy,
+                'startAt'       => $date['startAt'],
+                'endAt'         => $date['endAt']
             ])
             ->getQuery()
             ->getResult();
-
     }
 
 }

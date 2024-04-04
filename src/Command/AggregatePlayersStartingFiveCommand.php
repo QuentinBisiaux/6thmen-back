@@ -3,8 +3,8 @@
 namespace App\Command;
 
 use App\Domain\Player\Entity\Position;
-use App\Domain\Ranking\StratingFive\Entity\StartingFiveAggregator;
-use App\Domain\Ranking\StratingFive\Entity\StartingFivePlayer;
+use App\Domain\Ranking\StartingFive\Entity\StartingFiveAggregator;
+use App\Domain\Ranking\StartingFive\Entity\StartingFivePlayer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

@@ -41,18 +41,31 @@ class CompetitionRepository extends ServiceEntityRepository
         }
     }
 
-    public function findPlayingCompetition(League $league, Season $season): ?Competition
+    public function findCurrentCompetition(League $league, Season $season, string $name): ?Competition
     {
         return $this->createQueryBuilder('c')
-            ->where('c.season = :season')
+            ->where('c.name <= :name')
+            ->andWhere('c.season = :season')
             ->andWhere('c.league = :league')
-            ->andWhere('c.startAt <= :startAt')
-            ->andWhere('c.endAt >= :endAt')
             ->setParameters([
+                'name' => $name,
                 'season' => $season,
                 'league' => $league,
-                'startAt' => new \DateTimeImmutable(),
-                'endAt' => new \DateTimeImmutable()
+            ])
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findPreciseCompetition(League $league, Season $season, string $name): ?Competition
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.name = :name')
+            ->andWhere('c.season = :season')
+            ->andWhere('c.league = :league')
+            ->setParameters([
+                'name' => $name,
+                'season' => $season,
+                'league' => $league,
             ])
             ->getQuery()
             ->getOneOrNullResult();
@@ -75,6 +88,19 @@ class CompetitionRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function findAllByLeagueAndSeason(League $league, Season $season): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.league = :league')
+            ->andWhere('c.season = :season')
+            ->setParameters([
+                'season' => $season,
+                'league' => $league
+            ])
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

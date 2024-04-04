@@ -3,10 +3,10 @@
 namespace App\Domain\Forecast\Trophy;
 
 use App\Domain\Auth\Entity\UserProfile;
-use App\Domain\Forecast\Trophy\Entity\Trophy;
 use App\Domain\Forecast\Trophy\Entity\TrophyForecast;
 use App\Domain\League\Entity\League;
 use App\Domain\League\Entity\Season;
+use App\Domain\League\Entity\Trophy;
 use App\Domain\Player\Entity\Player;
 use App\Infrastructure\Context\Context;
 use Doctrine\Common\Collections\Collection;
@@ -22,8 +22,11 @@ class TrophyForecastService
 
     public function getTrophyForecastData(UserProfile $userProfile, Context $context): array
     {
+
+
         $data                       = [];
         $data['trophiesForecast']   = $this->organiseDataForForecast($userProfile, $context);
+        $data['context']            = $context->getDates();
         return $data;
     }
 
@@ -40,23 +43,19 @@ class TrophyForecastService
 
     private function findOrCreateTrophyForecast(UserProfile $userProfile, Context $context): Collection
     {
-        $trophiesForecast = $userProfile->getTrophiesForecast();
-        if($trophiesForecast->count() !== 0) {
-            return $trophiesForecast;
-        }
-        $trophies = $context->getLeague()->getTrophies();
+        $trophies = $context->getCompetition()->getTrophies();
         foreach($trophies as $trophy) {
-            $trophyForecasts = $this->entityManager->getRepository(TrophyForecast::class)->findUserTrophyForecast($userProfile, $trophy, $context->getDates());
-            if(empty($trophyForecasts)) {
-
+            $trophiesForecast = $this->entityManager->getRepository(TrophyForecast::class)->findUserTrophyForecast($userProfile, $trophy, $context->getDates());
+            if (count($trophiesForecast) === 5) {
+                continue;
             }
             for($x = 1; $x <= 5; $x++) {
                 $trophyForecast = new TrophyForecast();
-                $trophyForecast ->setUserProfile($userProfile)
-                                ->setRank($x)
-                                ->setTrophy($trophy)
-                                ->setSeason($context->getSeason())
-                                ->setCreatedAt(new \DateTimeImmutable());
+                $trophyForecast
+                    ->setRank($x)
+                    ->setTrophy($trophy)
+                    ->setCreatedAt(new \DateTimeImmutable());
+                $userProfile->addTrophyForecast($trophyForecast);
                 $this->entityManager->persist($trophyForecast);
                 $userProfile->addTrophyForecast($trophyForecast);
             }
@@ -65,13 +64,11 @@ class TrophyForecastService
         return $userProfile->getTrophiesForecast();
     }
 
-    public function getPlayersData(): array
+    public function getPlayersData(Context $context): array
     {
-        $league = $this->entityManager->getRepository(League::class)->findOneByName('NBA');
-        $trophies = $league->getTrophies();
-        $currentSeason = $this->entityManager->getRepository(Season::class)->findOneByYear('2023-24');
+        $trophies = $context->getCompetition()->getTrophies();
         $players = [];
-        $currentPlayers = $this->entityManager->getRepository(Player::class)->getCurrentPlayers($currentSeason);
+        $currentPlayers = $this->entityManager->getRepository(Player::class)->getCurrentPlayers($context->getSeason());
         foreach($trophies as $trophy) {
             if(!array_key_exists($trophy->getKey(), $players)) $players[$trophy->getKey()] = [];
             switch ($trophy->getAbbreviation()) {
@@ -81,20 +78,20 @@ class TrophyForecastService
                     $players[$trophy->getKey()] = $currentPlayers;
                     break;
                 case 'ROY':
-                    $players[$trophy->getKey()] = $this->entityManager->getRepository(Player::class)->getCurrentRookies($currentSeason);
+                    $players[$trophy->getKey()] = $this->entityManager->getRepository(Player::class)->getCurrentRookies($context->getSeason());
                     break;
                 case 'MIP':
-                    $players[$trophy->getKey()] = $this->entityManager->getRepository(Player::class)->getCurrentPlayersWithMoreThan2Seasons($currentSeason);
+                    $players[$trophy->getKey()] = $this->entityManager->getRepository(Player::class)->getCurrentPlayersWithMoreThan2Seasons($context->getSeason());
                     break;
             }
         }
         return $players;
     }
 
-    public function updateForecastTrophy(UserProfile $userProfile, Trophy $trophy, array $data): void
+    public function updateForecastTrophy(UserProfile $userProfile, Context $context, Trophy $trophy, array $data): void
     {
-        $forecastsTrophy = $this->entityManager->getRepository(TrophyForecast::class)->findUserTrophyForecast($userProfile, $trophy);
-        foreach ($forecastsTrophy as $forecastTrophy) {
+        $trophiesForecast = $this->entityManager->getRepository(TrophyForecast::class)->findUserTrophyForecast($userProfile, $trophy, $context->getDates());
+        foreach ($trophiesForecast as $forecastTrophy) {
             if(isset($data["duplicatePosition"]) && $data["duplicatePosition"]['rank'] === $forecastTrophy->getRank()) {
                 $forecastTrophy->setPlayer(null);
                 $this->entityManager->persist($forecastTrophy);

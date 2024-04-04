@@ -18,11 +18,11 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class ApiController extends AbstractController
 {
 
-    protected Context $context;
-
     public function __construct
     (
         private JWTAuth $JWTAuth,
+        protected readonly EntityManagerInterface $entityManager,
+        protected Context $context
     )
     {}
     protected function tryToConnectUser(Request $request): User
@@ -36,12 +36,6 @@ class ApiController extends AbstractController
         } catch (\Exception $e) {
             throw new AccessDeniedException($e->getMessage());
         }
-    }
-    public function initContext(EntityManagerInterface $entityManager, Context $context, string $leagueName, Season $season): void
-    {
-        $league = $entityManager->getRepository(League::class)->findOneBy(['name' => $leagueName]);
-        $context->initContext($league, $season);
-        $this->context = $context;
     }
 
 

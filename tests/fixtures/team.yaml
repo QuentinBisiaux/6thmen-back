@@ -1,0 +1,11 @@
+include:
+  - ./franchise.yaml
+
+App\Domain\Team\Team:
+  valid_team (extends team):
+    name: Minnesota Timberwolves
+    tricode: MIN
+    franchise: '@valid_franchise'
+    slug: minnesota-timberwolves-1990
+    created_in: <datetime("01/01/1990")>
+    created_at: <datetime()>

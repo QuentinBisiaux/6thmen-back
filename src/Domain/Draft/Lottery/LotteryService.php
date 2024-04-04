@@ -5,34 +5,34 @@ namespace App\Domain\Draft\Lottery;
 use App\Domain\Draft\Lottery\Entity\Combination;
 use App\Domain\Draft\Lottery\Entity\Lottery;
 use App\Domain\Draft\Lottery\Entity\Odds;
-use App\Domain\League\Entity\Season;
-use App\Domain\Standing\StandingDraftService;
+use App\Infrastructure\Context\Context;
 use Doctrine\Common\Collections\Collection;
 
 class LotteryService
 {
-    public function getTeamsForLottery(Season $season): Collection
+
+    public function getTeamsForLottery(Context $context): Collection
     {
-        return $this->addOddsToStandingDrafts($season->getStandingDrafts());
+        return $this->addOddsToStandingDrafts($context->getCompetition()->getStandings());
     }
 
-    public function launch(Season $season): array
+    public function launch(Context $context): array
     {
-        $standingsDraftWithOdds = $this->addOddsToStandingDrafts($season->getStandingDrafts());
+        $standingsWithOdds = $this->getTeamsForLottery($context);
         $combination = new Combination();
-        $combination->setCombinationsToTeams($standingsDraftWithOdds);
-        $lottery = new Lottery($standingsDraftWithOdds, $combination);
+        $combination->setCombinationsToTeams($standingsWithOdds);
+        $lottery = new Lottery($standingsWithOdds, $combination);
 
         return $lottery->launchDraw()->getResults();
 
     }
 
-    private function addOddsToStandingDrafts(Collection $standingsDraft): Collection
+    private function addOddsToStandingDrafts(Collection $standings): Collection
     {
-        foreach ($standingsDraft as $standingDraft) {
-            $standingDraft->setOdds(Odds::ODDS[$standingDraft->getRank() - 1]);
+        foreach ($standings as $standing) {
+            $standing->setOdd(Odds::ODDS[$standing->getRank() - 1]);
         }
-        return $standingsDraft;
+        return $standings;
     }
 
 }

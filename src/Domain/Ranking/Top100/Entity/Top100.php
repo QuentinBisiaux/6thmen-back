@@ -4,7 +4,6 @@ namespace App\Domain\Ranking\Top100\Entity;
 
 use App\Domain\Auth\Entity\UserProfile;
 use App\Domain\Ranking\Top100\Repository\Top100Repository;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,12 +15,12 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 class Top100
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'SEQUENCE')]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'top100', targetEntity: UserProfile::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private UserProfile $userProfile;
 
     #[ORM\OneToMany(mappedBy: 'top100', targetEntity: Top100Player::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
@@ -31,20 +30,19 @@ class Top100
 
     private bool $valid = false;
 
+    #[ORM\Column(type: 'datetime')]
     #[Context(
-        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
-        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::RFC3339],
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
     )]
-    #[ORM\Column]
-    #[Groups('read:top-100')]
-    private ?\DateTimeImmutable $createdAt;
+    private \DateTimeInterface $createdAt;
 
+    #[ORM\Column(type: 'datetime', nullable: true)]
     #[Context(
-        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
-        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::RFC3339],
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
     )]
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?\DateTimeInterface $updatedAt = null;
 
     public function __construct()
     {
@@ -97,24 +95,24 @@ class Top100
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(?\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 

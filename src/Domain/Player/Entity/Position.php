@@ -34,9 +34,33 @@ class Position
         'C-F'   => ['Ailier', 'Ailier Fort', 'Pivot'],
     ];
 
+    const POSITION_NUMBER_MATRIX = [
+        'PG'    => [1],
+        'SG'    => [2],
+        'G'     => [1, 2],
+        'G-F'   => [1, 2, 3],
+        'F-G'   => [1, 2, 3],
+        'SF'    => [3],
+        'PF'    => [4],
+        'F'     => [3, 4],
+        'C'     => [5],
+        'F-C'   => [3, 4, 5],
+        'C-F'   => [3, 4, 5],
+    ];
+
     static function getPositionByAbbreviation(string $abbreviation): array
     {
         return self::POSITION_MATRIX[$abbreviation];
+    }
+
+    static function getPositionByArrayOfNumber(array $positionsNumbers): array
+    {
+        $positions = [];
+        foreach ($positionsNumbers as $positionNumber) {
+            $positions[] = self::BASE_POSITION_BY_NUMBER[$positionNumber];
+        }
+
+        return $positions;
     }
 
 }

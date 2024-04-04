@@ -2,15 +2,12 @@
 
 namespace App\Domain\League\Entity;
 
-use App\Domain\Forecast\RegularSeason\Entity\ForecastRegularSeason;
-use App\Domain\Forecast\Trophy\Entity\TrophyForecast;
 use App\Domain\League\Repository\SeasonRepository;
 use App\Domain\Player\Entity\PlayerTeam;
-use App\Domain\Standing\Entity\Standing;
-use App\Domain\Standing\Entity\StandingDraft;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
@@ -20,46 +17,45 @@ class Season
 {
 
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'SEQUENCE')]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(length: 10)]
+    #[Assert\NotBlank]
+    #[Assert\Regex('/^\d{4}(-\d{2})?$/')]
     #[Groups([
         'read:player',
     ])]
     private string $year;
 
     #[ORM\Column(type: 'datetime')]
+    #[Assert\LessThan('today')]
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
+    )]
     private \DateTimeInterface $createdAt;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Assert\GreaterThan(propertyPath: 'createdAt')]
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
+    )]
     private ?\DateTimeInterface $updatedAt = null;
 
+    /** @var Collection<int, PlayerTeam>  */
     #[ORM\OneToMany(mappedBy: 'season', targetEntity: PlayerTeam::class)]
     private Collection $playerTeams;
 
-    #[ORM\OneToMany(mappedBy: 'season', targetEntity: Standing::class)]
-    private Collection $standings;
-
-    #[ORM\OneToMany(mappedBy: 'season', targetEntity: StandingDraft::class)]
-    private Collection $standingsDraft;
-
-    #[ORM\OneToMany(mappedBy: 'season', targetEntity: ForecastRegularSeason::class)]
-    private Collection $forecastRegularSeason;
-
-    #[ORM\OneToMany(mappedBy: 'season', targetEntity: TrophyForecast::class, orphanRemoval: true)]
-    private Collection $trophiesForecast;
-
+    /** @var Collection<int, Competition>  */
     #[ORM\OneToMany(mappedBy: 'season', targetEntity: Competition::class, orphanRemoval: true)]
     private Collection $competitions;
 
     public function __construct()
     {
         $this->playerTeams = new ArrayCollection();
-        $this->standings = new ArrayCollection();
-        $this->standingsDraft = new ArrayCollection();
-        $this->forecastRegularSeason = new ArrayCollection();
         $this->competitions = new ArrayCollection();
     }
 
@@ -117,93 +113,6 @@ class Season
         if (!$this->playerTeams->contains($playerTeam)) {
             $this->playerTeams->add($playerTeam);
             $playerTeam->setSeason($this);
-        }
-
-        return $this;
-    }
-
-    public function removePlayerTeam(PlayerTeam $playerTeam): self
-    {
-        if ($this->playerTeams->removeElement($playerTeam)) {
-            // set the owning side to null (unless already changed)
-            if ($playerTeam->getSeason() === $this) {
-                $playerTeam->setSeason(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Standing>
-     */
-    public function getStandings(): Collection
-    {
-        return $this->standings;
-    }
-
-    public function addStanding(Standing $standing): static
-    {
-        if (!$this->standings->contains($standing)) {
-            $this->standings->add($standing);
-            $standing->setSeason($this);
-        }
-
-        return $this;
-    }
-
-    public function removeStanding(Standing $standing): static
-    {
-        if ($this->standings->removeElement($standing)) {
-            // set the owning side to null (unless already changed)
-            if ($standing->getSeason() === $this) {
-                $standing->setSeason(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, StandingDraft>
-     */
-    public function getStandingDrafts(): Collection
-    {
-        return $this->standingsDraft;
-    }
-
-    public function addStandingDraft(StandingDraft $standingDraft): static
-    {
-        if (!$this->standingsDraft->contains($standingDraft)) {
-            $this->standingsDraft->add($standingDraft);
-            $standingDraft->setSeason($this);
-        }
-
-        return $this;
-    }
-
-    public function removeStandingDraft(StandingDraft $standingDraft): static
-    {
-        if ($this->standingsDraft->removeElement($standingDraft)) {
-            // set the owning side to null (unless already changed)
-            if ($standingDraft->getSeason() === $this) {
-                $standingDraft->setSeason(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getForecastRegularSeason(): Collection
-    {
-        return $this->forecastRegularSeason;
-    }
-
-    public function addForecastRegularSeason(ForecastRegularSeason $forecastRegularSeason): self
-    {
-        if (!$this->forecastRegularSeason->contains($forecastRegularSeason)) {
-            $this->forecastRegularSeason->add($forecastRegularSeason);
-            $forecastRegularSeason->setSeason($this);
         }
 
         return $this;

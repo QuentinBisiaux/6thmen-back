@@ -2,8 +2,8 @@
 
 namespace App\Http\Admin\Controller;
 
+use App\Domain\Team\Repository\TeamRepository;
 use App\Domain\Team\Team;
-use App\Domain\Team\TeamRepository;
 use App\Form\TeamType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

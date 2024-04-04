@@ -1,19 +1,101 @@
-#App\Domain\League\Entity\Sport:
-#  sport (template):
-#    name: <word()>
-#    created_at: <dateTimeThisYear()>
-#    updated_at: <dateTimeThisYear()>
+App\Domain\Auth\Entity\User:
+  user (template):
+    username (unique): <userName()>
+    email (unique): john<current()>\@doe.fr
+    password: <password('0000')>
+    lastConnexion: <dateTime()>
+    created_at: <dateTimeThisYear()>
 
-#App\Domain\League\Entity\League:
-#  league (template):
-#    name: <word()>
-#    sport: '@sport1'
-#    created_at: <dateTimeThisYear()>
-#    updated_at: <dateTimeThisYear()>
+App\Domain\Auth\Entity\UserProfile:
+  user_profile (template):
+    name: <word()>
+    user: '@user*'
+    profileImageUrl: <imageUrl(640, 480, 'animals', true)>
+    location: <city()>
+    created_at: <dateTimeThisYear()>
+
+App\Domain\League\Entity\Sport:
+  sport (template):
+    name: <word()>
+    created_at: <dateTimeThisYear()>
+
+App\Domain\League\Entity\League:
+  league (template):
+    name: <word()>
+    sport: '@sport*'
+    created_at: <dateTimeThisYear()>
+
+App\Domain\League\Entity\Trophy:
+  trophy (template):
+    name: <words(4, true)>
+    abbreviation: <regexify('[A-Z]{3}')>
+    competition: '@competition*'
+    created_at: <dateTimeThisYear()>
 
 App\Domain\League\Entity\Season:
   season (template):
-    year: <current()>
+    year: <numerify('####')>
     created_at: <dateTimeThisYear()>
-    updated_at: <dateTimeThisYear()>
 
+App\Domain\League\Entity\Competition:
+  competition (template):
+    name: <randomElement(['Draft', 'Regular Season', 'Playoff'])>
+    league: '@league*'
+    season: '@season*'
+    games: <numberBetween(1, 2500)>
+    start_at: <dateTimeBetween('-6 months', '-5 months')>
+    end_at: <dateTimeBetween('-1 months')>
+    created_at: <dateTimeThisYear()>
+
+App\Domain\League\Entity\Tournament:
+  tournament (template):
+    competition: '@competition*'
+    name: <word()>
+    start_at: <dateTimeBetween('-5 months','-4 months')>
+    end_at: <dateTimeBetween('-3 months','-2 months')>
+    created_at: <dateTimeThisYear()>
+
+App\Domain\Team\Franchise:
+  franchise (template):
+    name: <words(2, true)>
+    tricode: <randomLetter(3)>
+    slug: <slug(2)>
+    created_in: <dateTimeBetween('-30 years', '-25 years')>
+    created_at: <dateTimeThisYear()>
+
+App\Domain\Team\Team:
+  team (template):
+    name: <words(2, true)>
+    tricode: <randomLetter(3)>
+    franchise: '@franchise*'
+    slug: <slug(2)>
+    conference: <word()>
+    created_in: <dateTimeBetween('-24 years', '-20 years')>
+    created_at: <dateTimeThisYear()>
+
+App\Domain\Entity\Player:
+  player (template):
+    name: <name()>
+    birth_place: <city()>
+    hype_score: <randomNumber(5, false)>
+    birthday: <dateTimeBetween('-40 years', '-16 years')>
+    created_at: <dateTimeThisYear()>
+
+App\Domain\Entity\PlayerTeam:
+  player_team (template):
+    season: '@season*'
+    player: '@player*'
+    team: '@team*'
+    position: <randomElements([1, 2, 3, 4, 5])>
+    jersey_number: '05'
+    experience: <randomDigit()>
+    created_at: <dateTimeThisYear()>
+
+App\Domain\Standing\Standing:
+  standing (template):
+    rank: <randomNumber(2, false)>
+    team: '@team*'
+    competition: '@competition*'
+    victories: <randomNumber(2, false)>
+    loses: <randomNumber(2, false)>
+    created_at: <dateTimeThisYear()>

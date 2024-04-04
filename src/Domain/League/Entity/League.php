@@ -2,9 +2,7 @@
 
 namespace App\Domain\League\Entity;
 
-use App\Domain\Forecast\Trophy\Entity\Trophy;
 use App\Domain\League\Repository\LeagueRepository;
-use App\Domain\Standing\Entity\Standing;
 use App\Domain\Team\Team;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,63 +10,55 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LeagueRepository::class)]
 class League
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'SEQUENCE')]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
-    #[ORM\Column(length: 255)]
-    private string $name = '';
+    #[ORM\Column(length: 255, unique: true)]
+    #[Assert\NotBlank]
+    private string $name;
 
     #[ORM\ManyToOne(inversedBy: 'leagues')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn]
     #[Groups([
         'read:sport'
     ])]
-    private ?Sport $sport = null;
+    private Sport $sport;
 
+    #[ORM\Column(type: 'datetime')]
+    #[Assert\LessThan('today')]
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
+    )]
+    private \DateTimeInterface $createdAt;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Assert\GreaterThan(propertyPath: 'createdAt')]
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
+    )]
+    private ?\DateTimeInterface $updatedAt = null;
+
+    /** @var Collection<int, Team>  */
     #[ORM\OneToMany(mappedBy: 'league', targetEntity: Team::class)]
-    #[Groups([
-        'read:league'
-    ])]
+    #[Groups(['read:league'])]
     private Collection $teams;
 
-    #[ORM\OneToMany(mappedBy: 'league', targetEntity: Trophy::class)]
-    #[Groups([
-        'read:league'
-    ])]
-    #[ORM\OrderBy(['id' => 'ASC'])]
-    private Collection $trophies;
-
-    #[Context(
-        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
-        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
-    )]
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[Context(
-        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
-        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
-    )]
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
-
-    #[ORM\OneToMany(mappedBy: 'League', targetEntity: Standing::class, orphanRemoval: true)]
-    private Collection $standings;
-
-    #[ORM\OneToMany(mappedBy: 'league', targetEntity: Tournament::class, orphanRemoval: true)]
+    /** @var Collection<int, Competition>  */
+    #[ORM\OneToMany(mappedBy: 'league', targetEntity: Competition::class)]
     private Collection $competitions;
 
     public function __construct()
     {
         $this->teams = new ArrayCollection();
-        $this->standings = new ArrayCollection();
-        $this->trophies = new ArrayCollection();
         $this->competitions = new ArrayCollection();
     }
 
@@ -79,24 +69,48 @@ class League
 
     public function getName(): string
     {
-        return $this->name;
+        return strtoupper($this->name);
     }
 
     public function setName(string $name): self
     {
-        $this->name = $name;
+        $this->name = strtolower($name);
 
         return $this;
     }
 
-    public function getSport(): ?Sport
+    public function getSport(): Sport
     {
         return $this->sport;
     }
 
-    public function setSport(?Sport $sport): self
+    public function setSport(Sport $sport): self
     {
         $this->sport = $sport;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -111,87 +125,6 @@ class League
         if (!$this->teams->contains($team)) {
             $this->teams->add($team);
             $team->setLeague($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTeam(Team $team): self
-    {
-        if ($this->teams->removeElement($team)) {
-            // set the owning side to null (unless already changed)
-            if ($team->getLeague() === $this) {
-                $team->setLeague(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getTrophies(): Collection
-    {
-        return $this->trophies;
-    }
-
-    public function addTrophy(Trophy $trophy): self
-    {
-        if (!$this->trophies->contains($trophy)) {
-            $this->trophies->add($trophy);
-            $trophy->setLeague($this);
-        }
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Standing>
-     */
-    public function getStandings(): Collection
-    {
-        return $this->standings;
-    }
-
-    public function addStanding(Standing $standing): static
-    {
-        if (!$this->standings->contains($standing)) {
-            $this->standings->add($standing);
-            $standing->setLeague($this);
-        }
-
-        return $this;
-    }
-
-    public function removeStanding(Standing $standing): static
-    {
-        if ($this->standings->removeElement($standing)) {
-            // set the owning side to null (unless already changed)
-            if ($standing->getLeague() === $this) {
-                $standing->setLeague(null);
-            }
         }
 
         return $this;

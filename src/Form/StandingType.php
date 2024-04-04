@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Domain\League\Entity\League;
 use App\Domain\League\Entity\Season;
-use App\Domain\Standing\Entity\Standing;
+use App\Domain\Standing\Standing;
 use App\Domain\Team\Team;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;

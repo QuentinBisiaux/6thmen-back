@@ -1,0 +1,18 @@
+include:
+  - ./base_nba.yaml
+
+App\Domain\League\Entity\Competition:
+  draft (extends competition):
+    name: 'Draft'
+    league: "@nba"
+    season: "@season_1"
+
+  regular_season (extends competition):
+    name: 'Regular Season'
+    league: "@nba"
+    season: "@season_1"
+
+  playoff (extends competition):
+    name: 'Playoff'
+    league: "@nba"
+    season: "@season_1"

@@ -2,7 +2,7 @@
 
 namespace App\Http\Admin\Controller;
 
-use App\Domain\Team\TeamRepository;
+use App\Domain\Team\Repository\TeamRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

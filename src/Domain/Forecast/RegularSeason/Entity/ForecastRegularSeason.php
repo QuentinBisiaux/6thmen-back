@@ -40,7 +40,7 @@ class ForecastRegularSeason
         denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
     )]
     #[Groups('api:read:forecast-regular-season')]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $createdAt;
 
     #[ORM\Column(nullable: true)]
     #[Context(

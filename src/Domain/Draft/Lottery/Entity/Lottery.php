@@ -2,7 +2,6 @@
 
 namespace App\Domain\Draft\Lottery\Entity;
 
-use App\Domain\Standing\Entity\StandingDraft;
 use App\Domain\Team\Team;
 use Doctrine\Common\Collections\Collection;
 

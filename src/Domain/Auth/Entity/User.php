@@ -7,6 +7,7 @@ use App\Domain\Forecast\RegularSeason\Entity\ForecastRegularSeason;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Context;
@@ -18,22 +19,27 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\GeneratedValue(strategy: 'SEQUENCE')]
+    #[ORM\Column(type: 'integer')]
     #[Groups('read:user')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, unique: true, nullable: true)]
+    #[ORM\Column(type: 'string', length: 190, unique: true)]
+    #[Groups('read:user')]
+    private string $username;
+
+    #[ORM\Column(type: 'string', length: 190, unique: true, nullable: true)]
     #[Groups('read:user')]
     private ?string $email = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?string $password = null;
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $password = '';
 
-    #[ORM\Column(unique: true, nullable: true)]
+    #[ORM\Column(type: 'string', unique: true, nullable: true)]
     private ?string $twitterId = null;
 
     #[ORM\OneToOne(inversedBy: 'user', targetEntity: UserProfile::class)]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     #[Groups('read:user')]
     private UserProfile $profile;
 
@@ -42,23 +48,53 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column(type: 'datetime')]
-    private ?\DateTimeInterface $createdAt = null;
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
+    )]
+    private \DateTimeInterface $lastConnexion;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
+    )]
+    private ?\DateTimeInterface $rememberMe = null;
 
     #[ORM\Column(type: 'datetime')]
-    private ?\DateTimeInterface $updatedAt = null;
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
+    )]
+    private \DateTimeInterface $createdAt;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ForecastRegularSeason::class, orphanRemoval: true)]
-    #[Groups('read:user')]
-    private Collection $forecastRegularSeason;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
+    )]
+    private ?\DateTimeInterface $updatedAt = null;
 
 
     public function __construct()
     {
-        $this->forecastRegularSeason = new ArrayCollection();
     }
+
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
     }
 
     public function getEmail(): ?string
@@ -66,7 +102,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
 
@@ -150,6 +186,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getLastConnexion(): \DateTimeInterface
+    {
+        return $this->lastConnexion;
+    }
+
+    public function setLastConnexion(\DateTimeInterface $lastConnexion): self
+    {
+        $this->lastConnexion = $lastConnexion;
+
+        return $this;
+    }
+
+    public function getRememberMe(): ?\DateTimeInterface
+    {
+        return $this->rememberMe;
+    }
+
+    public function setRememberMe(?\DateTimeInterface $rememberMe): self
+    {
+        $this->rememberMe = $rememberMe;
+
+        return $this;
+    }
+
+
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
@@ -173,20 +234,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-    public function getForecastRegularSeason(): Collection
-    {
-        return $this->forecastRegularSeason;
-    }
-
-    public function addForecastRegularSeason(ForecastRegularSeason $forecastRegularSeason): self
-    {
-        if (!$this->forecastRegularSeason->contains($forecastRegularSeason)) {
-            $this->forecastRegularSeason->add($forecastRegularSeason);
-            $forecastRegularSeason->setUser($this);
-        }
-
-        return $this;
-    }
-
 }

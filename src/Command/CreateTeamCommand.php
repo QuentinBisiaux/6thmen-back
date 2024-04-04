@@ -2,7 +2,10 @@
 
 namespace App\Command;
 
+use App\Domain\League\Entity\Competition;
 use App\Domain\League\Entity\League;
+use App\Domain\League\Entity\Season;
+use App\Domain\Team\Franchise;
 use App\Domain\Team\Team;
 use App\Service\FileManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,6 +28,8 @@ class CreateTeamCommand extends Command
     const CONST_PATH_TEAM_OLD = __DIR__ . '/../../var/data/teams/teams-old.csv';
     private array $rawTeam = [];
     private Team $newTeam;
+
+    private ?Franchise $lastInsertedFranchise = null;
 
     public function __construct(
         private FileManager $fileManager,
@@ -65,6 +70,9 @@ class CreateTeamCommand extends Command
         array_shift($fileContent);
         foreach ($fileContent as $index => $teamData) {
             $this->populateRawTeam(explode(',', $teamData));
+            if ($this->rawTeam['endedIn'] === '') {
+                $this->createFranchiseIfNotExist();
+            }
 
             if (($message = $this->checkIfTeamExist()) !== null) {
                 $io->note($message . ' line ' . ($index + 2));
@@ -74,15 +82,20 @@ class CreateTeamCommand extends Command
             $this->newTeam = new Team();
             $this->newTeam->setName($this->rawTeam['name']);
             $this->newTeam->setTricode($this->rawTeam['tricode']);
-            $this->newTeam->setSlug($this->rawTeam['slug']);
+            $this->newTeam->setFranchise($this->lastInsertedFranchise);
+            $this->newTeam->setSlug(
+                $this->slugger->slug(
+                    strtolower($this->rawTeam['name'])
+                    .' ' .
+                    explode(
+                        '-',
+                        $this->rawTeam['createdIn']
+                    )[0]
+                )
+            );
             $this->newTeam->setConference($this->rawTeam['conference']);
-
-            if (($message = $this->setLeagues()) !== null) {
-                $io->error($message);
-                continue;
-            }
-
             $this->setSeasons();
+            $this->addCompetitions();
             $this->newTeam->setCreatedAt(new \DateTimeImmutable());
 
             $this->manager->persist($this->newTeam);
@@ -101,15 +114,7 @@ class CreateTeamCommand extends Command
     {
         $this->rawTeam['name']      = trim($teamData[0]);
         $this->rawTeam['tricode']   = trim($teamData[1]);
-        $this->rawTeam['slug']      = $this->slugger->slug(
-            strtolower(trim($teamData[0]))
-            .' ' .
-            explode(
-                '-',
-                $teamData[3]
-            )[0]
-        );
-        $this->rawTeam['league']    = trim($teamData[2]);
+        $this->rawTeam['league']    = trim(strtolower($teamData[2]));
         $this->rawTeam['createdIn'] = trim($teamData[3]);
         $this->rawTeam['endedIn']   = trim($teamData[4]);
         $this->rawTeam['sister']    = trim($teamData[5]);
@@ -129,29 +134,61 @@ class CreateTeamCommand extends Command
         return $this->rawTeam['name'] . ' from ' . $this->rawTeam['createdIn'] . ' already exists';
     }
 
-    private function setLeagues(): ?string
+    private function createFranchiseIfNotExist(): void
     {
-        $leagueRepo = $this->manager->getRepository(League::class);
-        foreach (explode('/', $this->rawTeam['league']) as $leagueToFind) {
-            $league = $leagueRepo->findOneBy(['name' => trim($leagueToFind)]);
-            if (!$league) {
-                return 'League ' . $leagueToFind . ' does not exist for team ' . $this->newTeam->getName() . ' with leagues : ' . $this->rawTeam['league'];
-            }
-            $this->newTeam->setLeague($league);
+        $franchise = $this->manager->getRepository(Franchise::class)->findOneBy(
+            [
+                'name' => $this->rawTeam['name'],
+                'createdIn' => new \DateTime(explode('-', $this->rawTeam['createdIn'])[0] . '/01/01')
+            ]
+        );
+        if (!$franchise) {
+            $franchise = new Franchise();
+            $franchise
+                ->setName($this->rawTeam['name'])
+                ->setSlug($this->slugger->slug(strtolower($this->rawTeam['name'])))
+                ->setTricode($this->rawTeam['tricode'])
+                ->setCreatedIn(new \DateTimeImmutable(explode('-', $this->rawTeam['createdIn'])[0] . '/01/01'))
+                ->setCreatedAt(new \DateTimeImmutable());
+            $this->manager->persist($franchise);
+            $this->manager->flush();
         }
-        return null;
+        $this->lastInsertedFranchise = $franchise;
     }
 
     private function setSeasons(): void
     {
         $this->newTeam->setCreatedIn(new \DateTimeImmutable(explode('-', $this->rawTeam['createdIn'])[0] . '/01/01'));
-
         if ($this->rawTeam['endedIn'] !== '') {
-            $this->newTeam->setEndedIn(new \DateTimeImmutable((int) explode('-', $this->rawTeam['endedIn'])[0] + 1 . '/01/01'));
-            if ($this->rawTeam['sister'] !== '') {
-                $teamRepo = $this->manager->getRepository(Team::class);
-                $teamSister = $teamRepo->findOneBy(['name' => trim($this->rawTeam['sister'])]);
-                $this->newTeam->setSisterTeam($teamSister);
+            $this->newTeam->setEndedIn(
+                new \DateTimeImmutable((int) explode('-', $this->rawTeam['endedIn'])[0] + 1 . '/01/01')
+            );
+        }
+    }
+
+    private function addCompetitions(): void
+    {
+        $endSeason = $this->newTeam->getEndedIn() !== null ? $this->newTeam->getEndedIn() : new \DateTime();
+        $seasons = $this->manager->getRepository(Season::class)
+            ->findAllMultiSeasonBetween2Years(
+                $this->newTeam->getCreatedIn()->format('Y'),
+                $endSeason->format('Y')
+            );
+        $leagues = $this->manager
+            ->getRepository(League::class)
+            ->findLeaguesFromArrayOfNames(['name' => explode('/', $this->rawTeam['league'])]);
+
+        foreach ($leagues as $league) {
+            //for now, we just care about nba we'll see later for include ABA and other leagues
+            if ($league->getName() !== 'NBA') {
+                continue;
+            }
+            foreach ($seasons as $season) {
+                $competitions = $this->manager->getRepository(Competition::class)
+                    ->findAllByLeagueAndSeason($league, $season);
+                foreach ($competitions as $competition) {
+                    $this->newTeam->addCompetition($competition);
+                }
             }
         }
     }

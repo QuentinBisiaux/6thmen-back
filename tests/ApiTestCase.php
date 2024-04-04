@@ -34,7 +34,6 @@ class ApiTestCase extends WebTestCase
         $em = self::getContainer()->get(EntityManagerInterface::class);
         $this->em = $em;
         $this->em->getConnection()->getConfiguration()->setMiddlewares([]);
-        parent::setUp();
     }
 
     protected function tearDown(): void

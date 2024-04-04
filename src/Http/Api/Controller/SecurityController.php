@@ -5,7 +5,6 @@ namespace App\Http\Api\Controller;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Domain\Auth\Entity\User;
 use App\Domain\Auth\Entity\UserProfile;
-use App\Service\EncryptionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Http\Authentication\AuthenticationSuccessHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +21,6 @@ class SecurityController extends AbstractController
     public function __construct
     (
         private readonly EntityManagerInterface $entityManager,
-        private readonly EncryptionService      $encryptionService,
         private readonly string                 $consumerKey,
         private readonly string                 $consumerSecret
     )
@@ -94,35 +92,38 @@ class SecurityController extends AbstractController
 
     private function manageUserData(\stdClass $userData): User
     {
-        $user = $this->createOrFindUser($userData->id_str);
+        $user = $this->createOrFindUser($userData->id_str, $userData->screen_name);
         $userProfile = $user->getProfile();
 
-        $userProfile->setUsername($this->encryptionService->deterministicEncrypt($userData->screen_name));
         $userProfile->setName($userData->name);
         $userProfile->setLocation($userData->location);
         $userProfile->setProfileImageUrl($userData->profile_image_url_https);
-        $userDataArray = json_decode(json_encode($userData), true);
-        $userProfile->setRawData($userDataArray, $this->encryptionService);
         $userProfile->setUser($user);
         $userProfile->setCreatedAt(new \DateTimeImmutable());
         $this->entityManager->persist($userProfile);
-
-        $user->setProfile($userProfile);
         $this->entityManager->flush();
 
         return $user;
     }
 
-    private function createOrFindUser(string $idStr): User
+    private function createOrFindUser(string $idStr, string $username): User
     {
-        $user = $this->entityManager->getRepository(User::class)->findOneByTwitterId($this->encryptionService->deterministicEncrypt($idStr));
-        if ($user instanceof User) return $user;
-        $newUser = new User();
-        $newUser->setTwitterId($this->encryptionService->deterministicEncrypt($idStr));
-        $newUser->setProfile(new UserProfile());
-        $newUser->setCreatedAt(new \DateTime());
-        $this->entityManager->persist($newUser);
-        return $newUser;
+        $user = $this->entityManager->getRepository(User::class)->findOneByTwitterId($idStr);
+        $userExist = $user instanceof User;
+        if (!$userExist) {
+            $user = new User();
+        }
+        $user->setTwitterId($idStr);
+        $user->setUsername($username);
+        $user->setLastConnexion(new \DateTime());
+        if (!$userExist) {
+            $user->setProfile(new UserProfile());
+            $user->setCreatedAt(new \DateTime());
+        } else {
+            $user->setUpdatedAt(new \DateTime());
+        }
+        $this->entityManager->persist($user);
+        return $user;
     }
 /* FOR FUTURE DEVELOPMENT
     #[Route('/register', name: 'api_register_plain', methods: ['POST'])]

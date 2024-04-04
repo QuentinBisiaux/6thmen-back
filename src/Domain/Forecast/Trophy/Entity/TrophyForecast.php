@@ -4,7 +4,7 @@ namespace App\Domain\Forecast\Trophy\Entity;
 
 use App\Domain\Auth\Entity\UserProfile;
 use App\Domain\Forecast\Trophy\Repository\TrophyForecastRepository;
-use App\Domain\League\Entity\Season;
+use App\Domain\League\Entity\Trophy;
 use App\Domain\Player\Entity\Player;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Context;
@@ -15,23 +15,18 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 class TrophyForecast
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'SEQUENCE')]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: '$trophiesForecast')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private UserProfile $userProfile;
 
     #[ORM\ManyToOne(inversedBy: 'trophy')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     #[Groups('api:read:forecast-trophies')]
     private Trophy $trophy;
-
-    #[ORM\ManyToOne(inversedBy: 'trophiesForecast')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups('api:read:forecast-trophies')]
-    private Season $season;
 
     #[ORM\Column(type: 'integer', nullable: false)]
     #[Groups('api:read:forecast-trophies')]
@@ -42,19 +37,19 @@ class TrophyForecast
     #[Groups('api:read:forecast-trophies')]
     private ?Player $player = null;
 
+    #[ORM\Column(type: 'datetime')]
     #[Context(
-        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
         denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
     )]
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt;
+    private \DateTimeInterface $createdAt;
 
+    #[ORM\Column(type: 'datetime', nullable: true)]
     #[Context(
-        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
         denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
     )]
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?\DateTimeInterface $updatedAt = null;
 
     public function getId(): ?int
     {
@@ -85,18 +80,6 @@ class TrophyForecast
         return $this;
     }
 
-    public function getSeason(): Season
-    {
-        return $this->season;
-    }
-
-    public function setSeason(Season $season): self
-    {
-        $this->season = $season;
-
-        return $this;
-    }
-
     public function getRank(): int
     {
         return $this->rank;
@@ -121,24 +104,24 @@ class TrophyForecast
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(?\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 

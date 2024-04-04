@@ -2,6 +2,7 @@
 
 namespace App\Tests\Http\Api\Controller;
 
+use App\Domain\League\Entity\League;
 use App\Domain\League\Entity\Season;
 use App\Tests\ApiTestCase;
 use App\Tests\FixturesTrait;
@@ -10,7 +11,7 @@ class LotteryControllerTest extends ApiTestCase
 {
     use FixturesTrait;
 
-    public function testIndex(): void
+    public function testIndex()
     {
         // Create a mock of the LotteryService
         //$lotteryServiceMock = $this->createMock(LotteryService::class);
@@ -29,12 +30,16 @@ class LotteryControllerTest extends ApiTestCase
             ->with($this->equalTo($season))
             ->willReturn($expectedTeams);*/
         $data = $this->loadFixtures(['lottery']);
+
         /** @var Season $season */
-        $season = $data['season_2022_23'];
+        $season = $data['season_1'];
+
+        /** @var League $league */
+        $league = $data['nba'];
 
         // Create a client and make a request
-        $crawler = $this->client->request('GET', '/api/lottery/' . $season->getYear());
-
+        $crawler = $this->client->request('GET', '/api/lottery/'. $league->getName() . '/' . $season->getYear());
+//        dump($this->client->getRequest());
         // Assert the response is 200 OK
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'application/json'));

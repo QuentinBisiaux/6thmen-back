@@ -4,10 +4,9 @@ namespace App\Domain\Auth\Entity;
 
 use App\Domain\Auth\Repository\UserProfileRepository;
 use App\Domain\Forecast\Trophy\Entity\TrophyForecast;
-use App\Domain\Ranking\StratingFive\Entity\StartingFive;
+use App\Domain\Ranking\StartingFive\Entity\StartingFive;
 use App\Domain\Ranking\Top100\Entity\Top100;
 use App\Domain\Team\Team;
-use App\Service\EncryptionService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,40 +20,42 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 class UserProfile
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'SEQUENCE')]
     #[ORM\Column]
     private int $id;
 
     #[ORM\OneToOne(inversedBy: 'profile', targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private User $user;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups('read:user')]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255, unique: true, nullable: true)]
-    #[Groups('read:user')]
-    private ?string $username = null;
-
-    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'fans')]
-    #[JoinTable(name: 'user_favorite_teams')]
-    #[Groups('read:user')]
-    private Collection $favoriteTeams;
-
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     #[Groups('read:user')]
     private ?string $profileImageUrl = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     #[Groups('read:user')]
     private ?string $location = null;
 
-    #[ORM\Column(type: 'json', nullable : false)]
-    private array $rawData;
-
     #[ORM\OneToOne(inversedBy: 'userProfile', targetEntity: Top100::class)]
     private ?Top100 $top100;
+
+    #[ORM\Column(type: 'datetime')]
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
+    )]
+    private \DateTimeInterface $createdAt;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Context(
+        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'],
+        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339],
+    )]
+    private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'userProfile', targetEntity: TrophyForecast::class, orphanRemoval: true)]
     #[Groups('read:user')]
@@ -65,19 +66,10 @@ class UserProfile
     #[Groups('read:user')]
     private Collection $startingFive;
 
-    #[Context(
-        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
-        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
-    )]
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[Context(
-        normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd-m-Y d:h:i'],
-        denormalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeImmutable::RFC3339],
-    )]
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'fans')]
+    #[JoinTable(name: 'user_favorite_teams')]
+    #[Groups('read:user')]
+    private Collection $favoriteTeams;
 
     public function __construct()
     {
@@ -115,47 +107,6 @@ class UserProfile
         return $this;
     }
 
-    public function getUsername(): ?string
-    {
-        return $this->username;
-    }
-
-    public function setUsername(?string $username): self
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    public function getFavoriteTeams(): Collection
-    {
-        return $this->favoriteTeams;
-    }
-
-    public function addFavoriteTeam(Team $team): self
-    {
-        if (!$this->favoriteTeams->contains($team)) {
-            $this->favoriteTeams[] = $team;
-        }
-
-        return $this;
-    }
-
-    public function cleanAllFavoriteTeams(): self
-    {
-        foreach($this->getFavoriteTeams() as $team) {
-            $this->removeFavoriteTeam($team);
-        }
-        return $this;
-    }
-
-    public function removeFavoriteTeam(Team $team): self
-    {
-        $this->favoriteTeams->removeElement($team);
-
-        return $this;
-    }
-
     public function getProfileImageUrl(): ?string
     {
         return $this->profileImageUrl;
@@ -180,34 +131,6 @@ class UserProfile
         return $this;
     }
 
-    public function getRawData(EncryptionService $encryptionService): array
-    {
-        $decryptedData = [];
-        foreach ($this->rawData as $key => $securedData) {
-            if(is_array($securedData)) {
-                $decryptedData[$key] = $securedData;
-                continue;
-            }
-            $decryptedData[$key] = $securedData !== null ? $encryptionService->decrypt($securedData) : null;
-        }
-        return $decryptedData;
-    }
-
-    public function setRawData(array $rawData, EncryptionService $encryptionService): self
-    {
-        $securedData = [];
-        foreach ($rawData as $key => $data) {
-            if(is_array($data)) {
-                $securedData[$key] = $data;
-                continue;
-            }
-            $securedData[$key] = $data !== null ? $encryptionService->encrypt($data) : null;
-        }
-        $this->rawData = $securedData;
-
-        return $this;
-    }
-
     public function setTop100(Top100 $top100): self
     {
         $this->top100 = $top100;
@@ -218,6 +141,30 @@ class UserProfile
     public function getTop100(): ?Top100
     {
         return $this->top100;
+    }
+
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 
     public function getTrophiesForecast(): Collection
@@ -250,26 +197,31 @@ class UserProfile
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getFavoriteTeams(): Collection
     {
-        return $this->createdAt;
+        return $this->favoriteTeams;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function addFavoriteTeam(Team $team): self
     {
-        $this->createdAt = $createdAt;
+        if (!$this->favoriteTeams->contains($team)) {
+            $this->favoriteTeams[] = $team;
+        }
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function cleanAllFavoriteTeams(): self
     {
-        return $this->updatedAt;
+        foreach($this->getFavoriteTeams() as $team) {
+            $this->removeFavoriteTeam($team);
+        }
+        return $this;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
+    public function removeFavoriteTeam(Team $team): self
     {
-        $this->updatedAt = $updatedAt;
+        $this->favoriteTeams->removeElement($team);
 
         return $this;
     }

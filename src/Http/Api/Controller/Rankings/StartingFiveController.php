@@ -2,11 +2,10 @@
 
 namespace App\Http\Api\Controller\Rankings;
 
-use App\Domain\Auth\JWTAuth;
-use App\Domain\Ranking\StratingFive\StartingFiveService;
+use App\Domain\Ranking\StartingFive\StartingFiveService;
+use App\Domain\Team\Franchise;
 use App\Domain\Team\Team;
 use App\Http\Api\Controller\ApiController;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,15 +14,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class StartingFiveController extends ApiController
 {
 
-    public function __construct
-    (
-        private readonly JWTAuth                $JWTAuth,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly StartingFiveService    $startingFiveService
-    )
-    {
-        parent::__construct($this->JWTAuth);
-    }
 
     #[Route(path: '/', name: 'index', methods: ['GET'])]
     public function index(Request $request): JsonResponse
@@ -33,10 +23,10 @@ class StartingFiveController extends ApiController
         } catch (\Exception $ex) {
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
-        $teams          =  $this->entityManager->getRepository(Team::class)->findTeamsByNameOrdered();
+        $franchises     =  $this->entityManager->getRepository(Franchise::class)->findByNameOrdered();
         $startingFive   =  $user->getProfile()->getStartingFive();
         $data = [
-            'teams'         => $teams,
+            'franchises'    => $franchises,
             'startingFives' => $startingFive
         ];
         return $this->json($data, 200, [], ['groups' => ['read:team', 'api:read:starting-five']]);
@@ -44,20 +34,20 @@ class StartingFiveController extends ApiController
     }
 
     #[Route(path: '/{slug}', name: 'show', methods: ['GET'])]
-    public function show(Request $request, Team $team): JsonResponse
+    public function show(Request $request, Franchise $franchise, StartingFiveService $startingFiveService): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
         } catch (\Exception $ex) {
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
-        $data = $this->startingFiveService->getStartingFiveData($user->getProfile(), $team);
+        $data = $startingFiveService->getStartingFiveData($user->getProfile(), $franchise);
         return $this->json($data, 200, [], ['groups' => ['read:player', 'read:team', 'api:read:starting-five']]);
 
     }
 
     #[Route(path: '/{slug}/update', name: 'update', methods: ['POST'])]
-    public function update(Request $request, Team $team): JsonResponse
+    public function update(Request $request, Franchise $franchise, StartingFiveService $startingFiveService): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -71,7 +61,7 @@ class StartingFiveController extends ApiController
         }
 
         try {
-            $completed = $this->startingFiveService->updateStartingFive($user->getProfile(), $team, $data);
+            $completed = $startingFiveService->updateStartingFive($user->getProfile(), $franchise, $data);
             return $this->json(['isCompleted' => $completed], 200);
         } catch (\Exception $ex) {
             return $this->json(['error' => 'Erreur lors de l\'enregistrement des données'], 500);

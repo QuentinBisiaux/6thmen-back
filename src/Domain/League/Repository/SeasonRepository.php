@@ -51,9 +51,9 @@ class SeasonRepository extends ServiceEntityRepository
 
     public function getMultiYearSeasonByYear(?string $date): Season
     {
-        if(is_null($date)) {
+        if (is_null($date)) {
             $currentDate = (new \DateTimeImmutable())->format('Y');
-            $date = $currentDate . '-' . substr( (string) ((int) $currentDate + 1), -2);
+            $date = $currentDate . '-' . substr((string) ((int) $currentDate + 1), -2);
         }
 
         return $this->createQueryBuilder('s')
@@ -61,6 +61,21 @@ class SeasonRepository extends ServiceEntityRepository
             ->setParameter('year', $date)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function findAllMultiSeasonBetween2Years(string $start, string $end): array
+    {
+        $startingSeason = $this->getMultiYearSeasonByYear($start. '-' . substr((string) ((int) $start + 1), -2));
+        $endSeason = $this->getMultiYearSeasonByYear($end. '-' . substr((string) ((int) $end + 1), -2));
+        $ids = [];
+        for ($x = $startingSeason->getId(); $x <= $endSeason->getId(); $x+=2) {
+            $ids[] = $x;
+        }
+        return $this->createQueryBuilder('s')
+            ->where('s.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

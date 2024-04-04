@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Domain\Player\Entity\HypeScore;
-use App\Domain\Ranking\StratingFive\Entity\StartingFiveAggregator;
+use App\Domain\Ranking\StartingFive\Entity\StartingFiveAggregator;
 use App\Domain\Ranking\Top100\Entity\Top100Aggregator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;

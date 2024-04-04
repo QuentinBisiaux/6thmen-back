@@ -13,17 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class Top100Controller extends ApiController
 {
 
-    public function __construct
-    (
-        private readonly JWTAuth       $JWTAuth,
-        private readonly Top100Service $top100Service,
-    )
-    {
-        parent::__construct($this->JWTAuth);
-    }
-
     #[Route(path: '/', name: 'index', methods: ['GET'])]
-    public function index(Request $request): JsonResponse
+    public function index(Request $request, Top100Service $top100Service): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -31,13 +22,13 @@ class Top100Controller extends ApiController
             return $this->json(['error' => $ex->getMessage(), 'connected' => false], $ex->getCode());
         }
 
-        $data = $this->top100Service->getTop100Data($user->getProfile());
+        $data = $top100Service->getTop100Data($user->getProfile());
         return $this->json($data, 200, [], ['groups' => ['read:top-100', 'read:player']]);
 
     }
 
     #[Route(path: '/update', name: 'update', methods: ['POST'])]
-    public function update(Request $request): JsonResponse
+    public function update(Request $request, Top100Service $top100Service): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -50,7 +41,7 @@ class Top100Controller extends ApiController
                 return $this->json(['error' => 'Il y a eu une erreur dans les données envoyées'], 400);
             } else {
                 try {
-                    $this->top100Service->updateUserTop100Full($user->getProfile(), $data);
+                    $top100Service->updateUserTop100Full($user->getProfile(), $data);
                     return $this->json(['message' => 'Top 100 updated successfully'], 200);
                 } catch (\Exception $ex) {
                     return $this->json(['error' => 'Erreur lors de l\'enregistrement des données'], 500);
@@ -63,7 +54,7 @@ class Top100Controller extends ApiController
         }
 
         try {
-            $this->top100Service->updateUserTop100($user->getProfile(), $data);
+            $top100Service->updateUserTop100($user->getProfile(), $data);
             return $this->json(['message' => 'Top 100 updated successfully'], 200);
         } catch (\Exception $ex) {
             return $this->json(['error' => 'Erreur lors de l\'enregistrement des données'], 500);

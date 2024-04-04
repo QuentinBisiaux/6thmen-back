@@ -1,0 +1,16 @@
+include:
+  - ../../fixtures/templates.yaml
+
+App\Domain\League\Entity\Sport:
+  sport_1 (extends sport):
+
+App\Domain\League\Entity\Season:
+  season_1 (extends season):
+
+App\Domain\Team\Franchise:
+  franchise_{15..30} (extends franchise):
+
+App\Domain\League\Entity\League:
+  nba (extends league):
+    name: nba
+    sport: "@sport_1"

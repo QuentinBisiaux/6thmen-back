@@ -1,0 +1,8 @@
+include:
+  - ./league.yaml
+  - ./season.yaml
+
+App\Domain\League\Entity\Competition:
+  competition_1 (extends competition):
+    league: "@league_1"
+    season: "@season_2022"

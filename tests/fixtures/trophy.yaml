@@ -1,0 +1,6 @@
+include:
+  - ./competition.yaml
+
+App\Domain\League\Entity\Trophy:
+  trophy_{1..10} (extends trophy):
+    competition: '@competition_1'

@@ -1,0 +1,6 @@
+include:
+  - ./competition.yaml
+
+App\Domain\League\Entity\Tournament:
+  tournament_1 (extends tournament):
+    competition: "@competition_1"
