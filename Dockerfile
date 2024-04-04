@@ -20,12 +20,6 @@ RUN chmod +x /usr/local/bin/install-php-extensions && \
 # Get latest Composer
 COPY --from=composer:2.4.2 /usr/bin/composer /usr/bin/composer
 
-# Create system user to run Composer and Artisan Commands
-RUN useradd -G www-data,root -u 1000 -d /home/rayuruna rayuruna
-RUN mkdir -p /home/rayuruna/.composer && \
-    chown -R rayuruna:rayuruna /home/rayuruna
-
 # Set working directory
 WORKDIR /var/www
 
-USER rayuruna
