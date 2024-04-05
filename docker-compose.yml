@@ -14,7 +14,7 @@ services:
   6thmen:
     build: .
     container_name: 6thmen-php
-    user: rayuruna:rayuruna
+    user: "115:120"
     restart: always
     volumes:
       - ./.:/var/www
