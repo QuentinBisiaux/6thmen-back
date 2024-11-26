@@ -2,7 +2,6 @@
 
 namespace App\Command;
 
-use App\Domain\Player\Entity\HypeScore;
 use App\Domain\Ranking\StartingFive\Entity\StartingFiveAggregator;
 use App\Domain\Ranking\Top100\Entity\Top100Aggregator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,26 +19,19 @@ class AggregatePlayerHypeScore extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
-
-        $deleted = $this->entityManager->getRepository(HypeScore::class)->deleteAll();
-
-        $io->success('Nombre de lignes supprimées : ' . $deleted);
-        $startingFiveAggregations   = $this->entityManager->getRepository(StartingFiveAggregator::class)->findAll();
-        $top100Aggregations         = $this->entityManager->getRepository(Top100Aggregator::class)->findAll();
-        $hypeScores                 = $this->prepareHighScore(array_merge($startingFiveAggregations, $top100Aggregations));
-        foreach ($hypeScores as $playerId => $details) {
-            $hypeScore = new HypeScore();
-            $hypeScore->setPlayer($details['player']);
-            $hypeScore->setScore($details['score']);
-            $this->entityManager->persist($hypeScore);
+        $startingFiveAggregations = $this->entityManager->getRepository(StartingFiveAggregator::class)->findAll();
+        $top100Aggregations = $this->entityManager->getRepository(Top100Aggregator::class)->findAll();
+        $hypeScores = $this->prepareHighScore(array_merge($startingFiveAggregations, $top100Aggregations));
+        foreach ($hypeScores as $details) {
+            $player = $details['player'];
+            $player->setHypeScore($details['score']);
+            $this->entityManager->persist($player);
         }
         $this->entityManager->flush();
 
@@ -47,15 +39,16 @@ class AggregatePlayerHypeScore extends Command
     }
 
 
-    private function prepareHighScore(array $allPlayers): array {
+    private function prepareHighScore(array $allPlayers): array
+    {
         $cleanedData = [];
         foreach ($allPlayers as $playerData) {
             $player = $playerData->getPlayer();
-            if(!array_key_exists($player->getId(), $cleanedData)) {
-                $cleanedData[$player->getId()]['player']    = $player;
-                $cleanedData[$player->getId()]['score']     = $playerData->getCount();
+            if (!array_key_exists($player->getId(), $cleanedData)) {
+                $cleanedData[$player->getId()]['player'] = $player;
+                $cleanedData[$player->getId()]['score'] = $playerData->getCount();
             } else {
-                $cleanedData[$player->getId()]['score']         += $playerData->getCount();
+                $cleanedData[$player->getId()]['score'] += $playerData->getCount();
             }
         }
         return $cleanedData;

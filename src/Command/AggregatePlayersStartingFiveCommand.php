@@ -20,8 +20,7 @@ class AggregatePlayersStartingFiveCommand extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -48,11 +47,12 @@ class AggregatePlayersStartingFiveCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function prepareInsertion(array $rawResults): array {
+    private function prepareInsertion(array $rawResults): array
+    {
         $cleanedData = [];
         foreach ($rawResults as $startingFivePlayer) {
             $player = $startingFivePlayer->getPlayer();
-            if(!array_key_exists($player->getId(), $cleanedData)) {
+            if (!array_key_exists($player->getId(), $cleanedData)) {
                 $cleanedData[$player->getId()]['player']                                        = $player;
                 $cleanedData[$player->getId()]['position'][$startingFivePlayer->getPosition()]  = 1;
             } else {

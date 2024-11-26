@@ -45,11 +45,12 @@ class AggregatePlayersTop100Command extends Command
         return Command::SUCCESS;
     }
 
-    private function prepareInsertion(array $rawResults): array {
+    private function prepareInsertion(array $rawResults): array
+    {
         $cleanedData = [];
         foreach ($rawResults as $top100Player) {
             $player = $top100Player->getPlayer();
-            if(!array_key_exists($player->getId(), $cleanedData)) {
+            if (!array_key_exists($player->getId(), $cleanedData)) {
                 $cleanedData[$player->getId()]['player']    = $player;
                 $cleanedData[$player->getId()]['count']     = 101 - $top100Player->getRank();
             } else {

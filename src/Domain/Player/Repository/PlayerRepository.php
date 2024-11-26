@@ -94,6 +94,15 @@ class PlayerRepository extends ServiceEntityRepository
             ;
     }
 
+    public function resetHypeScores(): void
+    {
+        $this->createQueryBuilder('p')
+            ->update()
+            ->set('p.hypeScore', 0)
+            ->getQuery()
+            ->execute();
+    }
+
 //    /**
 //     * @return Player[] Returns an array of Player objects
 //     */
