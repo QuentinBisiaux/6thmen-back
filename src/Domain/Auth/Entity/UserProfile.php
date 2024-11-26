@@ -25,7 +25,6 @@ class UserProfile
     private int $id;
 
     #[ORM\OneToOne(inversedBy: 'profile', targetEntity: User::class)]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private User $user;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -41,6 +40,7 @@ class UserProfile
     private ?string $location = null;
 
     #[ORM\OneToOne(inversedBy: 'userProfile', targetEntity: Top100::class)]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?Top100 $top100;
 
     #[ORM\Column(type: 'datetime')]
@@ -64,11 +64,13 @@ class UserProfile
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: StartingFive::class, orphanRemoval: true)]
     #[Groups('read:user')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private Collection $startingFive;
 
     #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'fans')]
     #[JoinTable(name: 'user_favorite_teams')]
     #[Groups('read:user')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private Collection $favoriteTeams;
 
     public function __construct()
