@@ -87,7 +87,9 @@ class SecurityController extends AbstractController
             $tokens['oauth_token'],
             $tokens['oauth_token_secret']
         );
-        return $connection->get('account/verify_credentials');
+        $connection->setApiVersion('1.1');
+
+        return $connection->get('account/verify_credentials' , ['inclue_email' => 'false']);
     }
 
     private function manageUserData(\stdClass $userData): User
