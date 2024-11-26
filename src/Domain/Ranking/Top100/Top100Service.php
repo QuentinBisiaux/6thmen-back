@@ -95,16 +95,22 @@ readonly class Top100Service
 
     public function updateUserTop100Full(UserProfile $userProfile, array $data)
     {
-        $top100         = $this->findOrCreateTop100($userProfile);
-        $newTop100        = $data['top100'];
+        $top100     = $this->findOrCreateTop100($userProfile);
+        $newTop100  = $data['top100'];
         foreach ($top100->getRanking() as $top100Player) {
             $newTop100Rank = $newTop100['ranking'][$top100Player->getRank() - 1];
-            if(null === $newTop100Rank['player'] || $newTop100Rank['player']['id'] === $top100Player->getPlayer()?->getId()) continue;
-            $newPlayer = $this->entityManager->getRepository(Player::class)->findOneBy(['id' => $newTop100Rank['player']['id']]);
-            if(is_null($newPlayer) || trim($newTop100Rank['player']['name']) !== $newPlayer->getName()) {
-                throw new \Exception();
+            if($newTop100Rank['player'] === null && $top100Player->getPlayer() !== null) {
+                $top100Player->setPlayer(null);
+            } elseif (null === $newTop100Rank['player'] || $newTop100Rank['player']['id'] === $top100Player->getPlayer()?->getId()) {
+                continue;
+            } else {
+                $newPlayer = $this->entityManager->getRepository(Player::class)->findOneBy(['id' => $newTop100Rank['player']['id']]);
+                if(is_null($newPlayer) || trim($newTop100Rank['player']['name']) !== $newPlayer->getName()) {
+                    throw new \Exception();
+                }
+                $top100Player->setPlayer($newPlayer);
             }
-            $top100Player->setPlayer($newPlayer);
+
             $top100Player->setUpdatedAt(new \DateTimeImmutable());
             $this->entityManager->persist($top100Player);
         }
