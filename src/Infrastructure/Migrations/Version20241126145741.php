@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20241126144209 extends AbstractMigration
+final class Version20241126145741 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -106,9 +106,9 @@ final class Version20241126144209 extends AbstractMigration
         $this->addSql('CREATE TABLE "user_data" (id INT NOT NULL, user_id INT DEFAULT NULL, top100_id INT DEFAULT NULL, name VARCHAR(255) DEFAULT NULL, profile_image_url VARCHAR(255) DEFAULT NULL, location VARCHAR(255) DEFAULT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_D772BFAAA76ED395 ON "user_data" (user_id)');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_D772BFAAA9C96C46 ON "user_data" (top100_id)');
-        $this->addSql('CREATE TABLE user_favorite_teams (user_profile_id INT NOT NULL, franchise_id INT NOT NULL, PRIMARY KEY(user_profile_id, franchise_id))');
-        $this->addSql('CREATE INDEX IDX_4BCFD6256B9DD454 ON user_favorite_teams (user_profile_id)');
-        $this->addSql('CREATE INDEX IDX_4BCFD625523CAB89 ON user_favorite_teams (franchise_id)');
+        $this->addSql('CREATE TABLE user_favorite_franchises (user_profile_id INT NOT NULL, franchise_id INT NOT NULL, PRIMARY KEY(user_profile_id, franchise_id))');
+        $this->addSql('CREATE INDEX IDX_F4DB7D9C6B9DD454 ON user_favorite_franchises (user_profile_id)');
+        $this->addSql('CREATE INDEX IDX_F4DB7D9C523CAB89 ON user_favorite_franchises (franchise_id)');
         $this->addSql('CREATE TABLE messenger_messages (id BIGSERIAL NOT NULL, body TEXT NOT NULL, headers TEXT NOT NULL, queue_name VARCHAR(190) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, available_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, delivered_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_75EA56E0FB7336F0 ON messenger_messages (queue_name)');
         $this->addSql('CREATE INDEX IDX_75EA56E0E3BD61CE ON messenger_messages (available_at)');
@@ -154,8 +154,8 @@ final class Version20241126144209 extends AbstractMigration
         $this->addSql('ALTER TABLE "user" ADD CONSTRAINT FK_8D93D649CCFA12B8 FOREIGN KEY (profile_id) REFERENCES "user_data" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE "user_data" ADD CONSTRAINT FK_D772BFAAA76ED395 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE "user_data" ADD CONSTRAINT FK_D772BFAAA9C96C46 FOREIGN KEY (top100_id) REFERENCES top100 (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('ALTER TABLE user_favorite_teams ADD CONSTRAINT FK_4BCFD6256B9DD454 FOREIGN KEY (user_profile_id) REFERENCES "user_data" (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('ALTER TABLE user_favorite_teams ADD CONSTRAINT FK_4BCFD625523CAB89 FOREIGN KEY (franchise_id) REFERENCES franchise (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE user_favorite_franchises ADD CONSTRAINT FK_F4DB7D9C6B9DD454 FOREIGN KEY (user_profile_id) REFERENCES "user_data" (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE user_favorite_franchises ADD CONSTRAINT FK_F4DB7D9C523CAB89 FOREIGN KEY (franchise_id) REFERENCES franchise (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
     }
 
     public function down(Schema $schema): void
@@ -213,8 +213,8 @@ final class Version20241126144209 extends AbstractMigration
         $this->addSql('ALTER TABLE "user" DROP CONSTRAINT FK_8D93D649CCFA12B8');
         $this->addSql('ALTER TABLE "user_data" DROP CONSTRAINT FK_D772BFAAA76ED395');
         $this->addSql('ALTER TABLE "user_data" DROP CONSTRAINT FK_D772BFAAA9C96C46');
-        $this->addSql('ALTER TABLE user_favorite_teams DROP CONSTRAINT FK_4BCFD6256B9DD454');
-        $this->addSql('ALTER TABLE user_favorite_teams DROP CONSTRAINT FK_4BCFD625523CAB89');
+        $this->addSql('ALTER TABLE user_favorite_franchises DROP CONSTRAINT FK_F4DB7D9C6B9DD454');
+        $this->addSql('ALTER TABLE user_favorite_franchises DROP CONSTRAINT FK_F4DB7D9C523CAB89');
         $this->addSql('DROP TABLE competition');
         $this->addSql('DROP TABLE forecast_regular_season');
         $this->addSql('DROP TABLE franchise');
@@ -237,7 +237,7 @@ final class Version20241126144209 extends AbstractMigration
         $this->addSql('DROP TABLE trophy_forecast');
         $this->addSql('DROP TABLE "user"');
         $this->addSql('DROP TABLE "user_data"');
-        $this->addSql('DROP TABLE user_favorite_teams');
+        $this->addSql('DROP TABLE user_favorite_franchises');
         $this->addSql('DROP TABLE messenger_messages');
     }
 }

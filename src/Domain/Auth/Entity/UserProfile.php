@@ -71,7 +71,7 @@ class UserProfile
     private Collection $startingFive;
 
     #[ORM\ManyToMany(targetEntity: Franchise::class, inversedBy: 'fans')]
-    #[JoinTable(name: 'user_favorite_teams')]
+    #[JoinTable(name: 'user_favorite_franchises')]
     #[Groups('read:user')]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private Collection $favoriteFranchises;
