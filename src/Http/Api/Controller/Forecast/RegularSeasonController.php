@@ -9,6 +9,7 @@ use App\Domain\League\Entity\Season;
 use App\Domain\Team\Team;
 use App\Http\Api\Controller\ApiController;
 use App\Infrastructure\Context\Context;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,7 +20,7 @@ class RegularSeasonController extends ApiController
 
 
     #[Route(path: '/{name}/{year}', name: 'show', methods: ['GET'])]
-    public function show(Request $request, League $league, Season $season): JsonResponse
+    public function show(Request $request, #[MapEntity] League $league, #[MapEntity] Season $season): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -60,7 +61,7 @@ class RegularSeasonController extends ApiController
     }
 
     #[Route(path: '/{name}/{year}/update', name: 'update', methods: ['POST'])]
-    public function update(Request $request, League $league, Season $season): JsonResponse
+    public function update(Request $request, #[MapEntity] League $league, #[MapEntity] Season $season): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);

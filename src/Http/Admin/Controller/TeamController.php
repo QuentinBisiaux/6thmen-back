@@ -5,6 +5,7 @@ namespace App\Http\Admin\Controller;
 use App\Domain\Team\Repository\TeamRepository;
 use App\Domain\Team\Team;
 use App\Form\TeamType;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,7 +45,7 @@ class TeamController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_team_show', methods: ['GET'])]
-    public function show(Team $team): Response
+    public function show(#[MapEntity]Team $team): Response
     {
         return $this->render('team/show.html.twig', [
             'team' => $team,
@@ -52,7 +53,7 @@ class TeamController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_team_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Team $team, TeamRepository $teamRepository): Response
+    public function edit(Request $request, #[MapEntity] Team $team, TeamRepository $teamRepository): Response
     {
         $form = $this->createForm(TeamType::class, $team);
         $form->handleRequest($request);
@@ -71,7 +72,7 @@ class TeamController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_team_delete', methods: ['POST'])]
-    public function delete(Request $request, Team $team, TeamRepository $teamRepository): Response
+    public function delete(Request $request, #[MapEntity] Team $team, TeamRepository $teamRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$team->getId(), $request->request->get('_token'))) {
             $teamRepository->remove($team, true);

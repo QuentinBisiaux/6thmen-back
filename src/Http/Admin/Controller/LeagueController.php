@@ -5,6 +5,7 @@ namespace App\Http\Admin\Controller;
 use App\Domain\League\Entity\League;
 use App\Domain\League\Repository\LeagueRepository;
 use App\Form\LeagueType;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,7 +45,7 @@ class LeagueController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_league_show', methods: ['GET'])]
-    public function show(League $league): Response
+    public function show(#[MapEntity] League $league): Response
     {
         return $this->render('league/show.html.twig', [
             'league' => $league,
@@ -52,7 +53,7 @@ class LeagueController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_league_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, League $league, LeagueRepository $leagueRepository): Response
+    public function edit(Request $request, #[MapEntity] League $league, LeagueRepository $leagueRepository): Response
     {
         $form = $this->createForm(LeagueType::class, $league);
         $form->handleRequest($request);
@@ -71,7 +72,7 @@ class LeagueController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_league_delete', methods: ['POST'])]
-    public function delete(Request $request, League $league, LeagueRepository $leagueRepository): Response
+    public function delete(Request $request, #[MapEntity] League $league, LeagueRepository $leagueRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$league->getId(), $request->request->get('_token'))) {
             $leagueRepository->remove($league, true);

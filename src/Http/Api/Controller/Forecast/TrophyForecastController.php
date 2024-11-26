@@ -8,6 +8,7 @@ use App\Domain\League\Entity\League;
 use App\Domain\League\Entity\Season;
 use App\Domain\League\Entity\Trophy;
 use App\Http\Api\Controller\ApiController;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,7 +18,7 @@ class TrophyForecastController extends ApiController
 {
 
     #[Route(path: '/{name}/{year}', name: 'show', requirements: ['year' => '\d{4}-\d{2}'], methods: ['GET'])]
-    public function index(Request $request, League $league, Season $season, TrophyForecastService $trophyForecastService): JsonResponse
+    public function index(Request $request, #[MapEntity] League $league, #[MapEntity] Season $season, TrophyForecastService $trophyForecastService): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -33,7 +34,7 @@ class TrophyForecastController extends ApiController
     }
 
     #[Route(path: '/{name}/{year}/update/{trophyName}', name: 'update', methods: ['POST'])]
-    public function update(Request $request, League $league, Season $season, string $trophyName, TrophyForecastService $trophyForecastService): JsonResponse
+    public function update(Request $request, #[MapEntity] League $league, #[MapEntity] Season $season, string $trophyName, TrophyForecastService $trophyForecastService): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -62,7 +63,7 @@ class TrophyForecastController extends ApiController
     }
 
     #[Route(path: '/{name}/{year}/players', name: 'players', methods: ['GET'])]
-    public function players(Request $request, League $league, Season $season, TrophyForecastService $trophyForecastService): JsonResponse
+    public function players(Request $request, #[MapEntity] League $league, #[MapEntity] Season $season, TrophyForecastService $trophyForecastService): JsonResponse
     {
         try {
             $this->tryToConnectUser($request);

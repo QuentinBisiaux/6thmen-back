@@ -5,6 +5,7 @@ namespace App\Http\Admin\Controller;
 use App\Domain\League\Entity\Sport;
 use App\Domain\League\Repository\SportRepository;
 use App\Form\SportType;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,7 +45,7 @@ class SportController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_sport_show', methods: ['GET'])]
-    public function show(Sport $sport): Response
+    public function show(#[MapEntity]Sport $sport): Response
     {
         return $this->render('sport/show.html.twig', [
             'sport' => $sport,
@@ -52,7 +53,7 @@ class SportController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_sport_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Sport $sport, SportRepository $sportRepository): Response
+    public function edit(Request $request, #[MapEntity] Sport $sport, SportRepository $sportRepository): Response
     {
         $form = $this->createForm(SportType::class, $sport);
         $form->handleRequest($request);
@@ -71,7 +72,7 @@ class SportController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_sport_delete', methods: ['POST'])]
-    public function delete(Request $request, Sport $sport, SportRepository $sportRepository): Response
+    public function delete(Request $request, #[MapEntity] Sport $sport, SportRepository $sportRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$sport->getId(), $request->request->get('_token'))) {
             $sportRepository->remove($sport, true);

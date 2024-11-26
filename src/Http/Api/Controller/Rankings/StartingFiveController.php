@@ -6,6 +6,7 @@ use App\Domain\Ranking\StartingFive\StartingFiveService;
 use App\Domain\Team\Franchise;
 use App\Domain\Team\Team;
 use App\Http\Api\Controller\ApiController;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,7 +35,7 @@ class StartingFiveController extends ApiController
     }
 
     #[Route(path: '/{slug}', name: 'show', methods: ['GET'])]
-    public function show(Request $request, Franchise $franchise, StartingFiveService $startingFiveService): JsonResponse
+    public function show(Request $request, #[MapEntity] Franchise $franchise, StartingFiveService $startingFiveService): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -47,7 +48,7 @@ class StartingFiveController extends ApiController
     }
 
     #[Route(path: '/{slug}/update', name: 'update', methods: ['POST'])]
-    public function update(Request $request, Franchise $franchise, StartingFiveService $startingFiveService): JsonResponse
+    public function update(Request $request, #[MapEntity] Franchise $franchise, StartingFiveService $startingFiveService): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
