@@ -20,12 +20,12 @@ class Franchise
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'SEQUENCE')]
     #[ORM\Column]
-    #[Groups(['read:team'])]
+    #[Groups(['read:team', 'read:user'])]
     private int $id;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['read:team'])]
+    #[Groups(['read:team', 'read:user'])]
     private string $name;
 
     #[ORM\Column(length: 3)]
@@ -38,7 +38,7 @@ class Franchise
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[AssertSlug]
-    #[Groups(['read:team'])]
+    #[Groups(['read:team', 'read:user'])]
     private string $slug;
 
     #[ORM\Column(type: 'date')]
@@ -78,7 +78,7 @@ class Franchise
 
     /** @var Collection<int, UserProfile> */
     #[ORM\JoinTable(name: 'franchise_fans')]
-    #[ManyToMany(targetEntity: UserProfile::class, mappedBy: 'favoriteTeams')]
+    #[ManyToMany(targetEntity: UserProfile::class, mappedBy: 'favoriteFranchises')]
     private Collection $fans;
 
     public function __construct()

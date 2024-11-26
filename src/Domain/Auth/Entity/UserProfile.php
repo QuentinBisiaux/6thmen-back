@@ -6,6 +6,7 @@ use App\Domain\Auth\Repository\UserProfileRepository;
 use App\Domain\Forecast\Trophy\Entity\TrophyForecast;
 use App\Domain\Ranking\StartingFive\Entity\StartingFive;
 use App\Domain\Ranking\Top100\Entity\Top100;
+use App\Domain\Team\Franchise;
 use App\Domain\Team\Team;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -41,6 +42,7 @@ class UserProfile
     private ?string $location = null;
 
     #[ORM\OneToOne(inversedBy: 'userProfile', targetEntity: Top100::class)]
+    #[Groups('read:user')]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?Top100 $top100;
 
@@ -68,15 +70,15 @@ class UserProfile
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private Collection $startingFive;
 
-    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'fans')]
+    #[ORM\ManyToMany(targetEntity: Franchise::class, inversedBy: 'fans')]
     #[JoinTable(name: 'user_favorite_teams')]
     #[Groups('read:user')]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
-    private Collection $favoriteTeams;
+    private Collection $favoriteFranchises;
 
     public function __construct()
     {
-        $this->favoriteTeams = new ArrayCollection();
+        $this->favoriteFranchises = new ArrayCollection();
         $this->trophiesForecast = new ArrayCollection();
         $this->startingFive = new ArrayCollection();
     }
@@ -200,31 +202,31 @@ class UserProfile
         return $this;
     }
 
-    public function getFavoriteTeams(): Collection
+    public function getFavoriteFranchises(): Collection
     {
-        return $this->favoriteTeams;
+        return $this->favoriteFranchises;
     }
 
-    public function addFavoriteTeam(Team $team): self
+    public function addFavoriteFranchise(Franchise $franchise): self
     {
-        if (!$this->favoriteTeams->contains($team)) {
-            $this->favoriteTeams[] = $team;
+        if (!$this->favoriteFranchises->contains($franchise)) {
+            $this->favoriteFranchises[] = $franchise;
         }
 
         return $this;
     }
 
-    public function cleanAllFavoriteTeams(): self
+    public function cleanAllFavoriteFranchise(): self
     {
-        foreach($this->getFavoriteTeams() as $team) {
-            $this->removeFavoriteTeam($team);
+        foreach($this->getFavoriteFranchises() as $franchise) {
+            $this->removeFavoriteFranchises($franchise);
         }
         return $this;
     }
 
-    public function removeFavoriteTeam(Team $team): self
+    public function removeFavoriteFranchises(Franchise $franchise): self
     {
-        $this->favoriteTeams->removeElement($team);
+        $this->favoriteFranchises->removeElement($franchise);
 
         return $this;
     }

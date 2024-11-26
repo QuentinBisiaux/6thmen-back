@@ -3,6 +3,7 @@
 namespace App\Http\Api\Controller;
 
 use App\Domain\Auth\JWTAuth;
+use App\Domain\Team\Franchise;
 use App\Domain\Team\Team;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,8 +25,8 @@ class UserProfileController extends ApiController
         return $this->json(['user' => $user], 200, [], ['groups' => 'read:user']);
     }
 
-    #[Route(path: '/favorite-team', name: 'favorite_team', methods: ['POST'])]
-    public function manageUserFavoriteTeams(Request $request): JsonResponse
+    #[Route(path: '/favorite-franchises', name: 'favorite_franchises', methods: ['POST'])]
+    public function manageUserFavoriteFranchises(Request $request): JsonResponse
     {
         try {
             $user = $this->tryToConnectUser($request);
@@ -36,10 +37,10 @@ class UserProfileController extends ApiController
 
         $content = $request->getContent();
         $data = json_decode($content, true);
-        $this->entityManager->persist($userProfile->cleanAllFavoriteTeams());
-        $teams = $this->entityManager->getRepository(Team::class)->findTeamsByIds($data);
-        foreach($teams as $team) {
-            $this->entityManager->persist($userProfile->addFavoriteTeam($team));
+        $this->entityManager->persist($userProfile->cleanAllFavoriteFranchise());
+        $franchises = $this->entityManager->getRepository(Franchise::class)->findBy(['id' => $data]);
+        foreach($franchises as $franchise) {
+            $this->entityManager->persist($userProfile->addFavoriteFranchise($franchise));
         }
         $this->entityManager->flush();
 
