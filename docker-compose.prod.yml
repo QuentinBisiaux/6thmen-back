@@ -15,9 +15,19 @@ services:
       - 6thmen
 
   6thmen:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UID: "${UID}"
+        GID: "${GID}"
+        USER_NAME: "${USER_NAME}"
+    user: "${UID}:${GID}"
+    environment:
+        - UID=${UID}
+        - GID=${GID}
+        - USER_NAME=${USER_NAME}
     container_name: 6thmen-php
-    user: "115:120"
     restart: always
     volumes:
       - .:/var/www
