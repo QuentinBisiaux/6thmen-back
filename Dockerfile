@@ -1,24 +1,33 @@
 FROM php:8.3-fpm
 
 RUN apt-get update && apt-get install -y \
-    vim \
-    curl \
+    software-properties-common \
+    libicu-dev \
     libpng-dev \
-    libonig-dev \
-    libxml2-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libpq-dev \
+    libzip-dev \
     zip \
-    unzip
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd intl pdo pdo_pgsql zip
 
-# Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-## Install PHP extensions
-ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
-RUN chmod +x /usr/local/bin/install-php-extensions && \
-    install-php-extensions amqp apcu bcmath exif gd grpc imap intl ldap mcrypt opcache pgsql pdo_pgsql sockets uuid xdebug yaml zip
+# Create a non-root user with the same UID and GID as the host
+ARG UID
+ARG GID
+ARG USER_NAME
+
+# Use build arguments to create a group and user inside the container
+RUN groupadd -g ${GID} ${USER_NAME} && \
+    useradd -m -u ${UID} -g ${GID} -s /bin/bash ${USER_NAME}
+
+# Switch to the new user
+USER ${USER_NAME}
 
 # Get latest Composer
-COPY --from=composer:2.4.2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www

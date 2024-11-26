@@ -1,42 +1,6 @@
 services:
-  nginx-admin:
-    image: nginx:alpine
-    container_name: 6thmen-admin-nginx
-    restart: always
-    ports:
-      - "802:80"
-    volumes:
-      - ./.:/var/www:ro,cached
-      - ./docker/admin/default.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - 6thmen
-
-  6thmen:
-    build: .
-    container_name: 6thmen-php
-    user: "115:120"
-    restart: always
-    volumes:
-      - ./.:/var/www
-      - ./docker/php.ini:/usr/local/etc/php/php.ini
-      - ./docker/www.conf:/usr/local/etc/php-fpm.d/www.conf
-    depends_on:
-      - 6thmen-db
-
-  nginx-api:
-    image: nginx:alpine
-    container_name: 6thmen-api-nginx
-    restart: always
-    ports:
-      - "803:80"
-    volumes:
-      - ./.:/var/www:ro,cached
-      - ./docker/api/default.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - 6thmen
-
   6thmen-db:
-    image: postgres:${POSTGRES_VERSION}-alpine
+    image: postgres:${POSTGRES_VERSION}
     container_name: 6thmen-db
     restart: always
     environment:
@@ -48,13 +12,57 @@ services:
     volumes:
       - ~/Développement/6thmen-back/docker/data:/var/lib/postgresql/data:rw
 
-  adminer:
-    image: adminer
-    container_name: 6thmen-adminer
+  6thmen-php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UID: "${UID}"
+        GID: "${GID}"
+        USER_NAME: "${USER_NAME}"
+    user: "${UID}:${GID}"
     environment:
-      ADMINER_DESIGN: dracula
-      ADMINER_DEFAULT_SERVER: 6thmen-db
+      - UID=${UID}
+      - GID=${GID}
+      - USER_NAME=${USER_NAME}
+    container_name: 6thmen-php
+    restart: always
+    volumes:
+      - ./.:/var/www
+      - ./docker/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    depends_on:
+      - 6thmen-db
+
+  nginx-admin:
+    image: nginx:alpine
+    container_name: 6thmen-admin-nginx
+    restart: always
     ports:
-      - "8080:8080"
+      - "802:80"
+    volumes:
+      - ./.:/var/www:ro,cached
+      - ./docker/admin/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - 6thmen-php
+
+  nginx-api:
+    image: nginx:alpine
+    container_name: 6thmen-api-nginx
+    restart: always
+    ports:
+      - "803:80"
+    volumes:
+      - ./.:/var/www:ro,cached
+      - ./docker/api/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - 6thmen-php
+
+
+  dbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: 6thmen-dbeaver
+    ports:
+      - "8080:8978"
     depends_on:
       - 6thmen-db
