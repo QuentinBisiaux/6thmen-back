@@ -39,7 +39,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $twitterId = null;
 
     #[ORM\OneToOne(inversedBy: 'user', targetEntity: UserProfile::class)]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     #[Groups('read:user')]
     private UserProfile $profile;
 
