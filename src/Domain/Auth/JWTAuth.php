@@ -30,7 +30,7 @@ readonly class JWTAuth
         } catch(JWTDecodeFailureException $decodeFailureException) {
             throw new \Exception ('Pour ta sécurité, il faut se reconnecter', 500);
         }
-        $user = $this->userRepository->findOneById($decoded['id']);
+        $user = $this->userRepository->findOneByUsername($decoded['username']);
         if(!$user) throw new UserDoesNotExistException('Il y a une erreur avec la connection, essaie de te déconnecter, reconnecter et recommencer l\'opération');
         return $user;
     }
